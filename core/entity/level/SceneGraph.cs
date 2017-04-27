@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.common;
 
@@ -17,7 +18,7 @@ namespace worldWizards.core.entity.level
 
         }
 
-        private WorldWizardsObject Remove(string uuid)
+        private WorldWizardsObject Remove(Guid id)
         {
             return null;
         }
@@ -37,27 +38,27 @@ namespace worldWizards.core.entity.level
             return null;
         }
 
-        public List<WorldWizardsObject> GetAdjacentTiles(List<string> selection)
+        public List<WorldWizardsObject> GetAdjacentTiles(List<Guid> selection)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetPropsContainedInTiles(List<string> selection)
+        public List<WorldWizardsObject> GetPropsContainedInTiles(List<Guid> selection)
         {
             return null;
         }
 
-        public WorldWizardsObject GetRootParent(List<string> selection)
+        public WorldWizardsObject GetRootParent(List<Guid> selection)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAllChildren(List<string> selection)
+        public List<WorldWizardsObject> GetAllChildren(List<Guid> selection)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAllSiblings(List<string> selection)
+        public List<WorldWizardsObject> GetAllSiblings(List<Guid> selection)
         {
             return null;
         }

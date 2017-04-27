@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
@@ -11,7 +12,7 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WorldWizardsObject : MonoBehaviour
     {
-        private readonly string id;
+        private readonly Guid id;
         private readonly WorldWizardsType worldWizardType;
         private readonly MetaData metaData;
         private Coordinate coordinate;
@@ -19,7 +20,7 @@ namespace worldWizards.core.entity.gameObject
         private WorldWizardsObject parent;
         private List<WorldWizardsObject> children;
 
-        public string GetId() {
+        public Guid GetId() {
             return id;
         }
 
