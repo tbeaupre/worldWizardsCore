@@ -1,4 +1,4 @@
-﻿namespace worldWizards.core.controllers.builder
+﻿namespace worldWizards.core.controller.builder
 {
     /// <summary>
     /// The Tool Controller manages the work space of tools that the player 

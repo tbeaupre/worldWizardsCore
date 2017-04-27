@@ -1,4 +1,4 @@
-﻿namespace worldWizards.core.controllers.camera
+﻿namespace worldWizards.core.controller.camera
 {
     public class CameraController
     {

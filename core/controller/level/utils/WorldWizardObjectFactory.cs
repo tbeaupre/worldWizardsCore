@@ -2,7 +2,7 @@
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
 
-namespace worldWizards.core.controllers.utils
+namespace worldWizards.core.controller.level.utils
 {
     /// <summary>
     /// The WorldWizard Object Factory is responsible for instantiating gameobjects into the 

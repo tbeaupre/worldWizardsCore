@@ -7,9 +7,9 @@ namespace worldWizards.core.entity.gameObject
 {
     /// <summary>
     /// The WorldWizardsObject is base class for all World Wizards objects.
-    /// WorldWizardsObject extends MonoBehavior so has to be attached to a GameObject.
+    /// WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
     /// </summary>
-    public class WorldWizardsObject : MonoBehaviour
+    public abstract class WorldWizardsObject : MonoBehaviour
     {
         private readonly string id;
         private readonly WorldWizardsType worldWizardType;
@@ -43,7 +43,7 @@ namespace worldWizards.core.entity.gameObject
         }
 
         /// <summary>
-        /// Delete this WorldWizardsObject and all of its descendents
+        /// Delete this WorldWizardsObject and all of its descendents.
         /// </summary>
         public void Delete() {
         }

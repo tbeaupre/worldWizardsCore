@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using worldWizards.core.entity.level;
 
-namespace worldWizards.core.controllers
+namespace worldWizards.core.controller.level
 {
     public class LevelController : MonoBehaviour
     {
