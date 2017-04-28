@@ -11,7 +11,7 @@ namespace worldWizards.core.entity.level
     /// </summary>
     public class SceneGraph
     {
-        private Dictionary<string, WorldWizardsObject> worldWizardsObjects;
+		private Dictionary<Guid, WorldWizardsObject> worldWizardsObjects;
 
         private void Add(WorldWizardsObject worldWizardsObject)
         {
