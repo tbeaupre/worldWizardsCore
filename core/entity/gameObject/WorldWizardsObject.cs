@@ -12,13 +12,22 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WorldWizardsObject : MonoBehaviour
     {
-        private readonly Guid id;
-        private readonly WorldWizardsType worldWizardType;
-        private readonly MetaData metaData;
+        private Guid id;
+        private WorldWizardsType worldWizardType;
+        private MetaData metaData;
         private Coordinate coordinate;
 
         private WorldWizardsObject parent;
         private List<WorldWizardsObject> children;
+
+        public virtual void Init (Guid id, WorldWizardsType worldWizardType, MetaData metaData, Coordinate coordinate, WorldWizardsObject parent, List<WorldWizardsObject> children) {
+            this.id = id;
+            this.worldWizardType = worldWizardType;
+            this.metaData = metaData;
+            this.coordinate = coordinate;
+            this.parent = parent;
+            this.children = children;
+        }
 
         public Guid GetId() {
             return id;

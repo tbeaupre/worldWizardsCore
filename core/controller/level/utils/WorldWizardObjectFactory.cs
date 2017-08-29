@@ -12,7 +12,7 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WorldWizardObjectFactory
     {
-        public static WorldWizardsObject Instantiate(WorldWizardsObject obj, WorldWizardsType type, Coordinate coordinate, string prefabPath)
+        public static WorldWizardsObject Instantiate(WorldWizardsObject obj, WorldWizardsType type, Coordinate coordinate)
         {
             // TODO: Set properties and return
             return UnityEngine.GameObject.Instantiate<WorldWizardsObject>(obj);
