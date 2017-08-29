@@ -13,14 +13,29 @@ namespace worldWizards.core.entity.level
     {
 		private Dictionary<Guid, WorldWizardsObject> worldWizardsObjects;
 
-        private void Add(WorldWizardsObject worldWizardsObject)
+        public SceneGraph ()
         {
-
+            worldWizardsObjects = new Dictionary<Guid, WorldWizardsObject>();
         }
 
-        private WorldWizardsObject Remove(Guid id)
+        public void Add(WorldWizardsObject worldWizardsObject)
         {
-            return null;
+            worldWizardsObjects.Add(worldWizardsObject.GetId(), worldWizardsObject);
+        }
+
+        /// <summary>
+        /// Remove an object from the scene graph.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>returns removed object, which may be null.</returns>
+        public WorldWizardsObject Remove(Guid id)
+        {
+            WorldWizardsObject removedObject;
+            worldWizardsObjects.TryGetValue (id, out removedObject);
+            if (removedObject) {
+                worldWizardsObjects.Remove(id);
+            }
+            return removedObject;
         }
 
         public WorldWizardsObject Get(string id)
@@ -58,6 +73,7 @@ namespace worldWizards.core.entity.level
             return null;
         }
 
+        // TODO: Does it return itself? or just its siblings?
         public List<WorldWizardsObject> GetAllSiblings(List<Guid> selection)
         {
             return null;

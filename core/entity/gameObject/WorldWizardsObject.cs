@@ -37,7 +37,7 @@ namespace worldWizards.core.entity.gameObject
         public void Unparent() {
         }
 
-        public void RemoveChildren(List<WorldWizardsObject> children){
+        public void RemoveChildren(List<WorldWizardsObject> children) {
         }
 
         public void AddChildren(List<WorldWizardsObject> children) {

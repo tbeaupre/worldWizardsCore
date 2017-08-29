@@ -1,6 +1,8 @@
 ﻿using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
+using System;
+using UnityEngine;
 
 namespace worldWizards.core.controller.level.utils
 {
@@ -10,9 +12,10 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WorldWizardObjectFactory
     {
-        public static WorldWizardsObject Instantiate(WorldWizardsType type, string id, Coordinate coordinate)
+        public static WorldWizardsObject Instantiate(WorldWizardsObject obj, WorldWizardsType type, Coordinate coordinate, string prefabPath)
         {
-            return null;
+            // TODO: Set properties and return
+            return UnityEngine.GameObject.Instantiate<WorldWizardsObject>(obj);
         }
 
         private static WorldWizardsObject InstantiateTile()
