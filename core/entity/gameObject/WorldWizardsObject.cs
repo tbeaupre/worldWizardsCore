@@ -12,25 +12,25 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WorldWizardsObject : MonoBehaviour
     {
-        private Guid id;
-        private WorldWizardsType worldWizardType;
-        private MetaData metaData;
-        private Coordinate coordinate;
+        private WWObjectData objectData;
 
-        private WorldWizardsObject parent;
-        private List<WorldWizardsObject> children;
+        public virtual void Init (Guid id, WorldWizardsType worldWizardType, MetaData metaData, Coordinate coordinate,
+            WWResource resource, WorldWizardsObject parent, List<WorldWizardsObject> children)
+        {
+            this.objectData = new WWObjectData(id, worldWizardType, metaData, coordinate, resource, parent, children);
+        }
 
-        public virtual void Init (Guid id, WorldWizardsType worldWizardType, MetaData metaData, Coordinate coordinate, WorldWizardsObject parent, List<WorldWizardsObject> children) {
-            this.id = id;
-            this.worldWizardType = worldWizardType;
-            this.metaData = metaData;
-            this.coordinate = coordinate;
-            this.parent = parent;
-            this.children = children;
+        public virtual void Init(WWObjectData objectData)
+        {
+            this.objectData = objectData;
         }
 
         public Guid GetId() {
-            return id;
+            return objectData.id;
+        }
+
+        public Coordinate GetCoordinate() {
+            return objectData.coordinate;
         }
 
         public void SetCoordinate(Coordinate coordinate) {
@@ -59,11 +59,11 @@ namespace worldWizards.core.entity.gameObject
         }
 
         public List<WorldWizardsObject> GetChildren() {
-            return children;
+            return null;// children;
         }
 
         public WorldWizardsObject GetParent() {
-            return parent;
+            return null;// parent;
         }
 
         public List<WorldWizardsObject> GetAllDescendents()

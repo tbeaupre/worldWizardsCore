@@ -6,6 +6,7 @@ using worldWizards.core.controller.level.utils;
 using worldWizardsCore.core.controller.level;
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.common;
+using worldWizards.core.entity.coordinate;
 using UnityEngine;
 
 
@@ -19,10 +20,12 @@ namespace Assets.worldWizardsCore
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
 
-            WorldWizardsObject obj = Resources.Load<WorldWizardsObject>("tileTemp");
-            obj.Init(Guid.NewGuid(), WorldWizardsType.Tile, null, null, null, null);
-            Debug.Log(obj);
-            sceneGraphController.Add(obj);
+            for (int i = 0; i < 5; i++)
+            {
+                WWObjectData objData = WorldWizardObjectFactory.MockCreate(new Coordinate(i, i, i));
+                WorldWizardsObject go = WorldWizardObjectFactory.Instantiate(objData);
+                sceneGraphController.Add(go);
+            }
         }
     }
 }

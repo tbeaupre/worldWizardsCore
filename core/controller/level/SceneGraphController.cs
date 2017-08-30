@@ -19,7 +19,6 @@ namespace worldWizardsCore.core.controller.level
 
         public void Add(WorldWizardsObject worldWizardsObject)
         {
-            Instantiate(worldWizardsObject);
             sceneGraph.Add(worldWizardsObject);
         }
 
