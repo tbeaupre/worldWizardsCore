@@ -11,19 +11,19 @@ namespace worldWizards.core.controller.level.utils
     /// The WorldWizard Object Factory is responsible for instantiating gameobjects into the 
     /// unity environment.
     /// </summary>
-    public static class WorldWizardObjectFactory
+    public static class WWObjectFactory
     {
         public static WWObjectData MockCreate(Coordinate coordinate)
         {
-            return CreateNew(WorldWizardsType.Tile, null, coordinate, new WWResource("tileTemp"));
+            return CreateNew(WWType.Tile, null, coordinate, new WWResource("tileTemp"));
         }
 
-        public static WWObjectData CreateNew(WorldWizardsType type, MetaData metaData, Coordinate coordinate, WWResource resource)
+        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, WWResource resource)
         {
             return Create(Guid.NewGuid(), type, metaData, coordinate, resource);
         }
 
-        public static WWObjectData Create(Guid id, WorldWizardsType type, MetaData metaData, Coordinate coordinate,
+        public static WWObjectData Create(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
             WWResource resource)
         {
 
@@ -32,11 +32,11 @@ namespace worldWizards.core.controller.level.utils
             return new WWObjectData(id, type, metaData, coordinate, resource, null, null);
         }
 
-        public static WorldWizardsObject Instantiate(WWObjectData objectData)
+        public static WWObject Instantiate(WWObjectData objectData)
         {
             Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
-            WorldWizardsObject wwObject = UnityEngine.GameObject.Instantiate<WorldWizardsObject>(
-                Resources.Load<WorldWizardsObject>(objectData.resource.path), spawnPos, Quaternion.identity);
+            WWObject wwObject = UnityEngine.GameObject.Instantiate<WWObject>(
+                Resources.Load<WWObject>(objectData.resource.path), spawnPos, Quaternion.identity);
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
 
 
@@ -46,17 +46,17 @@ namespace worldWizards.core.controller.level.utils
             return wwObject;
         }
 
-        private static WorldWizardsObject InstantiateTile()
+        private static WWObject InstantiateTile()
         {
             return null;
         }
 
-        private static WorldWizardsObject InstantiateProp()
+        private static WWObject InstantiateProp()
         {
             return null;
         }
 
-        private static WorldWizardsObject InstantiateInteractable()
+        private static WWObject InstantiateInteractable()
         {
             return null;
         }

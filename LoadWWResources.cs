@@ -22,8 +22,8 @@ namespace Assets.worldWizardsCore
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WorldWizardObjectFactory.MockCreate(new Coordinate(i, i, i));
-                WorldWizardsObject go = WorldWizardObjectFactory.Instantiate(objData);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i));
+                WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
         }

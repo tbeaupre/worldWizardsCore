@@ -3,5 +3,5 @@
     /// <summary>
     /// A enumeration of all possible World Wizards object types.
     /// </summary>
-    public enum WorldWizardsType {Tile, Prop, Interactable};
+    public enum WWType {Tile, Prop, Interactable};
 }

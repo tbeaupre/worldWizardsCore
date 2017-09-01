@@ -17,12 +17,12 @@ namespace worldWizardsCore.core.controller.level
             sceneGraph = new SceneGraph();
         }
 
-        public void Add(WorldWizardsObject worldWizardsObject)
+        public void Add(WWObject worldWizardsObject)
         {
             sceneGraph.Add(worldWizardsObject);
         }
 
-        public WorldWizardsObject Remove(Guid id)
+        public WWObject Remove(Guid id)
         {
             return sceneGraph.Remove(id);
         }

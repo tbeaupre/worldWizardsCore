@@ -8,19 +8,19 @@ namespace worldWizards.core.entity.gameObject
     public class WWObjectData
     {
         public Guid id { get; }
-        private WorldWizardsType worldWizardType;
+        private WWType type;
         private MetaData metaData;
         public Coordinate coordinate { get; }
         public WWResource resource { get; }
 
-        private WorldWizardsObject parent;
-        private List<WorldWizardsObject> children;
+        private WWObject parent;
+        private List<WWObject> children;
 
-        public WWObjectData(Guid id, WorldWizardsType worldWizardType, MetaData metaData, Coordinate coordinate,
-            WWResource resource, WorldWizardsObject parent, List<WorldWizardsObject> children)
+        public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
+            WWResource resource, WWObject parent, List<WWObject> children)
         {
             this.id = id;
-            this.worldWizardType = worldWizardType;
+            this.type = type;
             this.metaData = metaData;
             this.coordinate = coordinate;
             this.resource = resource;

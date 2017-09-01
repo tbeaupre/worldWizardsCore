@@ -2,7 +2,7 @@
 
 namespace worldWizards.core.entity.gameObject
 {
-    public class Interactable : WorldWizardsObject
+    public class Interactable : WWObject
     {
         private InteractionType interactionType;
     }

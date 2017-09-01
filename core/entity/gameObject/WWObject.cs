@@ -10,12 +10,12 @@ namespace worldWizards.core.entity.gameObject
     /// The WorldWizardsObject is base class for all World Wizards objects.
     /// WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
     /// </summary>
-    public abstract class WorldWizardsObject : MonoBehaviour
+    public abstract class WWObject : MonoBehaviour
     {
         private WWObjectData objectData;
 
-        public virtual void Init (Guid id, WorldWizardsType worldWizardType, MetaData metaData, Coordinate coordinate,
-            WWResource resource, WorldWizardsObject parent, List<WorldWizardsObject> children)
+        public virtual void Init (Guid id, WWType worldWizardType, MetaData metaData, Coordinate coordinate,
+            WWResource resource, WWObject parent, List<WWObject> children)
         {
             this.objectData = new WWObjectData(id, worldWizardType, metaData, coordinate, resource, parent, children);
         }
@@ -36,7 +36,7 @@ namespace worldWizards.core.entity.gameObject
         public void SetCoordinate(Coordinate coordinate) {
         }
 
-        public WorldWizardsObject GetOldestParent() {
+        public WWObject GetOldestParent() {
             return null;
         }
 
@@ -46,10 +46,10 @@ namespace worldWizards.core.entity.gameObject
         public void Unparent() {
         }
 
-        public void RemoveChildren(List<WorldWizardsObject> children) {
+        public void RemoveChildren(List<WWObject> children) {
         }
 
-        public void AddChildren(List<WorldWizardsObject> children) {
+        public void AddChildren(List<WWObject> children) {
         }
 
         /// <summary>
@@ -58,15 +58,15 @@ namespace worldWizards.core.entity.gameObject
         public void Delete() {
         }
 
-        public List<WorldWizardsObject> GetChildren() {
+        public List<WWObject> GetChildren() {
             return null;// children;
         }
 
-        public WorldWizardsObject GetParent() {
+        public WWObject GetParent() {
             return null;// parent;
         }
 
-        public List<WorldWizardsObject> GetAllDescendents()
+        public List<WWObject> GetAllDescendents()
         {
             return null;
         }

@@ -7,10 +7,10 @@ namespace worldWizards.core.controller.common
     /// A Singleton class that persists for the duration of the
     /// entire World Wizards application, and manages overall application settings.
     /// </summary>
-    public class WorldWizardsMasterSingleton : MonoBehaviour
+    public class WWMasterSingleton : MonoBehaviour
     {
-        private WorldWizardsMode worldWizardsMode;
-        public static WorldWizardsMasterSingleton instance;
+        private WWMode mode;
+        public static WWMasterSingleton instance;
 
         /// <summary>
         /// Handle the Singleton pattern in Unity where the Singleton

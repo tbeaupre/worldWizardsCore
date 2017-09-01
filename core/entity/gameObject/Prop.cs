@@ -1,6 +1,6 @@
 ﻿namespace worldWizards.core.entity.gameObject
 {
-    public class Prop : WorldWizardsObject
+    public class Prop : WWObject
     {
 
     }

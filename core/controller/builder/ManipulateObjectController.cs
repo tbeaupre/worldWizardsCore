@@ -10,7 +10,7 @@ namespace worldWizards.core.builder.controller
     /// </summary>
     public class ManipulateObjectController : MonoBehaviour
     {
-        private List<WorldWizardsObject> selection;
+        private List<WWObject> selection;
         public void OnTranslate(){}
         public void OnRotate(){}
         public void OnScale(){}

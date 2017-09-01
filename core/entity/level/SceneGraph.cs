@@ -12,16 +12,16 @@ namespace worldWizards.core.entity.level
     /// </summary>
     public class SceneGraph
     {
-		private Dictionary<Guid, WorldWizardsObject> worldWizardsObjects;
+		private Dictionary<Guid, WWObject> objects;
 
         public SceneGraph ()
         {
-            worldWizardsObjects = new Dictionary<Guid, WorldWizardsObject>();
+            objects = new Dictionary<Guid, WWObject>();
         }
 
-        public void Add(WorldWizardsObject worldWizardsObject)
+        public void Add(WWObject worldWizardsObject)
         {
-            worldWizardsObjects.Add(worldWizardsObject.GetId(), worldWizardsObject);
+            objects.Add(worldWizardsObject.GetId(), worldWizardsObject);
         }
 
         /// <summary>
@@ -29,53 +29,53 @@ namespace worldWizards.core.entity.level
         /// </summary>
         /// <param name="id"></param>
         /// <returns>returns removed object, which may be null.</returns>
-        public WorldWizardsObject Remove(Guid id)
+        public WWObject Remove(Guid id)
         {
-            WorldWizardsObject removedObject;
-            worldWizardsObjects.TryGetValue (id, out removedObject);
+            WWObject removedObject;
+            objects.TryGetValue (id, out removedObject);
             if (removedObject) {
-                worldWizardsObjects.Remove(id);
+                objects.Remove(id);
             }
             return removedObject;
         }
 
-        public WorldWizardsObject Get(string id)
+        public WWObject Get(string id)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAllOfType(WorldWizardsType type)
+        public List<WWObject> GetAllOfType(WWType type)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAllOfMetaData(MetaData metaData)
+        public List<WWObject> GetAllOfMetaData(MetaData metaData)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAdjacentTiles(List<Guid> selection)
+        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetPropsContainedInTiles(List<Guid> selection)
+        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
         {
             return null;
         }
 
-        public WorldWizardsObject GetRootParent(List<Guid> selection)
+        public WWObject GetRootParent(List<Guid> selection)
         {
             return null;
         }
 
-        public List<WorldWizardsObject> GetAllChildren(List<Guid> selection)
+        public List<WWObject> GetAllChildren(List<Guid> selection)
         {
             return null;
         }
 
         // TODO: Does it return itself? or just its siblings?
-        public List<WorldWizardsObject> GetAllSiblings(List<Guid> selection)
+        public List<WWObject> GetAllSiblings(List<Guid> selection)
         {
             return null;
         }
