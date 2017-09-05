@@ -11,21 +11,37 @@ namespace worldWizards.core.entity.gameObject
         private WWType type;
         private MetaData metaData;
         public Coordinate coordinate { get; }
-        public WWResource resource { get; }
+        public string resourceTag { get; }
 
         private WWObject parent;
         private List<WWObject> children;
 
         public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWResource resource, WWObject parent, List<WWObject> children)
+            string resourceTag, WWObject parent, List<WWObject> children)
         {
             this.id = id;
             this.type = type;
             this.metaData = metaData;
             this.coordinate = coordinate;
-            this.resource = resource;
+            this.resourceTag = resourceTag;
             this.parent = parent;
             this.children = children;
+        }
+
+        // TODO: Find more elegant solution to this.
+        public Type GetWWType()
+        {
+            switch (type)
+            {
+                case WWType.Interactable:
+                    return typeof(Interactable);
+                case WWType.Prop:
+                    return typeof(Prop);
+                case WWType.Tile:
+                    return typeof(Tile);
+                default:
+                    return typeof(Tile);
+            }
         }
     }
 }

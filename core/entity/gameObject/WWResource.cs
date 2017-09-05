@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using UnityEngine;
 
 namespace worldWizards.core.entity.gameObject
 {
@@ -10,12 +7,11 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public class WWResource
     {
-        //TODO: Refactor this. Add getter.
-        public string path;
+        public GameObject prefab { get; }
 
         public WWResource(string path)
         {
-            this.path = path;
+            prefab = Resources.Load(path) as GameObject;
         }
     }
 }
