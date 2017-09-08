@@ -13,5 +13,10 @@ namespace worldWizards.core.entity.gameObject
         {
             prefab = Resources.Load(path) as GameObject;
         }
+
+        public WWResource(AssetBundle assetBundle, string name)
+        {
+            prefab = assetBundle.LoadAsset(name) as GameObject;
+        }
     }
 }

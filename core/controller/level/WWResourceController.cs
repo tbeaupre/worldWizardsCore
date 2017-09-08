@@ -27,9 +27,33 @@ namespace worldWizards.core.controller.level
         }
         #endregion
 
+        Dictionary<string, AssetBundle> assetBundles;
         Dictionary<string, WWResource> resources;
 
+        public void LoadBundle(string assetBundlePath, string bundleTag)
+        {
+            if (assetBundles.ContainsKey(bundleTag))
+            {
+                Debug.Log("bundleTag: " + bundleTag + " has already been used.");
+            }
+            else
+            {
+                assetBundles.Add(bundleTag, AssetBundle.LoadFromFile(assetBundlePath));
+            }
+        }
+
+        public void LoadResource(string bundleTag, string name, string tag)
+        {
+            AssetBundle assetBundle = GetAssetBundle(bundleTag);
+            AddResource(tag, new WWResource(assetBundle, name));
+        }
+
         public void LoadResource(string path, string tag)
+        {
+            AddResource(tag, new WWResource(path));
+        }
+
+        public void AddResource(string tag, WWResource resource)
         {
             if (resources.ContainsKey(tag))
             {
@@ -37,7 +61,21 @@ namespace worldWizards.core.controller.level
             }
             else
             {
-                resources.Add(tag, new WWResource(path));
+                resources.Add(tag, resource);
+            }
+        }
+
+        public AssetBundle GetAssetBundle(string tag)
+        {
+            AssetBundle assetBundle;
+            if (assetBundles.TryGetValue(tag, out assetBundle))
+            {
+                return assetBundle;
+            }
+            else
+            {
+                Debug.Log("An asset bundle with this tag has not been loaded.");
+                return null;
             }
         }
 
