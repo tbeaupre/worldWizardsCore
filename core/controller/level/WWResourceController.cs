@@ -15,6 +15,7 @@ namespace worldWizards.core.controller.level
         private WWResourceController()
         {
             resources = new Dictionary<string, WWResource>();
+            assetBundles = new Dictionary<string, AssetBundle>();
         }
 
         public static WWResourceController GetInstance()
@@ -38,7 +39,15 @@ namespace worldWizards.core.controller.level
             }
             else
             {
-                assetBundles.Add(bundleTag, AssetBundle.LoadFromFile(assetBundlePath));
+                AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
+                if (assetBundle == null)
+                {
+                    Debug.Log("Unable to load Asset Bundle");
+                }
+                else
+                {
+                    assetBundles.Add(bundleTag, assetBundle);
+                }
             }
         }
 
