@@ -7,5 +7,9 @@ namespace worldWizards.core.entity.common
     public class MetaData
     {
         private List<string> tags;
+
+		public MetaData(){
+		
+		}
     }
 }

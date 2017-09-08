@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using worldWizards.core.entity.common;
+using Newtonsoft.Json;
 
 namespace worldWizards.core.entity.coordinate
 {
@@ -16,5 +17,11 @@ namespace worldWizards.core.entity.coordinate
         public Coordinate(IntVector3 index) : this(index, Vector3.zero) { }
 
         public Coordinate(int x, int y, int z) : this(new IntVector3(x, y, z)) { }
+
+
+		[JsonConstructor]
+		public Coordinate(){
+		}
+
     }
 }

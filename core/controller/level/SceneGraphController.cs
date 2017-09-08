@@ -3,7 +3,7 @@ using UnityEngine;
 using worldWizards.core.entity.level;
 using worldWizards.core.entity.gameObject;
 
-namespace worldWizardsCore.core.controller.level
+namespace worldWizards.core.controller.level
 {
     /// <summary>
     /// 
@@ -25,9 +25,28 @@ namespace worldWizardsCore.core.controller.level
             }
         }
 
-        public WWObject Remove(Guid id)
+        public void Delete(Guid id)
         {
-            return sceneGraph.Remove(id);
+            sceneGraph.Delete(id);
         }
+
+		public void DeleteDescending(Guid id)
+		{
+			sceneGraph.DeleteDescending(id);
+		}
+			
+		public void Load(){
+			sceneGraph.Load ();
+		}
+
+		public void Save(){
+			sceneGraph.Save ();
+		}
+
+		public void ClearAll(){
+			sceneGraph.ClearAll ();
+		}
+
+
     }
 }

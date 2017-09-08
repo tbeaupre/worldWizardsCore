@@ -12,10 +12,10 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WWObject : MonoBehaviour
     {
-        private WWObjectData objectData;
+		public WWObjectData objectData { get; private set;}
 
         public virtual void Init (Guid id, MetaData metaData, Coordinate coordinate,
-            WWObject parent, List<WWObject> children, string resourceTag)
+            WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
             this.objectData = new WWObjectData(id, metaData, coordinate, parent, children, resourceTag);
         }
@@ -46,16 +46,19 @@ namespace worldWizards.core.entity.gameObject
         public void Unparent() {
         }
 
+
+		public void Parent(WWObject parent){
+		
+		}
+
         public void RemoveChildren(List<WWObject> children) {
         }
 
         public void AddChildren(List<WWObject> children) {
-        }
-
-        /// <summary>
-        /// Delete this WorldWizardsObject and all of its descendents.
-        /// </summary>
-        public void Delete() {
+			this.objectData.AddChildren (children);
+//			foreach (var child in children){
+//				child.Parent (this);
+//			}
         }
 
         public List<WWObject> GetChildren() {
@@ -66,9 +69,10 @@ namespace worldWizards.core.entity.gameObject
             return null;// parent;
         }
 
-        public List<WWObject> GetAllDescendents()
+        public List<WWObjectData> GetAllDescendents()
         {
-            return null;
+			return objectData.GetAllDescendents ();
         }
+
     }
 }

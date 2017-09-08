@@ -9,7 +9,7 @@ namespace worldWizards.core.entity.coordinate.utils
     /// </summary>
     public static class CoordinateHelper
     {
-        public static float tileLength = 50; // Temporary until we make some kind of constant
+        public static float tileLength = 5; // Temporary until we make some kind of constant
 
         public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate){
             return new Coordinate(new IntVector3(coordinate / tileLength));

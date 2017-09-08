@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
+using Newtonsoft.Json;
 
 namespace worldWizards.core.entity.common
 {
     public class IntVector3
     {
-        public int x { get; }
-        public int y { get; }
-        public int z { get; }
+		public int x { get; set; }
+		public int y { get; set; }
+		public int z { get; set; }
 
         public IntVector3(int x, int y, int z) {
             this.x = x;
@@ -19,5 +20,10 @@ namespace worldWizards.core.entity.common
             this.y = (int)vector.y;
             this.z = (int)vector.z;
         }
+
+
+		[JsonConstructor]
+		public IntVector3(){
+		}
     }
 }

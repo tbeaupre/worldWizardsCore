@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using worldWizards.core.controller.level.utils;
 using worldWizards.core.controller.level;
-using worldWizardsCore.core.controller.level;
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
 using UnityEngine;
 
 
-namespace Assets.worldWizardsCore
+namespace worldWizard.core
 {
     class LoadWWResources : MonoBehaviour
     {

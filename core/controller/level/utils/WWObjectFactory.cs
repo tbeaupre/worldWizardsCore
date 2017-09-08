@@ -4,6 +4,7 @@ using worldWizards.core.entity.coordinate;
 using worldWizards.core.entity.coordinate.utils;
 using worldWizards.core.controller.level;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace worldWizards.core.controller.level.utils
@@ -26,7 +27,7 @@ namespace worldWizards.core.controller.level.utils
 
         public static WWObjectData Create(Guid id, MetaData metaData, Coordinate coordinate, string resourceTag)
         {
-            return new WWObjectData(id, metaData, coordinate, null, null, resourceTag);
+			return new WWObjectData(id, metaData, coordinate, null, new List<WWObjectData>(), resourceTag);
         }
 
         public static WWObject Instantiate(WWObjectData objectData)
