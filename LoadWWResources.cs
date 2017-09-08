@@ -23,6 +23,10 @@ namespace Assets.worldWizardsCore
 
             WWResourceController.GetInstance().LoadResource("tileTemp", "white");
             WWResourceController.GetInstance().LoadResource("secondTemp", "black");
+            
+            WWResourceController.GetInstance().LoadBundle(Application.dataPath + "/../AssetBundles/Windows/test", "testBundle");
+            WWResourceController.GetInstance().LoadResource("testBundle", "assetBundleTest", "blue");
+
 
             for (int i = 0; i < 5; i++)
             {
@@ -33,7 +37,14 @@ namespace Assets.worldWizardsCore
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i+1, i), "black");
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "black");
+                WWObject go = WWObjectFactory.Instantiate(objData);
+                sceneGraphController.Add(go);
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "blue");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
