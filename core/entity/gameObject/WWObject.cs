@@ -15,9 +15,9 @@ namespace worldWizards.core.entity.gameObject
         private WWObjectData objectData;
 
         public virtual void Init (Guid id, WWType worldWizardType, MetaData metaData, Coordinate coordinate,
-            string resourceTag, WWObject parent, List<WWObject> children)
+            WWObject parent, List<WWObject> children, WWResourceNEW resource)
         {
-            this.objectData = new WWObjectData(id, worldWizardType, metaData, coordinate, resourceTag, parent, children);
+            this.objectData = new WWObjectData(id, worldWizardType, metaData, coordinate, parent, children, resource);
         }
 
         public virtual void Init(WWObjectData objectData)

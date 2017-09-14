@@ -14,28 +14,27 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WWObjectFactory
     {
-        public static WWObjectData MockCreate(Coordinate coordinate, string resourceTag)
+        public static WWObjectData MockCreate(Coordinate coordinate, WWResourceNEW resource)
         {
-            return CreateNew(WWType.Tile, null, coordinate, resourceTag);
+            return CreateNew(WWType.Tile, null, coordinate, resource);
         }
 
-        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, string resourceTag)
+        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, WWResourceNEW resource)
         {
-            return Create(Guid.NewGuid(), type, metaData, coordinate, resourceTag);
+            return Create(Guid.NewGuid(), type, metaData, coordinate, resource);
         }
 
         public static WWObjectData Create(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            string resourceTag)
+            WWResourceNEW resource)
         {
-            return new WWObjectData(id, type, metaData, coordinate, resourceTag, null, null);
+            return new WWObjectData(id, type, metaData, coordinate, null, null, resource);
         }
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
             Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
             Type type = objectData.GetWWType();
-            WWResource resource = WWResourceController.GetInstance().GetResource(objectData.resourceTag);
-            GameObject gameObject = UnityEngine.GameObject.Instantiate(resource.prefab, spawnPos, Quaternion.identity);
+            GameObject gameObject = UnityEngine.GameObject.Instantiate(objectData.resMetaData.GetObject(), spawnPos, Quaternion.identity) as GameObject;
 
             WWObject wwObject = gameObject.AddComponent(type) as WWObject;
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;

@@ -8,6 +8,6 @@ namespace worldWizards.core.entity.gameObject
 {
     public abstract class WWResourceNEW : ScriptableObject
     {
-        public virtual void Update(WWResourceMetaData instanceData) { }
+        public virtual void LoadMetaData(WWResourceMetaData instanceData) { }
     }
 }

@@ -11,21 +11,24 @@ namespace worldWizards.core.entity.gameObject
         private WWType type;
         private MetaData metaData;
         public Coordinate coordinate { get; }
-        public string resourceTag { get; }
 
         private WWObject parent;
         private List<WWObject> children;
 
+        public WWResourceMetaData resMetaData;
+
         public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            string resourceTag, WWObject parent, List<WWObject> children)
+            WWObject parent, List<WWObject> children, WWResourceNEW resource)
         {
             this.id = id;
             this.type = type;
             this.metaData = metaData;
             this.coordinate = coordinate;
-            this.resourceTag = resourceTag;
             this.parent = parent;
             this.children = children;
+
+            resMetaData = new WWResourceMetaData();
+            resource.LoadMetaData(this.resMetaData);
         }
 
         // TODO: Find more elegant solution to this.
