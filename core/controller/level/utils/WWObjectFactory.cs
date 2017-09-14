@@ -34,7 +34,7 @@ namespace worldWizards.core.controller.level.utils
         {
             Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
             Type type = objectData.GetWWType();
-            GameObject gameObject = UnityEngine.GameObject.Instantiate(objectData.resMetaData.GetObject(), spawnPos, Quaternion.identity) as GameObject;
+            GameObject gameObject = UnityEngine.GameObject.Instantiate(objectData.resourceData.GetObject(), spawnPos, Quaternion.identity) as GameObject;
 
             WWObject wwObject = gameObject.AddComponent(type) as WWObject;
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;

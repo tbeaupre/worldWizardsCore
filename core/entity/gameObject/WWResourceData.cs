@@ -8,7 +8,7 @@ using worldWizards.core.controller.level;
 namespace worldWizards.core.entity.gameObject
 {
     [System.Serializable]
-    public class WWResourceMetaData
+    public class WWResourceData
     {
         public string assetBundleTag = null;
         public string path = "";

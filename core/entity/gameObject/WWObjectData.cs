@@ -15,7 +15,7 @@ namespace worldWizards.core.entity.gameObject
         private WWObject parent;
         private List<WWObject> children;
 
-        public WWResourceMetaData resMetaData;
+        public WWResourceData resourceData;
 
         public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
             WWObject parent, List<WWObject> children, WWResource resource)
@@ -27,8 +27,8 @@ namespace worldWizards.core.entity.gameObject
             this.parent = parent;
             this.children = children;
 
-            resMetaData = new WWResourceMetaData();
-            resource.LoadMetaData(this.resMetaData);
+            resourceData = new WWResourceData();
+            resource.LoadResourceData(this.resourceData);
         }
 
         // TODO: Find more elegant solution to this.
