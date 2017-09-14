@@ -18,7 +18,7 @@ namespace worldWizards.core.entity.gameObject
         public WWResourceMetaData resMetaData;
 
         public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWObject parent, List<WWObject> children, WWResourceNEW resource)
+            WWObject parent, List<WWObject> children, WWResource resource)
         {
             this.id = id;
             this.type = type;

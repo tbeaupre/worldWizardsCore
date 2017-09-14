@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace worldWizards.core.entity.gameObject
 {
-    public abstract class WWResourceNEW : ScriptableObject
+    public abstract class WWResource : ScriptableObject
     {
         public virtual void LoadMetaData(WWResourceMetaData instanceData) { }
     }

@@ -14,18 +14,18 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WWObjectFactory
     {
-        public static WWObjectData MockCreate(Coordinate coordinate, WWResourceNEW resource)
+        public static WWObjectData MockCreate(Coordinate coordinate, WWResource resource)
         {
             return CreateNew(WWType.Tile, null, coordinate, resource);
         }
 
-        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, WWResourceNEW resource)
+        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, WWResource resource)
         {
             return Create(Guid.NewGuid(), type, metaData, coordinate, resource);
         }
 
         public static WWObjectData Create(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWResourceNEW resource)
+            WWResource resource)
         {
             return new WWObjectData(id, type, metaData, coordinate, null, null, resource);
         }

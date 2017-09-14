@@ -20,10 +20,11 @@ namespace Assets.worldWizardsCore
         void Start ()
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
+            WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/Windows/test");
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), ScriptableObject.CreateInstance("White") as WWResourceNEW);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), ScriptableObject.CreateInstance("White") as WWResource);
                 Debug.Log("Resource path: " + objData.resMetaData.path);
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
@@ -31,14 +32,16 @@ namespace Assets.worldWizardsCore
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), ScriptableObject.CreateInstance("Black") as WWResourceNEW);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), ScriptableObject.CreateInstance("Black") as WWResource);
+                Debug.Log("Resource path: " + objData.resMetaData.path);
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), ScriptableObject.CreateInstance("Blue") as WWResourceNEW);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), ScriptableObject.CreateInstance("Blue") as WWResource);
+                Debug.Log("Resource path: " + objData.resMetaData.path);
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
