@@ -14,49 +14,65 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WWObjectFactory
     {
-        public static WWObjectData MockCreate(Coordinate coordinate, WWResource resource)
+        public static WWObjectData MockCreate(Coordinate coordinate, string resourceTag)
         {
-            return CreateNew(WWType.Tile, null, coordinate, resource);
+            return CreateNew(null, coordinate, resourceTag);
         }
 
-        public static WWObjectData CreateNew(WWType type, MetaData metaData, Coordinate coordinate, WWResource resource)
+        public static WWObjectData CreateNew(MetaData metaData, Coordinate coordinate, string resourceTag)
         {
-            return Create(Guid.NewGuid(), type, metaData, coordinate, resource);
+            return Create(Guid.NewGuid(), metaData, coordinate, resourceTag);
         }
 
-        public static WWObjectData Create(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWResource resource)
+        public static WWObjectData Create(Guid id, MetaData metaData, Coordinate coordinate, string resourceTag)
         {
-            return new WWObjectData(id, type, metaData, coordinate, null, null, resource);
+            return new WWObjectData(id, metaData, coordinate, null, null, resourceTag);
         }
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
+            // Load resource and check to see if it is valid.
+            WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
+            WWResourceMetaData metaData = resource.GetMetaData();
+            if (metaData == null)
+            {
+                Debug.Log("There is no metadata for this resource, so it cannot be instantiated.");
+                return null;
+            }
+
+            // Create a GameObject at the correct location and rotation.
             Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
-            Type type = objectData.GetWWType();
-            GameObject gameObject = UnityEngine.GameObject.Instantiate(objectData.resourceData.GetObject(), spawnPos, Quaternion.identity) as GameObject;
+            GameObject gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.identity);
 
-            WWObject wwObject = gameObject.AddComponent(type) as WWObject;
-            wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
+            // Use ResourceMetaData to construct the object.
+            WWObject wwObject = ConstructWWObject(gameObject, metaData);
 
+            // Give the new WWObject the data used to create it.
             wwObject.Init(objectData);
 
             return wwObject;
         }
 
-        private static WWObject InstantiateTile()
+        /// <summary>
+        /// Handles the aspects of WWObject Instantiation that rely on the resource metadata.
+        /// </summary>
+        /// <param name="gameObject">The base GameObject which contains only resource, location, and rotation data</param>
+        /// <param name="metaData">The metadata which will be used to construct the WWObject</param>
+        /// <returns></returns>
+        public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
         {
-            return null;
-        }
+            // Make the GameObject into a Tile, Prop, etc.
+            Type type = WWTypeHelper.ConvertToSysType(metaData.type);
+            WWObject wwObject = gameObject.AddComponent(type) as WWObject;
 
-        private static WWObject InstantiateProp()
-        {
-            return null;
-        }
+            // Add Collision Boxes to Object.
 
-        private static WWObject InstantiateInteractable()
-        {
-            return null;
+            // Scale the object to the current tile scale.
+            wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
+
+            GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
+
+            return wwObject;
         }
     }
 }

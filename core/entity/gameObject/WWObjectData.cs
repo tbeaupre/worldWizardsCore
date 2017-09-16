@@ -8,43 +8,23 @@ namespace worldWizards.core.entity.gameObject
     public class WWObjectData
     {
         public Guid id { get; }
-        private WWType type;
         private MetaData metaData;
         public Coordinate coordinate { get; }
 
         private WWObject parent;
         private List<WWObject> children;
 
-        public WWResourceData resourceData;
+        public string resourceTag { get; }
 
-        public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWObject parent, List<WWObject> children, WWResource resource)
+        public WWObjectData(Guid id, MetaData metaData, Coordinate coordinate,
+            WWObject parent, List<WWObject> children, string resourceTag)
         {
             this.id = id;
-            this.type = type;
             this.metaData = metaData;
             this.coordinate = coordinate;
             this.parent = parent;
             this.children = children;
-
-            resourceData = new WWResourceData();
-            resource.LoadResourceData(this.resourceData);
-        }
-
-        // TODO: Find more elegant solution to this.
-        public Type GetWWType()
-        {
-            switch (type)
-            {
-                case WWType.Interactable:
-                    return typeof(Interactable);
-                case WWType.Prop:
-                    return typeof(Prop);
-                case WWType.Tile:
-                    return typeof(Tile);
-                default:
-                    return typeof(Tile);
-            }
+            this.resourceTag = resourceTag;
         }
     }
 }

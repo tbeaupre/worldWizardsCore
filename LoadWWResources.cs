@@ -20,32 +20,33 @@ namespace Assets.worldWizardsCore
         void Start ()
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
+
+            // Load AssetBundles.
             WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/Windows/test");
 
+            // Load Resources.
+            WWResourceController.LoadResource("white", null, "whiteCube");
+            WWResourceController.LoadResource("black", null, "blackCube");
+            WWResourceController.LoadResource("blue", "testBundle", "blueCube");
+
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), ScriptableObject.CreateInstance("White") as WWResource);
-                Debug.Log("Resource path: " + objData.resourceData.path);
-                Debug.Log("Walls: " + objData.resourceData.wallBarriers);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "white");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), ScriptableObject.CreateInstance("Black") as WWResource);
-                Debug.Log("Resource path: " + objData.resourceData.path);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "black");
                 WWObject go = WWObjectFactory.Instantiate(objData);
-                Debug.Log("Walls: " + objData.resourceData.wallBarriers);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), ScriptableObject.CreateInstance("Blue") as WWResource);
-                Debug.Log("Resource path: " + objData.resourceData.path);
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "blue");
                 WWObject go = WWObjectFactory.Instantiate(objData);
-                Debug.Log("Walls: " + objData.resourceData.wallBarriers);
                 sceneGraphController.Add(go);
             }
         }
