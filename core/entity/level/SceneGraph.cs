@@ -20,6 +20,13 @@ namespace worldWizards.core.entity.level
     {
 		private Dictionary<Guid, WWObject> objects;
 
+		/// <summary>
+		/// Determine how many WWObjects are in the scene graph
+		/// </summary>
+		/// <returns>The number if WWObjects in the scene graph.</returns>
+		public int SceneSize(){
+			return objects.Count;
+		}
 
 		/// <summary>
 		/// Clears all the objects in the scene graph.
@@ -56,23 +63,41 @@ namespace worldWizards.core.entity.level
             return removedObject;
         }
 
-		public void Delete(Guid id){
-			WWObject objectToDestroy = Remove (id);
+//		public void Delete(Guid id){
+//			// check if id exists in the sceneGraph
+//			if (objects.ContainsKey (id)) {
+//				WWObject objectToDestroy = Remove (id);
+//				Destroy (objectToDestroy);
+//			}
+//		}
+
+		private void Destroy(WWObject objectToDestroy){
+			#if UNITY_EDITOR
+			GameObject.DestroyImmediate (objectToDestroy.gameObject);
+			#else
 			GameObject.Destroy (objectToDestroy.gameObject);
+			#endif
 		}
 
+			
+		public void Delete(Guid id){
+			if (objects.ContainsKey(id)){
+				WWObject rootObject = Get (id);
 
-		public void DeleteDescending(Guid id){
-			WWObject rootObject = Get (id);
-			List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
-			// include the root
-			objectsToDelete.Add(rootObject.objectData);
-			foreach (WWObjectData objectToDelete in objectsToDelete) {
-				WWObject objectToDestroy = Remove (objectToDelete.id);
-					// TODO remove this null check by ensure no dangling children
-					if (objectToDestroy){
-						GameObject.Destroy (objectToDestroy.gameObject);
-					}
+				// remove child from parent if there is a parent
+				WWObjectData parent = rootObject.GetParent();
+				if (parent != null) {
+					WWObject parentObject = Get (parent.id);
+					parentObject.RemoveChild (rootObject);
+				}
+
+				List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
+				// include the root
+				objectsToDelete.Add(rootObject.objectData);
+				foreach (WWObjectData objectToDelete in objectsToDelete) {
+					WWObject objectToDestroy = Remove (objectToDelete.id);
+						Destroy (objectToDestroy);
+				}
 			}
 		}
 
@@ -85,42 +110,44 @@ namespace worldWizards.core.entity.level
 			}
 			return objectToGet;
         }
+			
 
-        public List<WWObject> GetAllOfType(WWType type)
-        {
-            return null;
-        }
 
-        public List<WWObject> GetAllOfMetaData(MetaData metaData)
-        {
-            return null;
-        }
+//        public List<WWObject> GetAllOfType(WWType type)
+//        {
+//            return null;
+//        }
+//
+//        public List<WWObject> GetAllOfMetaData(MetaData metaData)
+//        {
+//            return null;
+//        }
+//
+//        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
+//        {
+//            return null;
+//        }
+//
+//        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
+//        {
+//            return null;
+//        }
 
-        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
-        {
-            return null;
-        }
-
-        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
-        {
-            return null;
-        }
-
-        public WWObject GetRootParent(List<Guid> selection)
-        {
-            return null;
-        }
+//        public WWObject GetRootParent(List<Guid> selection)
+//        {
+//            return null;
+//        }
 
 //        public List<WWObject> GetAllChildren(List<Guid> selection)
 //        {
 //            return null;
 //        }
 
-        // TODO: Does it return itself? or just its siblings?
-        public List<WWObject> GetAllSiblings(List<Guid> selection)
-        {
-            return null;
-        }
+//        // TODO: Does it return itself? or just its siblings?
+//        public List<WWObject> GetAllSiblings(List<Guid> selection)
+//        {
+//            return null;
+//        }
 
 		public void Save(){
 			List<WWObjectDataMemento> objectstoSave = new List<WWObjectDataMemento> ();
@@ -153,9 +180,9 @@ namespace worldWizards.core.entity.level
 				List<WWObject> childrenToRestore = new List<WWObject> ();
 				foreach (Guid childID in obj.children) {
 					WWObject childObject = Get (childID);
-					if (childObject) { // TODO remove the null check by ensuring no dangling children
-						childrenToRestore.Add (childObject);
-					}
+//					if (childObject) { // TODO remove the null check by ensuring no dangling children
+					childrenToRestore.Add (childObject);
+//					}
 				}
 				root.AddChildren (childrenToRestore);
 			}

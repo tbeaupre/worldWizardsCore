@@ -54,7 +54,6 @@ namespace worldWizards.core.entity.gameObject
 			}
 		}
 
-
 		/// <summary>
 		/// Gets all descendents.
 		/// </summary>
@@ -71,11 +70,29 @@ namespace worldWizards.core.entity.gameObject
 			}
 			return descendents;
 		}
-
-
-//		public void Parent(WWObject parent){
-//			this.parent = parent.objectData.id;
+			
+		public void Unparent(){
+			if (this.parent != null) {
+				this.parent.RemoveChild (this);
+				this.parent = null;
+			}
+		} 
+			
+		public void Parent(WWObjectData parent){
+			this.parent = parent;
+		}
+			
+//		public void RemoveChild(WWObject child) {
+//			if (this.children.Contains (child.objectData)) {
+//				this.children.Remove (child.objectData);
+//			}
 //		}
+
+		public void RemoveChild(WWObjectData child) {
+			if (this.children.Contains (child)) {
+				this.children.Remove (child);
+			}
+		}
 
 
     }

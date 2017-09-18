@@ -21,13 +21,24 @@ namespace worldWizards.test
 		void Update ()
 		{
 
-			if (Input.GetButtonDown ("Fire1")) {
+			if (Input.GetKeyDown(KeyCode.Mouse0)) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				RaycastHit hit = new RaycastHit ();
 				if (Physics.Raycast (ray, out hit)) {
 					WWObject wwObject = hit.transform.gameObject.GetComponent<WWObject> ();
 					if (wwObject) {
-						sceneGraphController.DeleteDescending (wwObject.GetId());
+						sceneGraphController.Delete (wwObject.GetId());
+					}
+				}
+			}
+
+			if (Input.GetKeyDown(KeyCode.Space)) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				RaycastHit hit = new RaycastHit ();
+				if (Physics.Raycast (ray, out hit)) {
+					WWObject wwObject = hit.transform.gameObject.GetComponent<WWObject> ();
+					if (wwObject) {
+						wwObject.Unparent ();
 					}
 				}
 			}

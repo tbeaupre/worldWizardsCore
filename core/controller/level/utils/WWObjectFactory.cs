@@ -15,10 +15,17 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WWObjectFactory
     {
+
         public static WWObjectData MockCreate(Coordinate coordinate, string resourceTag)
         {
             return CreateNew(null, coordinate, resourceTag);
         }
+
+
+		public static WWObjectData MockCreateProp(Coordinate coordinate, string resourceTag)
+		{
+			return CreateNew( new MetaData(), coordinate, resourceTag);
+		}
 
         public static WWObjectData CreateNew(MetaData metaData, Coordinate coordinate, string resourceTag)
         {

@@ -44,29 +44,45 @@ namespace worldWizards.core.entity.gameObject
         /// Promote this World Wizard Object to not have a parent.
         /// </summary>
         public void Unparent() {
+			this.objectData.Unparent ();
         }
 
 
 		public void Parent(WWObject parent){
+			this.objectData.Parent (parent.objectData);
 		
 		}
 
+
+		public void RemoveChild(WWObject child) {
+			List<WWObject> childrenToRemove = new List<WWObject> ();
+			childrenToRemove.Add (child);
+			RemoveChildren (childrenToRemove);
+		}
+
+
         public void RemoveChildren(List<WWObject> children) {
+			foreach (var child in children) {
+				if (this.objectData.children.Contains (child.objectData)) {
+					this.objectData.RemoveChild (child.objectData);
+				}
+			}
         }
 
         public void AddChildren(List<WWObject> children) {
 			this.objectData.AddChildren (children);
-//			foreach (var child in children){
-//				child.Parent (this);
-//			}
+			foreach (var child in children){
+				child.Parent (this);
+			}
         }
+			
 
         public List<WWObject> GetChildren() {
             return null;// children;
         }
 
-        public WWObject GetParent() {
-            return null;// parent;
+        public WWObjectData GetParent() {
+			return this.objectData.parent;// parent;
         }
 
         public List<WWObjectData> GetAllDescendents()

@@ -3,6 +3,7 @@ using worldWizards.core.entity.coordinate;
 using UnityEngine;
 using System.Collections.Generic;
 using worldWizards.core.entity.gameObject;
+using worldWizards.core.entity.common;
 
 namespace worldWizards.core.controller.level.utils
 {
@@ -17,14 +18,31 @@ namespace worldWizards.core.controller.level.utils
 					int height = (int)(heightmap.GetPixel (x, y).r * maxHeight);
 					Coordinate c = new Coordinate(x,height,y);
 					coordinates.Add (c);
+
 					WWObjectData parentData = WWObjectFactory.MockCreate(c, resourceTag);
 					WWObject parentObj = WWObjectFactory.Instantiate(parentData);
 					sceneGraphController.Add(parentObj);
+
+					// prop
+					IntVector3 intVector3 = new IntVector3(x,height+1,y);
+					Vector3 offset = new Vector3(UnityEngine.Random.Range(-1,1), 0,UnityEngine.Random.Range(-1,1));
+					Coordinate propCoordinate = new Coordinate(intVector3, offset);
+					WWObjectData propData = WWObjectFactory.MockCreateProp(propCoordinate, resourceTag);
+					WWObject propObj = WWObjectFactory.Instantiate(propData);
+					sceneGraphController.Add(propObj);
+
+					List<WWObject> propChildren = new List<WWObject> ();
+					propChildren.Add (propObj);
+					parentObj.AddChildren (propChildren);
+
+
 					while (height > 0) {
 						height--;
 						c = new Coordinate(x,height,y);
 						coordinates.Add (c);
+
 						WWObjectData childData = WWObjectFactory.MockCreate(c, resourceTag);
+
 						WWObject childObj = WWObjectFactory.Instantiate(childData);
 						sceneGraphController.Add(childObj);
 

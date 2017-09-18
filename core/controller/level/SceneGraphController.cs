@@ -10,12 +10,19 @@ namespace worldWizards.core.controller.level
     /// </summary>
     public class SceneGraphController : MonoBehaviour
     {
-        private SceneGraph sceneGraph;
+		public SceneGraph sceneGraph { 
+			get; 
+			private set;
+		}
 
         public void Awake()
         {
             sceneGraph = new SceneGraph();
         }
+			
+		public int SceneSize(){
+			return this.sceneGraph.SceneSize ();
+		}
 
         public void Add(WWObject wwObject)
         {
@@ -29,11 +36,6 @@ namespace worldWizards.core.controller.level
         {
             sceneGraph.Delete(id);
         }
-
-		public void DeleteDescending(Guid id)
-		{
-			sceneGraph.DeleteDescending(id);
-		}
 			
 		public void Load(){
 			sceneGraph.Load ();
