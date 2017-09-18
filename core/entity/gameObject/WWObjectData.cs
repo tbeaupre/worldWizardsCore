@@ -8,24 +8,23 @@ namespace worldWizards.core.entity.gameObject
     public class WWObjectData
     {
         public Guid id { get; }
-        private WWType type;
         private MetaData metaData;
         public Coordinate coordinate { get; }
-        public WWResource resource { get; }
 
         private WWObject parent;
         private List<WWObject> children;
 
-        public WWObjectData(Guid id, WWType type, MetaData metaData, Coordinate coordinate,
-            WWResource resource, WWObject parent, List<WWObject> children)
+        public string resourceTag { get; }
+
+        public WWObjectData(Guid id, MetaData metaData, Coordinate coordinate,
+            WWObject parent, List<WWObject> children, string resourceTag)
         {
             this.id = id;
-            this.type = type;
             this.metaData = metaData;
             this.coordinate = coordinate;
-            this.resource = resource;
             this.parent = parent;
             this.children = children;
+            this.resourceTag = resourceTag;
         }
     }
 }
