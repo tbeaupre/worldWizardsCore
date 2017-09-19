@@ -42,7 +42,7 @@ namespace worldWizards.core.unitTests{
 		public static void AddObjectToSceneGraph() {
 			Assert.AreEqual (0, sceneGraphController.sceneGraph.SceneSize());
 			Coordinate coordinate = new Coordinate (0,0,0);
-			WWObjectData wwObjectData = WWObjectFactory.MockCreateTile (coordinate);
+			WWObjectData wwObjectData = WWObjectFactory.MockCreate (coordinate, "white");
 			WWObject wwObject = WWObjectFactory.Instantiate(wwObjectData);
 			sceneGraphController.Add (wwObject);
 			Assert.AreEqual (1, sceneGraphController.sceneGraph.SceneSize());

@@ -4,7 +4,7 @@ using worldWizards.core.controller.level;
 using worldWizards.core.entity.coordinate;
 using UnityEngine;
 
-namespace worldWizardsCore.worldWizards.core.experimental
+namespace worldWizards.core.experimental
 {
 	public class SaveLoadSeneGraph : MonoBehaviour
 	{

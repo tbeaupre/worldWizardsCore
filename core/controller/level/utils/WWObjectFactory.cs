@@ -20,8 +20,7 @@ namespace worldWizards.core.controller.level.utils
         {
             return CreateNew(null, coordinate, resourceTag);
         }
-
-
+			
 		public static WWObjectData MockCreateProp(Coordinate coordinate, string resourceTag)
 		{
 			return CreateNew( new MetaData(), coordinate, resourceTag);
