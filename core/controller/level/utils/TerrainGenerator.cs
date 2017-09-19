@@ -9,7 +9,6 @@ namespace worldWizards.core.controller.level.utils
 {
 	public class TerrainGenerator
 	{
-		static string resourceTag = "white";
 		public static List<Coordinate> CreateTerrainFromImage(SceneGraphController sceneGraphController, Texture2D heightmap){
 			List<Coordinate> coordinates = new List<Coordinate>();
 			int maxHeight = 10;
@@ -19,7 +18,7 @@ namespace worldWizards.core.controller.level.utils
 					Coordinate c = new Coordinate(x,height,y);
 					coordinates.Add (c);
 
-					WWObjectData parentData = WWObjectFactory.MockCreate(c, resourceTag);
+					WWObjectData parentData = WWObjectFactory.MockCreate(c, "white");
 					WWObject parentObj = WWObjectFactory.Instantiate(parentData);
 					sceneGraphController.Add(parentObj);
 
@@ -27,7 +26,7 @@ namespace worldWizards.core.controller.level.utils
 					IntVector3 intVector3 = new IntVector3(x,height+1,y);
 					Vector3 offset = new Vector3(UnityEngine.Random.Range(-1,1), 0,UnityEngine.Random.Range(-1,1));
 					Coordinate propCoordinate = new Coordinate(intVector3, offset);
-					WWObjectData propData = WWObjectFactory.MockCreateProp(propCoordinate, resourceTag);
+					WWObjectData propData = WWObjectFactory.MockCreateProp(propCoordinate, "tree");
 					WWObject propObj = WWObjectFactory.Instantiate(propData);
 					sceneGraphController.Add(propObj);
 
@@ -35,13 +34,12 @@ namespace worldWizards.core.controller.level.utils
 					propChildren.Add (propObj);
 					parentObj.AddChildren (propChildren);
 
-
 					while (height > 0) {
 						height--;
 						c = new Coordinate(x,height,y);
 						coordinates.Add (c);
 
-						WWObjectData childData = WWObjectFactory.MockCreate(c, resourceTag);
+						WWObjectData childData = WWObjectFactory.MockCreate(c, "white");
 
 						WWObject childObj = WWObjectFactory.Instantiate(childData);
 						sceneGraphController.Add(childObj);

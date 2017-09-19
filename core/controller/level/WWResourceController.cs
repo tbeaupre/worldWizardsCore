@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace worldWizards.core.controller.level
 {
-    static class WWResourceController
+    public static class WWResourceController
     {
-        static Dictionary<string, WWResource> bundles = new Dictionary<string, WWResource>();
+        public static Dictionary<string, WWResource> bundles = new Dictionary<string, WWResource>();
 
         public static void LoadResource(string tag, string assetBundleTag, string path)
         {

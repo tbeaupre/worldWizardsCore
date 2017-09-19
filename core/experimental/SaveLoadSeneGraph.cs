@@ -13,6 +13,8 @@ namespace worldWizards.core.experimental
 		void Start ()
 		{
 			sceneGraphController = FindObjectOfType<SceneGraphController>();
+			WWResourceController.LoadResource("white", null, "whiteCube");
+			WWResourceController.LoadResource("tree", null, "treeProp");
 		}
 			
 		public void Save(){

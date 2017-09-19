@@ -2,11 +2,10 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 
-using worldWizards.core.controller.level;
 using worldWizards.core.controller.level.utils;
+using worldWizards.core.controller.level;
 using worldWizards.core.entity.coordinate;
 using worldWizards.core.entity.gameObject;
-
 
 namespace worldWizards.core.unitTests{
 	
@@ -23,6 +22,8 @@ namespace worldWizards.core.unitTests{
 			root = new GameObject ();
 			sceneGraphController = root.AddComponent<SceneGraphController>();
 			sceneGraphController.Awake ();
+			WWResourceController.LoadResource("white", null, "whiteCube");
+			WWResourceController.LoadResource("tree", null, "treeProp");
 		}
 
 		[TearDown]

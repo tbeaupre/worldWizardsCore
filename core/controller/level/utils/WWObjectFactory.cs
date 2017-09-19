@@ -77,7 +77,12 @@ namespace worldWizards.core.controller.level.utils
             // Scale the object to the current tile scale.
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
 
-            GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
+			// remove the WWResourceMetaData component for a microptimization
+			#if UNITY_EDITOR
+			GameObject.DestroyImmediate(wwObject.GetComponent<WWResourceMetaData>());
+			#else
+			GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
+			#endif
 
             return wwObject;
         }

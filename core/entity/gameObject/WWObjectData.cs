@@ -40,7 +40,7 @@ namespace worldWizards.core.entity.gameObject
 			this.type = m.type;
 			this.metaData = m.metaData;
 			this.coordinate = m.coordinate;
-//			this.resource = m.resource;
+			this.resourceTag = m.resourceTag;
 
 			// Note parent and children relationships are re-linked in the SceneGraphController during the Load
 			this.parent = null;
@@ -98,7 +98,7 @@ namespace worldWizards.core.entity.gameObject
 		public WWType type;
 		public MetaData metaData;
 		public Coordinate coordinate;
-		public WWResource resource;
+		public string resourceTag;
 		public Guid parent;
 		public List<Guid> children;
 
@@ -107,7 +107,7 @@ namespace worldWizards.core.entity.gameObject
 			this.type = state.type;
 			this.metaData = state.metaData;
 			this.coordinate = state.coordinate;
-//			this.resource = state.resource;
+			this.resourceTag = state.resourceTag;
 			if (state.parent != null) { // can be null if no parent
 				this.parent = state.parent.id;
 			}

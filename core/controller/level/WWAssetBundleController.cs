@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace worldWizards.core.controller.level
 {
-    static class WWAssetBundleController
+    public static class WWAssetBundleController
     {
         static Dictionary<string, AssetBundle> bundles = new Dictionary<string, AssetBundle>();
 
