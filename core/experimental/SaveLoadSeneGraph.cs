@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using worldWizards.core.controller.level.utils;
 using worldWizards.core.controller.level;
-using worldWizards.core.entity.gameObject;
-using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
 using UnityEngine;
 
-namespace worldWizardsCore.test
+namespace worldWizardsCore.worldWizards.core.experimental
 {
-	public class SaveLoadSeneGraphTest : MonoBehaviour
+	public class SaveLoadSeneGraph : MonoBehaviour
 	{
 		SceneGraphController sceneGraphController;
 

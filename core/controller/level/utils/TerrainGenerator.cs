@@ -58,14 +58,6 @@ namespace worldWizards.core.controller.level.utils
 		}
 
 
-		public static void SetupRelationships (SceneGraphController sceneGraphController){
-			
-
-
-
-		}
-
-
 	}
 }
 

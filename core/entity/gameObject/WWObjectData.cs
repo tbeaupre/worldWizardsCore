@@ -81,12 +81,7 @@ namespace worldWizards.core.entity.gameObject
 		public void Parent(WWObjectData parent){
 			this.parent = parent;
 		}
-			
-//		public void RemoveChild(WWObject child) {
-//			if (this.children.Contains (child.objectData)) {
-//				this.children.Remove (child.objectData);
-//			}
-//		}
+
 
 		public void RemoveChild(WWObjectData child) {
 			if (this.children.Contains (child)) {

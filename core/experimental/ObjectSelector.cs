@@ -1,14 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.controller.level;
 
-namespace worldWizards.test
+namespace worldWizards.core.experimental
 {
-	public class ObjectSelectorTest : MonoBehaviour
+	public class ObjectSelector : MonoBehaviour
 	{
 
 		SceneGraphController sceneGraphController;

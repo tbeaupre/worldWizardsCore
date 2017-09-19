@@ -64,20 +64,6 @@ namespace worldWizards.core.unitTests{
 		}
 			
 
-
-		[Test]
-		public static void DeleteChild() {
-			Assert.AreEqual (true,true);
-		}
-
-		[Test]
-		public static void DeleteParent() {
-			Assert.AreEqual (true,true);
-		}
-
-
-			
-
 		private static void CreateMaze(){
 			string imagePath = "Heightmaps/MazeHeightmap";
 			Texture2D heightmap = Resources.Load<Texture2D> (imagePath);
