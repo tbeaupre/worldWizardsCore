@@ -31,7 +31,7 @@ namespace worldWizards.core.controller.level
             else
             {
                 Debug.Log("A resource with this tag has not been loaded.");
-                return null;
+                return new WWResource(null, null);
             }
         }
     }

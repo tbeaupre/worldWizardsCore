@@ -18,6 +18,17 @@ namespace worldWizards.core.entity.gameObject
         public bool bottom;
         public WWType type;
 
+        public WWResourceMetaData()
+        {
+            north = false;
+            east = false;
+            south = false;
+            west = false;
+            top = false;
+            bottom = false;
+            type = WWType.Tile;
+        }
+
         /// <summary>
         /// Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted to the enum bitflag for use.
         /// </summary>

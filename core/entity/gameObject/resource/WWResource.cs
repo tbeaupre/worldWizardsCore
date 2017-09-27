@@ -7,10 +7,10 @@ namespace worldWizards.core.entity.gameObject
     {
 
         string assetBundleTag = null;
+        public string path { get; }
         // Set at time of use.
         GameObject prefab = null;
         WWResourceMetaData metaData = null;
-		public string path {get;}
 
         // Flag for single load upon use.
         bool loaded = false;
@@ -42,7 +42,12 @@ namespace worldWizards.core.entity.gameObject
         private void Load()
         {
             LoadPrefab();
-            LoadMetaData();
+
+            if (prefab != null)
+            {
+                LoadMetaData();
+            }
+
             loaded = true;
         }
 
@@ -51,7 +56,10 @@ namespace worldWizards.core.entity.gameObject
             if (assetBundleTag != null)
             {
                 AssetBundle assetBundle = WWAssetBundleController.GetAssetBundle(assetBundleTag);
-                prefab = assetBundle.LoadAsset(path) as GameObject;
+                if (assetBundle != null)
+                {
+                    prefab = assetBundle.LoadAsset(path) as GameObject;
+                }
             }
             else
             {

@@ -16,12 +16,13 @@ namespace worldWizards.core.experimental
             sceneGraphController = FindObjectOfType<SceneGraphController>();
 
             // Load AssetBundles.
-            WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/Windows/test");
+            //WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/Windows/test");
+            ResourceLoader.LoadResources(new string[] { Application.dataPath + "/../AssetBundles/Windows/test" });
 
             // Load Resources.
             WWResourceController.LoadResource("white", null, "whiteCube");
             WWResourceController.LoadResource("black", null, "blackCube");
-            WWResourceController.LoadResource("blue", "testBundle", "blueCube");
+            WWResourceController.LoadResource("blue", Application.dataPath + "/../AssetBundles/Windows/test", "blueCube");
 
             for (int i = 0; i < 5; i++)
             {

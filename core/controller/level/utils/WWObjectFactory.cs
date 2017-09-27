@@ -38,18 +38,29 @@ namespace worldWizards.core.controller.level.utils
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
+            Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
+
             // Load resource and check to see if it is valid.
             WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
+            GameObject gameObject;
             WWResourceMetaData metaData = resource.GetMetaData();
-            if (metaData == null)
+            if (resource.GetPrefab() == null)
             {
-                Debug.Log("There is no metadata for this resource, so it cannot be instantiated.");
-                return null;
+                gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                metaData = gameObject.AddComponent<WWResourceMetaData>();
+                gameObject.transform.Translate(spawnPos);
             }
+            else
+            {
+                if (resource.GetMetaData() == null)
+                {
+                    Debug.Log("There is no metadata for this resource, so it cannot be instantiated.");
+                    return null;
+                }
 
-            // Create a GameObject at the correct location and rotation.
-            Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
-            GameObject gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.identity);
+                // Create a GameObject at the correct location and rotation.
+                gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.identity);
+            }
 
             // Use ResourceMetaData to construct the object.
             WWObject wwObject = ConstructWWObject(gameObject, metaData);
@@ -83,6 +94,8 @@ namespace worldWizards.core.controller.level.utils
 			#else
 			GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
 			#endif
+
+            wwObject.gameObject.SetActive(true);
 
             return wwObject;
         }
