@@ -2,6 +2,7 @@
 using worldWizards.core.controller.level;
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.coordinate;
+using worldWizards.core.entity.coordinate.utils;
 using UnityEngine;
 
 
@@ -15,8 +16,9 @@ namespace worldWizards.core.experimental
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
 
+            CoordinateHelper.baseTileLength = 1;
+
             // Load AssetBundles.
-            //WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/Windows/test");
             ResourceLoader.LoadResources(new string[] { Application.dataPath + "/../AssetBundles/Windows/test" });
 
             // Load Resources.
