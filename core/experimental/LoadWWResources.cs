@@ -23,7 +23,7 @@ namespace worldWizards.core.experimental
 
             // Load Resources.
             WWResourceController.LoadResource("white", null, "whiteCube");
-            WWResourceController.LoadResource("black", null, "blackCube");
+            WWResourceController.LoadResource("black", null, "Prefabs/ResourceLoadingTest/blackCube");
             WWResourceController.LoadResource("blue", Application.dataPath + "/../AssetBundles/Windows/test", "blueCube");
 
             for (int i = 0; i < 5; i++)
