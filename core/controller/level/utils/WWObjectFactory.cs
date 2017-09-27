@@ -57,9 +57,8 @@ namespace worldWizards.core.controller.level.utils
                     Debug.Log("There is no metadata for this resource, so it cannot be instantiated.");
                     return null;
                 }
-
                 // Create a GameObject at the correct location and rotation.
-                gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.identity);
+                gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.Euler(0, objectData.coordinate.rotation, 0));
             }
 
             // Use ResourceMetaData to construct the object.
@@ -86,7 +85,7 @@ namespace worldWizards.core.controller.level.utils
             // Add Collision Boxes to Object.
 
             // Scale the object to the current tile scale.
-            wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
+			wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
 			// remove the WWResourceMetaData component for a microptimization
 			#if UNITY_EDITOR
