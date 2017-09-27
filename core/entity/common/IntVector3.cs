@@ -16,11 +16,14 @@ namespace worldWizards.core.entity.common
         }
 
         public IntVector3(Vector3 vector) {
-            this.x = (int)vector.x;
-            this.y = (int)vector.y;
-            this.z = (int)vector.z;
+			this.x = (int) Mathf.Floor(vector.x);
+			this.y = (int) Mathf.Floor(vector.y);
+			this.z = (int) Mathf.Floor(vector.z);
         }
 
+		public override string ToString(){
+			return string.Format ("x : {0}, y : {1}, z : {2}",x,y,z);
+		}  
 
 		[JsonConstructor]
 		public IntVector3(){

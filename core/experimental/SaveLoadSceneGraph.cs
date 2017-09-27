@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace worldWizards.core.experimental
 {
-	public class SaveLoadSeneGraph : MonoBehaviour
+	public class SaveLoadSceneGraph : MonoBehaviour
 	{
 		SceneGraphController sceneGraphController;
 

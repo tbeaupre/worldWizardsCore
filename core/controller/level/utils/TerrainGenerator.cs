@@ -25,7 +25,7 @@ namespace worldWizards.core.controller.level.utils
 					// prop
 					IntVector3 intVector3 = new IntVector3(x,height+1,y);
 					Vector3 offset = new Vector3(UnityEngine.Random.Range(-1,1), 0,UnityEngine.Random.Range(-1,1));
-					Coordinate propCoordinate = new Coordinate(intVector3, offset);
+					Coordinate propCoordinate = new Coordinate(intVector3, offset, 0);
 					WWObjectData propData = WWObjectFactory.MockCreateProp(propCoordinate, "tree");
 					WWObject propObj = WWObjectFactory.Instantiate(propData);
 					sceneGraphController.Add(propObj);

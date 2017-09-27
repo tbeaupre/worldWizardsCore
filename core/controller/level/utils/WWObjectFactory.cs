@@ -49,7 +49,8 @@ namespace worldWizards.core.controller.level.utils
 
             // Create a GameObject at the correct location and rotation.
             Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
-            GameObject gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.identity);
+			GameObject gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos,
+				Quaternion.Euler(0, objectData.coordinate.rotation, 0));
 
             // Use ResourceMetaData to construct the object.
             WWObject wwObject = ConstructWWObject(gameObject, metaData);
@@ -75,7 +76,7 @@ namespace worldWizards.core.controller.level.utils
             // Add Collision Boxes to Object.
 
             // Scale the object to the current tile scale.
-            wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLength;
+			wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
 			// remove the WWResourceMetaData component for a microptimization
 			#if UNITY_EDITOR
