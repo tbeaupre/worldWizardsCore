@@ -28,24 +28,8 @@ namespace worldWizards.core.experimental{
 			groundPlane = new Plane(Vector3.up, Vector3.up);
 
 			sceneGraphController = FindObjectOfType<SceneGraphController>();
+            ResourceLoader.LoadResources();
 
-			// Load AssetBundles.
-			WWAssetBundleController.LoadAssetBundle("ww_basic_assets", Application.dataPath + "/../AssetBundles/ww_basic_assets");
-			WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/test");
-
-			WWResourceController.LoadResource("Tile_FloorBrick", "ww_basic_assets", "Tile_FloorBrick");
-			WWResourceController.LoadResource("Prop_PineTree", "ww_basic_assets", "Prop_PineTree");
-			WWResourceController.LoadResource("Prop_Rock", "ww_basic_assets", "Prop_Rock");
-			WWResourceController.LoadResource("Tile_Grass", "ww_basic_assets", "Tile_Grass");
-			WWResourceController.LoadResource("Tile_GrassCorner", "ww_basic_assets", "Tile_GrassCorner");
-			WWResourceController.LoadResource("Tile_Arch", "ww_basic_assets", "Tile_Arch");
-			WWResourceController.LoadResource("Tile_Staircase", "ww_basic_assets", "Tile_Staircase");
-			WWResourceController.LoadResource("Tile_RoofCorner", "ww_basic_assets", "Tile_RoofCorner");
-			WWResourceController.LoadResource("Tile_RoofSide", "ww_basic_assets", "Tile_RoofSide");
-			WWResourceController.LoadResource("Tile_RoofTop", "ww_basic_assets", "Tile_RoofTop");
-			WWResourceController.LoadResource("Tile_WallWindow", "ww_basic_assets", "Tile_WallWindow");
-			WWResourceController.LoadResource("Tile_WallBrick", "ww_basic_assets", "Tile_WallBrick");
-	
 			possibleTiles = new List<string>(WWResourceController.bundles.Keys); 
 			Debug.Log (possibleTiles.Count);
 		}

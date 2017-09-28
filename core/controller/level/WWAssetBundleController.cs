@@ -36,7 +36,7 @@ namespace worldWizards.core.controller.level
             }
             else
             {
-                Debug.Log("An asset bundle with this tag has not been loaded.");
+                Debug.Log("An asset bundle with the tag: " + tag + " has not been loaded.");
                 return null;
             }
         }
