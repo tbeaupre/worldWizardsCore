@@ -7,7 +7,7 @@ namespace worldWizards.core.controller.level
 {
     public class ResourceLoader
     {
-        public static List<string> FindAssetBundlePaths()
+        private static List<string> FindAssetBundlePaths()
         {
             List<string> results = new List<string>();
 

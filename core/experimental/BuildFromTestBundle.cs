@@ -14,45 +14,32 @@ namespace worldWizards.core.experimental
         void Start ()
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
-
-            // Load AssetBundles.
-			WWAssetBundleController.LoadAssetBundle("ww_basic_assets", Application.dataPath + "/../AssetBundles/OSX/ww_basic_assets");
-			WWAssetBundleController.LoadAssetBundle("testBundle", Application.dataPath + "/../AssetBundles/OSX/test");
-			WWResourceController.LoadResource("blue", "testBundle", "blueCube");
-
-
-            // Load Resources.
-//            WWResourceController.LoadResource("white", null, "whiteCube");
-//            WWResourceController.LoadResource("black", null, "blackCube");
-			WWResourceController.LoadResource("Tile_FloorBrick", "ww_basic_assets", "Tile_FloorBrick");
-			WWResourceController.LoadResource("Tile_Grass", "ww_basic_assets", "Tile_Grass");
-			WWResourceController.LoadResource("Tile_Arch", "ww_basic_assets", "Tile_Arch");
-
+            ResourceLoader.LoadResources();
 
             for (int i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "Tile_Grass");
+				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "ww_basic_assets_Tile_Grass");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "Tile_Arch");
+				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "ww_basic_assets_Tile_Arch");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "Tile_FloorBrick");
+				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "ww_basic_assets_Tile_FloorBrick");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
 			for (int i = 0; i < 5; i++)
 			{
-				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "blue");
+				WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "ww_basic_assets_blueCube");
 				WWObject go = WWObjectFactory.Instantiate(objData);
 				sceneGraphController.Add(go);
 			}
