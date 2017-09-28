@@ -18,31 +18,26 @@ namespace worldWizards.core.experimental
 
             CoordinateHelper.baseTileLength = 1;
 
-            // Load AssetBundles.
-            ResourceLoader.LoadResources(new string[] { Application.dataPath + "/../AssetBundles/Windows/test" });
-
-            // Load Resources.
-            WWResourceController.LoadResource("white", null, "whiteCube");
-            WWResourceController.LoadResource("black", null, "Prefabs/ResourceLoadingTest/blackCube");
-            WWResourceController.LoadResource("blue", Application.dataPath + "/../AssetBundles/Windows/test", "blueCube");
+            // Load Resources from AssetBundles.
+            ResourceLoader.LoadResources();
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "white");
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "defaultWhiteCube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "black");
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "test_blackcube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "blue");
+                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "test_bluecube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }

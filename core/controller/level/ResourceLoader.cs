@@ -1,17 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using worldWizards.core.entity.gameObject;
+using System.IO;
 
 namespace worldWizards.core.controller.level
 {
     public class ResourceLoader
     {
-        public static void LoadResources(string[] assetBundlePaths)
+        public static List<string> FindAssetBundlePaths()
         {
-            foreach (string assetBundlePath in assetBundlePaths)
+            List<string> results = new List<string>();
+
+            string assetBundlesDirPath = Application.dataPath + "/../AssetBundles/";
+            DirectoryInfo assetBundlesDirInfo = new DirectoryInfo(assetBundlesDirPath);
+
+            FileInfo[] manifestList = assetBundlesDirInfo.GetFiles("*.manifest");
+
+            foreach (FileInfo manifest in manifestList)
+            {
+                StreamReader sr = manifest.OpenText();
+                string s = "";
+                if ((s = sr.ReadToEnd()) != null)
+                {
+                    if (s.Contains(".prefab"))
+                    {
+                        string assetBundlePath = Path.ChangeExtension(manifest.FullName, null);
+                        results.Add(assetBundlePath);
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        public static void LoadResources()
+        {
+            foreach (string assetBundlePath in FindAssetBundlePaths())
             {
                 AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
                 if (assetBundle == null)
@@ -26,11 +50,13 @@ namespace worldWizards.core.controller.level
                         UnityEngine.GameObject obj = assetBundle.LoadAsset(assetName) as GameObject;
                         if (obj != null && obj.GetComponent<WWResourceMetaData>() != null)
                         {
-                            WWResourceController.LoadResource(assetBundlePath + assetName, assetBundlePath, assetName);
+                            string assetBundleTag = Path.GetFileName(assetBundlePath);
+                            string tag = assetBundleTag + "_" + Path.GetFileNameWithoutExtension(assetName);
+                            WWResourceController.LoadResource(tag, assetBundleTag, assetName);
                         }
                     }
                     assetBundle.Unload(true);
-                    WWAssetBundleController.LoadAssetBundle(assetBundlePath, assetBundlePath);
+                    WWAssetBundleController.LoadAssetBundle(Path.GetFileName(assetBundlePath), assetBundlePath);
                 }
             }
         }
