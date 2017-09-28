@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.coordinate;
+using worldWizards.core.entity.coordinate.utils;
+
 
 namespace worldWizards.core.entity.gameObject
 {
@@ -14,10 +16,10 @@ namespace worldWizards.core.entity.gameObject
     {
 		public WWObjectData objectData { get; private set;}
 
-        public virtual void Init (Guid id, MetaData metaData, Coordinate coordinate,
+        public virtual void Init (Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
-            this.objectData = new WWObjectData(id, metaData, coordinate, parent, children, resourceTag);
+            this.objectData = new WWObjectData(id, coordinate, parent, children, resourceTag);
         }
 
         public virtual void Init(WWObjectData objectData)
@@ -60,7 +62,6 @@ namespace worldWizards.core.entity.gameObject
 			RemoveChildren (childrenToRemove);
 		}
 
-
         public void RemoveChildren(List<WWObject> children) {
 			foreach (var child in children) {
 				if (this.objectData.children.Contains (child.objectData)) {
@@ -75,7 +76,6 @@ namespace worldWizards.core.entity.gameObject
 				child.Parent (this);
 			}
         }
-			
 
         public List<WWObject> GetChildren() {
             return null;// children;
@@ -89,6 +89,14 @@ namespace worldWizards.core.entity.gameObject
         {
 			return objectData.GetAllDescendents ();
         }
+			
+		public virtual void SetPosition (Coordinate coordinate){
+			Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
+			int yRotation = coordinate.rotation;
+			Quaternion rotation = Quaternion.Euler (0, yRotation, 0);
 
+			this.transform.position = position;
+			this.transform.rotation = rotation;
+		}
     }
 }

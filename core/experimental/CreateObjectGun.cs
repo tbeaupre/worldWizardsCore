@@ -6,6 +6,7 @@ using worldWizards.core.controller.level.utils;
 using worldWizards.core.controller.level;
 using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.coordinate;
+using worldWizards.core.entity.common;
 using UnityEngine.UI;
 
 namespace worldWizards.core.experimental{
@@ -114,10 +115,23 @@ namespace worldWizards.core.experimental{
 		}
 			
 		WWObject PlaceObject(Vector3 position){
+
+
+
 			int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+		
+
+
 			Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
 			WWObjectData objData = WWObjectFactory.MockCreate(coordinate, possibleTiles[tileIndex]);
 			WWObject go = WWObjectFactory.Instantiate(objData);
+
+
+
+
+//			Debug.Log (curObject.objectData.metaData.GetType ());
+//			Debug.Log (curObject.objectData.GetType());
+		
 			return go;
 		}
 

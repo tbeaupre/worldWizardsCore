@@ -11,8 +11,8 @@ namespace worldWizards.core.entity.gameObject
     {
         public Guid id { get; }
 
-		public WWType type { get; }
-		public MetaData metaData { get;}
+//		public WWType type { get; }
+//		public MetaData metaData { get;}
 
         public Coordinate coordinate { get; }
 
@@ -23,11 +23,12 @@ namespace worldWizards.core.entity.gameObject
         public string resourceTag { get; }
 
  
-		public WWObjectData(Guid id, MetaData metaData, Coordinate coordinate,
+		public WWObjectData(Guid id, Coordinate coordinate,
 			WWObjectData parent, List<WWObjectData> children, string resourceTag)
 		{
             this.id = id;
-            this.metaData = metaData;
+//			this.type = type;
+//            this.metaData = metaData;
             this.coordinate = coordinate;
             this.parent = parent;
             this.children = children;
@@ -37,8 +38,8 @@ namespace worldWizards.core.entity.gameObject
 		public WWObjectData(WWObjectDataMemento m)
 		{
 			this.id = m.id;
-			this.type = m.type;
-			this.metaData = m.metaData;
+//			this.type = m.type;
+//			this.metaData = m.metaData;
 			this.coordinate = m.coordinate;
 			this.resourceTag = m.resourceTag;
 
@@ -104,8 +105,8 @@ namespace worldWizards.core.entity.gameObject
 
 		public WWObjectDataMemento(WWObjectData state){
 			this.id = state.id;
-			this.type = state.type;
-			this.metaData = state.metaData;
+//			this.type = state.type;
+//			this.metaData = state.metaData;
 			this.coordinate = state.coordinate;
 			this.resourceTag = state.resourceTag;
 			if (state.parent != null) { // can be null if no parent

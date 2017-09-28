@@ -21,19 +21,19 @@ namespace worldWizards.core.controller.level.utils
             return CreateNew(null, coordinate, resourceTag);
         }
 			
-		public static WWObjectData MockCreateProp(Coordinate coordinate, string resourceTag)
-		{
-			return CreateNew( new MetaData(), coordinate, resourceTag);
-		}
+//		public static WWObjectData MockCreateProp(Coordinate coordinate, string resourceTag)
+//		{
+//			return CreateNew( new MetaData(), coordinate, resourceTag);
+//		}
 
         public static WWObjectData CreateNew(MetaData metaData, Coordinate coordinate, string resourceTag)
         {
             return Create(Guid.NewGuid(), metaData, coordinate, resourceTag);
         }
 
-        public static WWObjectData Create(Guid id, MetaData metaData, Coordinate coordinate, string resourceTag)
+		public static WWObjectData Create(Guid id, MetaData metaData, Coordinate coordinate, string resourceTag)
         {
-			return new WWObjectData(id, metaData, coordinate, null, new List<WWObjectData>(), resourceTag);
+			return new WWObjectData(id, coordinate, null, new List<WWObjectData>(), resourceTag);
         }
 
         public static WWObject Instantiate(WWObjectData objectData)
@@ -43,11 +43,11 @@ namespace worldWizards.core.controller.level.utils
             // Load resource and check to see if it is valid.
             WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
             GameObject gameObject;
-            WWResourceMetaData metaData = resource.GetMetaData();
+			WWResourceMetaData resourceMetaData = resource.GetMetaData();
             if (resource.GetPrefab() == null)
             {
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                metaData = gameObject.AddComponent<WWResourceMetaData>();
+                resourceMetaData = gameObject.AddComponent<WWResourceMetaData>();
                 gameObject.transform.Translate(spawnPos);
             }
             else
@@ -59,13 +59,17 @@ namespace worldWizards.core.controller.level.utils
                 }
                 // Create a GameObject at the correct location and rotation.
                 gameObject = UnityEngine.GameObject.Instantiate(resource.GetPrefab(), spawnPos, Quaternion.Euler(0, objectData.coordinate.rotation, 0));
-            }
+			
+			}
 
             // Use ResourceMetaData to construct the object.
-            WWObject wwObject = ConstructWWObject(gameObject, metaData);
+            WWObject wwObject = ConstructWWObject(gameObject, resourceMetaData);
 
             // Give the new WWObject the data used to create it.
             wwObject.Init(objectData);
+
+
+			wwObject.SetPosition (objectData.coordinate);
 
             return wwObject;
         }

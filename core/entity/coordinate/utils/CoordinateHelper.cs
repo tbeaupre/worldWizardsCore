@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
+
+
 using worldWizards.core.entity.common;
 
 namespace worldWizards.core.entity.coordinate.utils
@@ -25,8 +29,22 @@ namespace worldWizards.core.entity.coordinate.utils
 			return new Coordinate(new IntVector3(coordinate / GetTileScale()));
         }
 
+//		public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation){
+//			return new Coordinate(new IntVector3(coordinate / GetTileScale()), rotation);
+//		}
+
 		public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation){
-			return new Coordinate(new IntVector3(coordinate / GetTileScale()), rotation);
+			Vector3 full = coordinate / GetTileScale ();
+			Vector3 fraction = full - new Vector3 (Mathf.Floor(full.x), Mathf.Floor(full.y), Mathf.Floor(full.z));
+
+			// Convert the coordinate origin to be in the center of tile. Origin is in the middle of the Tile Cube.
+			fraction -= new Vector3 (0.5f,0.5f,0.5f); // convert to center
+			fraction *= 2f; // conver to center
+
+//			Debug.Log (string.Format("The fraction vector {0}", fraction));
+
+			Vector3 offset = new Vector3(fraction.x, -1, fraction.z); 
+			return new Coordinate(new IntVector3(full), offset, rotation);
 		}
 
         public static Vector3 convertWWCoordinateToUnityCoordinate(Coordinate coordinate) {

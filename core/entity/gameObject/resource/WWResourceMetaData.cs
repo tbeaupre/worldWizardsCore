@@ -8,7 +8,8 @@ using UnityEngine;
 namespace worldWizards.core.entity.gameObject
 {
     [System.Serializable]
-    public class WWResourceMetaData : MonoBehaviour
+    
+	public class WWResourceMetaData : MonoBehaviour
     {
         public bool north;
         public bool east;
