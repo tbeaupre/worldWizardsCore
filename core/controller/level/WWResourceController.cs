@@ -8,6 +8,22 @@ namespace worldWizards.core.controller.level
     {
         public static Dictionary<string, WWResource> bundles = new Dictionary<string, WWResource>();
 
+		/// <summary>
+		/// Gets the resource keys by asset bundle tag.
+		/// </summary>
+		/// <returns>The resource keys by asset bundle.</returns>
+		/// <param name="assetBundleTag">Asset bundle tag.</param>
+		public static List<string> GetResourceKeysByAssetBundle(string assetBundleTag){
+			List<string> filteredKeys = new List<string> ();
+			foreach (KeyValuePair<string,WWResource> kvp in bundles) {
+				if (kvp.Value.assetBundleTag.Equals(assetBundleTag)){
+					filteredKeys.Add(kvp.Key);
+				}
+			}
+			return filteredKeys;
+		}
+
+
         public static void LoadResource(string tag, string assetBundleTag, string path)
         {
             if (bundles.ContainsKey(tag))

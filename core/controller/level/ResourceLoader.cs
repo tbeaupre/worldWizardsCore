@@ -5,9 +5,10 @@ using System.IO;
 
 namespace worldWizards.core.controller.level
 {
+
     public class ResourceLoader
     {
-        private static List<string> FindAssetBundlePaths()
+        public static List<string> FindAssetBundlePaths()
         {
             List<string> results = new List<string>();
 
@@ -28,6 +29,7 @@ namespace worldWizards.core.controller.level
                         results.Add(assetBundlePath);
                     }
                 }
+				sr.Close ();
             }
 
             return results;

@@ -6,17 +6,19 @@ namespace worldWizards.core.entity.gameObject
     public class WWResource
     {
 
-        string assetBundleTag = null;
+		public string assetBundleTag { get; }
         public string path { get; }
         // Set at time of use.
-        GameObject prefab = null;
-        WWResourceMetaData metaData = null;
+		private GameObject prefab;
+		private WWResourceMetaData metaData;
 
         // Flag for single load upon use.
         bool loaded = false;
 
         public WWResource(string assetBundleTag, string path)
         {
+			this.prefab = null;
+			this.metaData = null;
             this.assetBundleTag = assetBundleTag;
             this.path = path;
         }

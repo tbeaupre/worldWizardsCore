@@ -24,14 +24,16 @@ namespace worldWizards.core.experimental{
 		private WWObject curObject;
 
 		void Awake (){
-
-			Debug.Log ((int) (-1.1f/10f));
 			groundPlane = new Plane(Vector3.up, Vector3.up);
 
 			sceneGraphController = FindObjectOfType<SceneGraphController>();
             ResourceLoader.LoadResources();
 
-			possibleTiles = new List<string>(WWResourceController.bundles.Keys); 
+			foreach (var s in ResourceLoader.FindAssetBundlePaths ()) {
+				Debug.Log (s);
+			}
+				
+			possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
 			Debug.Log (possibleTiles.Count);
 		}
 
