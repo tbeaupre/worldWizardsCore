@@ -15,23 +15,13 @@ namespace worldWizards.core.controller.level.utils
     /// </summary>
     public static class WWObjectFactory
     {
-
-        public static WWObjectData MockCreate(Coordinate coordinate, string resourceTag)
+		
+        public static WWObjectData CreateNew(Coordinate coordinate, string resourceTag)
         {
-            return CreateNew(null, coordinate, resourceTag);
-        }
-			
-//		public static WWObjectData MockCreateProp(Coordinate coordinate, string resourceTag)
-//		{
-//			return CreateNew( new MetaData(), coordinate, resourceTag);
-//		}
-
-        public static WWObjectData CreateNew(MetaData metaData, Coordinate coordinate, string resourceTag)
-        {
-            return Create(Guid.NewGuid(), metaData, coordinate, resourceTag);
+            return Create(Guid.NewGuid(), coordinate, resourceTag);
         }
 
-		public static WWObjectData Create(Guid id, MetaData metaData, Coordinate coordinate, string resourceTag)
+		public static WWObjectData Create(Guid id, Coordinate coordinate, string resourceTag)
         {
 			return new WWObjectData(id, coordinate, null, new List<WWObjectData>(), resourceTag);
         }
@@ -66,7 +56,7 @@ namespace worldWizards.core.controller.level.utils
             WWObject wwObject = ConstructWWObject(gameObject, resourceMetaData);
 
             // Give the new WWObject the data used to create it.
-            wwObject.Init(objectData);
+			wwObject.Init(objectData, resourceMetaData);
 
 
 			wwObject.SetPosition (objectData.coordinate);

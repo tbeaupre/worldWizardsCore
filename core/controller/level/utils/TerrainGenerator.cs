@@ -18,7 +18,7 @@ namespace worldWizards.core.controller.level.utils
 					Coordinate c = new Coordinate(x,height,y);
 					coordinates.Add (c);
 
-					WWObjectData parentData = WWObjectFactory.MockCreate(c, "white");
+					WWObjectData parentData = WWObjectFactory.CreateNew(c, "white");
 					WWObject parentObj = WWObjectFactory.Instantiate(parentData);
 					sceneGraphController.Add(parentObj);
 
@@ -39,7 +39,7 @@ namespace worldWizards.core.controller.level.utils
 						c = new Coordinate(x,height,y);
 						coordinates.Add (c);
 
-						WWObjectData childData = WWObjectFactory.MockCreate(c, "white");
+						WWObjectData childData = WWObjectFactory.CreateNew(c, "white");
 
 						WWObject childObj = WWObjectFactory.Instantiate(childData);
 						sceneGraphController.Add(childObj);

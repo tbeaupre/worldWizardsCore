@@ -17,7 +17,7 @@ namespace worldWizards.core.entity.gameObject
         public bool west;
         public bool top;
         public bool bottom;
-        public WWType type;
+		public WWType type;
 
         public WWResourceMetaData()
         {
@@ -54,10 +54,15 @@ namespace worldWizards.core.entity.gameObject
             return result;
         }
         
-        public void GetData(ref WWWalls wallBarriers, ref WWType type)
-        {
-            wallBarriers = GetWallsEnum();
-            type = this.type;
-        }
+
+
+//        public void GetData(ref WWWalls wallBarriers, ref WWType type)
+//        {
+//            wallBarriers = GetWallsEnum();
+//            type = this.type;
+//        }
+
+
+
     }
 }

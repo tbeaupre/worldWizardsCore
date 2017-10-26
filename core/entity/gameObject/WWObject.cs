@@ -14,6 +14,9 @@ namespace worldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WWObject : MonoBehaviour
     {
+
+		public WWResourceMetaData resourceMetaData { get; private set;}
+
 		public WWObjectData objectData { get; private set;}
 
         public virtual void Init (Guid id, Coordinate coordinate,
@@ -22,9 +25,10 @@ namespace worldWizards.core.entity.gameObject
             this.objectData = new WWObjectData(id, coordinate, parent, children, resourceTag);
         }
 
-        public virtual void Init(WWObjectData objectData)
+		public virtual void Init(WWObjectData objectData, WWResourceMetaData resourceMetaData)
         {
             this.objectData = objectData;
+			this.resourceMetaData = resourceMetaData;
         }
 
         public Guid GetId() {

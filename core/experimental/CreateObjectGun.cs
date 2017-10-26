@@ -125,7 +125,7 @@ namespace worldWizards.core.experimental{
 
 
 			Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-			WWObjectData objData = WWObjectFactory.MockCreate(coordinate, possibleTiles[tileIndex]);
+			WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
 			WWObject go = WWObjectFactory.Instantiate(objData);
 
 

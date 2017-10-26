@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Newtonsoft.Json;
 
 namespace worldWizards.core.entity.common
@@ -25,6 +26,16 @@ namespace worldWizards.core.entity.common
 			return string.Format ("x : {0}, y : {1}, z : {2}",x,y,z);
 		}  
 
+		public override bool Equals(System.Object obj) 
+		{
+			// Check for null values and compare run-time types.
+			if (obj == null || GetType() != obj.GetType()) 
+				return false;
+			
+			IntVector3 other = (IntVector3)obj;
+			return (x == other.x) && (y == other.y) && (z == other.z);
+		}
+			
 		[JsonConstructor]
 		public IntVector3(){
 		}

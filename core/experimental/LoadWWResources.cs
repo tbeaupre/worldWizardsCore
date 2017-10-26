@@ -23,21 +23,21 @@ namespace worldWizards.core.experimental
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i, i), "defaultWhiteCube");
+                WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "defaultWhiteCube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 1, i), "test_blackcube");
+				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "test_blackcube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
             for (int i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.MockCreate(new Coordinate(i, i + 2, i), "test_bluecube");
+                WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "test_bluecube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }

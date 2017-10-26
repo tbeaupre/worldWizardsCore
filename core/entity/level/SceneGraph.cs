@@ -6,6 +6,7 @@ using worldWizards.core.entity.gameObject;
 using worldWizards.core.entity.common;
 using worldWizards.core.entity.utils;
 using worldWizards.core.controller.level.utils;
+using worldWizards.core.entity.coordinate;
 
 using Newtonsoft.Json;
 using UnityEngine;
@@ -38,6 +39,22 @@ namespace worldWizards.core.entity.level
 			}
 		}
 			
+		/// <summary>
+		/// Gets the objects in the SceneGraph in the given coordinate index space.
+		/// </summary>
+		/// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
+		/// <param name="coordinate">The coordinate to space to get.</param>
+		public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate){
+			List<WWObject> result = new List<WWObject> ();
+			foreach (WWObject wwObject in objects.Values){
+				if (coordinate.index.Equals (wwObject.GetCoordinate().index)) {
+					result.Add (wwObject);
+				}
+			}
+			return result;
+		}
+
+			
         public SceneGraph ()
         {
             objects = new Dictionary<Guid, WWObject>();
@@ -45,7 +62,13 @@ namespace worldWizards.core.entity.level
 
         public void Add(WWObject worldWizardsObject)
         {
-            objects.Add(worldWizardsObject.GetId(), worldWizardsObject);
+//			List<WWObject> collidingObjects =  GetObjectsInCoordinateIndex (worldWizardsObject.objectData.coordinate);
+//			if (collidingObjects.Count == 0) {
+//				objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
+//			} else {
+//				Destroy (worldWizardsObject);
+//			}
+			objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
         }
 
         /// <summary>

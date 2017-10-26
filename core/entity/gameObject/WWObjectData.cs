@@ -97,7 +97,7 @@ namespace worldWizards.core.entity.gameObject
 	public class WWObjectDataMemento{
 		public Guid id;
 		public WWType type;
-		public MetaData metaData;
+//		public MetaData metaData;
 		public Coordinate coordinate;
 		public string resourceTag;
 		public Guid parent;
