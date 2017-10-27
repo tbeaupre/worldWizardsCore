@@ -190,7 +190,7 @@ namespace worldWizards.core.experimental{
 		WWObject PlaceObject(Vector3 position){
 			int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
 			Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-			WWObjectData objData = WWObjectFactory.MockCreate(coordinate, possibleTiles[tileIndex]);
+			WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
 			WWObject go = WWObjectFactory.Instantiate(objData);
 			return go;
 		}

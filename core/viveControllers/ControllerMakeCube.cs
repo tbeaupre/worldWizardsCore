@@ -44,7 +44,7 @@ public class ControllerMakeCube : MonoBehaviour
         Coordinate cubePosition = CoordinateHelper.convertUnityCoordinateToWWCoordinate(controllerPos);
         Debug.Log("Cube Position: " + cubePosition.index.x + ", " + cubePosition.index.y + ", " + cubePosition.index.z);
 
-        WWObjectData data = WWObjectFactory.MockCreate(cubePosition, "white");
+        WWObjectData data = WWObjectFactory.CreateNew(cubePosition, "white");
         WWObject obj = WWObjectFactory.Instantiate(data);
         sceneGraphController.Add(obj);
     }
