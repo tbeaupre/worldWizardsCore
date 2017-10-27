@@ -1,106 +1,110 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using worldWizards.core.entity.common;
-using worldWizards.core.entity.coordinate;
-using worldWizards.core.entity.coordinate.utils;
+using UnityEngine;
+using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.entity.gameObject.resource;
 
-
-namespace worldWizards.core.entity.gameObject
+namespace WorldWizards.core.entity.gameObject
 {
-    /// <summary>
-    /// The WorldWizardsObject is base class for all World Wizards objects.
-    /// WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
-    /// </summary>
-    public abstract class WWObject : MonoBehaviour
+	/// <summary>
+	///     The WorldWizardsObject is base class for all World Wizards objects.
+	///     WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
+	/// </summary>
+	public abstract class WWObject : MonoBehaviour
     {
+        public WWResourceMetaData resourceMetaData { get; private set; }
 
-		public WWResourceMetaData resourceMetaData { get; private set;}
+        public WWObjectData objectData { get; private set; }
 
-		public WWObjectData objectData { get; private set;}
-
-        public virtual void Init (Guid id, Coordinate coordinate,
+        public virtual void Init(Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
-            this.objectData = new WWObjectData(id, coordinate, parent, children, resourceTag);
+            objectData = new WWObjectData(id, coordinate, parent, children, resourceTag);
         }
 
-		public virtual void Init(WWObjectData objectData, WWResourceMetaData resourceMetaData)
+        public virtual void Init(WWObjectData objectData, WWResourceMetaData resourceMetaData)
         {
             this.objectData = objectData;
-			this.resourceMetaData = resourceMetaData;
+            this.resourceMetaData = resourceMetaData;
         }
 
-        public Guid GetId() {
+        public Guid GetId()
+        {
             return objectData.id;
         }
 
-        public Coordinate GetCoordinate() {
+        public Coordinate GetCoordinate()
+        {
             return objectData.coordinate;
         }
 
-        public void SetCoordinate(Coordinate coordinate) {
+        public void SetCoordinate(Coordinate coordinate)
+        {
         }
 
-        public WWObject GetOldestParent() {
+        public WWObject GetOldestParent()
+        {
             return null;
         }
 
-        /// <summary>
-        /// Promote this World Wizard Object to not have a parent.
-        /// </summary>
-        public void Unparent() {
-			this.objectData.Unparent ();
+	    /// <summary>
+	    ///     Promote this World Wizard Object to not have a parent.
+	    /// </summary>
+	    public void Unparent()
+        {
+            objectData.Unparent();
         }
 
 
-		public void Parent(WWObject parent){
-			this.objectData.Parent (parent.objectData);
-		
-		}
-
-
-		public void RemoveChild(WWObject child) {
-			List<WWObject> childrenToRemove = new List<WWObject> ();
-			childrenToRemove.Add (child);
-			RemoveChildren (childrenToRemove);
-		}
-
-        public void RemoveChildren(List<WWObject> children) {
-			foreach (var child in children) {
-				if (this.objectData.children.Contains (child.objectData)) {
-					this.objectData.RemoveChild (child.objectData);
-				}
-			}
+        public void Parent(WWObject parent)
+        {
+            objectData.Parent(parent.objectData);
         }
 
-        public void AddChildren(List<WWObject> children) {
-			this.objectData.AddChildren (children);
-			foreach (var child in children){
-				child.Parent (this);
-			}
+
+        public void RemoveChild(WWObject child)
+        {
+            var childrenToRemove = new List<WWObject>();
+            childrenToRemove.Add(child);
+            RemoveChildren(childrenToRemove);
         }
 
-        public List<WWObject> GetChildren() {
-            return null;// children;
+        public void RemoveChildren(List<WWObject> children)
+        {
+            foreach (var child in children)
+                if (objectData.children.Contains(child.objectData)) objectData.RemoveChild(child.objectData);
         }
 
-        public WWObjectData GetParent() {
-			return this.objectData.parent;// parent;
+        public void AddChildren(List<WWObject> children)
+        {
+            objectData.AddChildren(children);
+            foreach (var child in children) child.Parent(this);
+        }
+
+        public List<WWObject> GetChildren()
+        {
+            return null; // children;
+        }
+
+        public WWObjectData GetParent()
+        {
+            return objectData.parent; // parent;
         }
 
         public List<WWObjectData> GetAllDescendents()
         {
-			return objectData.GetAllDescendents ();
+            return objectData.GetAllDescendents();
         }
-			
-		public virtual void SetPosition (Coordinate coordinate){
-			Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
-			int yRotation = coordinate.rotation;
-			Quaternion rotation = Quaternion.Euler (0, yRotation, 0);
 
-			this.transform.position = position;
-			this.transform.rotation = rotation;
-		}
+        public virtual void SetPosition(Coordinate coordinate)
+        {
+            var position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
+            var yRotation = coordinate.rotation;
+            var rotation = Quaternion.Euler(0, yRotation, 0);
+
+            transform.position = position;
+            transform.rotation = rotation;
+        }
     }
 }

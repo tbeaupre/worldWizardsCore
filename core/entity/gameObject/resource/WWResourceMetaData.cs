@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using worldWizards.core.entity.common;
 using UnityEngine;
+using WorldWizards.core.entity.common;
 
-namespace worldWizards.core.entity.gameObject
+namespace WorldWizards.core.entity.gameObject.resource
 {
-    [System.Serializable]
-    
-	public class WWResourceMetaData : MonoBehaviour
+    [Serializable]
+    public class WWResourceMetaData : MonoBehaviour
     {
-        public bool north;
-        public bool east;
-        public bool south;
-        public bool west;
-        public bool top;
         public bool bottom;
-		public WWType type;
+        public bool east;
+        public bool north;
+        public bool south;
+        public bool top;
+        public WWType type;
+        public bool west;
 
         public WWResourceMetaData()
         {
@@ -31,7 +27,8 @@ namespace worldWizards.core.entity.gameObject
         }
 
         /// <summary>
-        /// Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted to the enum bitflag for use.
+        ///     Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted
+        ///     to the enum bitflag for use.
         /// </summary>
         /// <returns>WWWalls equivalent to the serializable boolean values set in the inspector.</returns>
         private WWWalls GetWallsEnum()
@@ -53,16 +50,12 @@ namespace worldWizards.core.entity.gameObject
 
             return result;
         }
-        
+        //        }
+        //            type = this.type;
+        //            wallBarriers = GetWallsEnum();
+        //        {
 
 
-//        public void GetData(ref WWWalls wallBarriers, ref WWType type)
-//        {
-//            wallBarriers = GetWallsEnum();
-//            type = this.type;
-//        }
-
-
-
+        //        public void GetData(ref WWWalls wallBarriers, ref WWType type)
     }
 }

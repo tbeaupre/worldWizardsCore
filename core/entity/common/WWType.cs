@@ -1,15 +1,20 @@
 ﻿using System;
-using worldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject;
 
-namespace worldWizards.core.entity.common
+namespace WorldWizards.core.entity.common
 {
     /// <summary>
-    /// A enumeration of all possible World Wizards object types.
+    ///     A enumeration of all possible World Wizards object types.
     /// </summary>
-    public enum WWType {Tile, Prop, Interactable};
+    public enum WWType
+    {
+        Tile,
+        Prop,
+        Interactable
+    }
 
     /// <summary>
-    /// A helper class containing a number of static functions to help with using the WWType enum.
+    ///     A helper class containing a number of static functions to help with using the WWType enum.
     /// </summary>
     public static class WWTypeHelper
     {

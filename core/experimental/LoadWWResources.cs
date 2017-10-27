@@ -1,18 +1,16 @@
-﻿using worldWizards.core.controller.level.utils;
-using worldWizards.core.controller.level;
-using worldWizards.core.entity.gameObject;
-using worldWizards.core.entity.coordinate;
-using worldWizards.core.entity.coordinate.utils;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.entity.coordinate.utils;
 
-
-namespace worldWizards.core.experimental
+namespace WorldWizards.core.experimental
 {
-    class LoadWWResources : MonoBehaviour
+    internal class LoadWWResources : MonoBehaviour
     {
-        SceneGraphController sceneGraphController;
+        private SceneGraphController sceneGraphController;
 
-        void Start ()
+        private void Start()
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
 
@@ -21,24 +19,24 @@ namespace worldWizards.core.experimental
             // Load Resources from AssetBundles.
             ResourceLoader.LoadResources();
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "defaultWhiteCube");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "defaultWhiteCube");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "test_blackcube");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "test_blackcube");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "test_bluecube");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "test_bluecube");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
         }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace worldWizards.core.user
+namespace WorldWizards.core.user
 {
     public class BuilderMenu : MonoBehaviour
     {

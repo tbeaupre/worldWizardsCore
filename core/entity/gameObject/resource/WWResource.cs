@@ -1,43 +1,40 @@
-﻿using worldWizards.core.controller.level;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.controller.level;
 
-namespace worldWizards.core.entity.gameObject
+namespace WorldWizards.core.entity.gameObject.resource
 {
     public class WWResource
     {
-
-		public string assetBundleTag { get; }
-        public string path { get; }
-        // Set at time of use.
-		private GameObject prefab;
-		private WWResourceMetaData metaData;
-
         // Flag for single load upon use.
-        bool loaded = false;
+        private bool loaded;
+
+        private WWResourceMetaData metaData;
+
+        // Set at time of use.
+        private GameObject prefab;
 
         public WWResource(string assetBundleTag, string path)
         {
-			this.prefab = null;
-			this.metaData = null;
+            prefab = null;
+            metaData = null;
             this.assetBundleTag = assetBundleTag;
             this.path = path;
         }
 
+        public string assetBundleTag { get; }
+        public string path { get; }
+
         public GameObject GetPrefab()
         {
             if (!loaded)
-            {
                 Load();
-            }
             return prefab;
         }
 
         public WWResourceMetaData GetMetaData()
         {
             if (!loaded)
-            {
                 Load();
-            }
             return metaData;
         }
 
@@ -46,9 +43,7 @@ namespace worldWizards.core.entity.gameObject
             LoadPrefab();
 
             if (prefab != null)
-            {
                 LoadMetaData();
-            }
 
             loaded = true;
         }
@@ -57,11 +52,9 @@ namespace worldWizards.core.entity.gameObject
         {
             if (assetBundleTag != null)
             {
-                AssetBundle assetBundle = WWAssetBundleController.GetAssetBundle(assetBundleTag);
+                var assetBundle = WWAssetBundleController.GetAssetBundle(assetBundleTag);
                 if (assetBundle != null)
-                {
                     prefab = assetBundle.LoadAsset(path) as GameObject;
-                }
             }
             else
             {
@@ -72,9 +65,7 @@ namespace worldWizards.core.entity.gameObject
         private void LoadMetaData()
         {
             if (prefab != null)
-            {
                 metaData = prefab.GetComponent<WWResourceMetaData>();
-            }
         }
     }
 }

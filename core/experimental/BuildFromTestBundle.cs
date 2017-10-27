@@ -1,48 +1,46 @@
-﻿using worldWizards.core.controller.level.utils;
-using worldWizards.core.controller.level;
-using worldWizards.core.entity.gameObject;
-using worldWizards.core.entity.coordinate;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 
-
-namespace worldWizards.core.experimental
+namespace WorldWizards.core.experimental
 {
-    class BuildFromTestBundle : MonoBehaviour
+    internal class BuildFromTestBundle : MonoBehaviour
     {
-        SceneGraphController sceneGraphController;
+        private SceneGraphController sceneGraphController;
 
-        void Start ()
+        private void Start()
         {
             sceneGraphController = FindObjectOfType<SceneGraphController>();
             ResourceLoader.LoadResources();
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "ww_basic_assets_Tile_Grass");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "ww_basic_assets_Tile_Grass");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "ww_basic_assets_Tile_Arch");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "ww_basic_assets_Tile_Arch");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
             {
-				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_Tile_FloorBrick");
-                WWObject go = WWObjectFactory.Instantiate(objData);
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_Tile_FloorBrick");
+                var go = WWObjectFactory.Instantiate(objData);
                 sceneGraphController.Add(go);
             }
 
-			for (int i = 0; i < 5; i++)
-			{
-				WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_blueCube");
-				WWObject go = WWObjectFactory.Instantiate(objData);
-				sceneGraphController.Add(go);
-			}
+            for (var i = 0; i < 5; i++)
+            {
+                var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_blueCube");
+                var go = WWObjectFactory.Instantiate(objData);
+                sceneGraphController.Add(go);
+            }
         }
     }
 }

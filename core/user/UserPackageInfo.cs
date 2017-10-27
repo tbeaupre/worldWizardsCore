@@ -1,9 +1,9 @@
-﻿namespace worldWizards.core.user
+﻿namespace WorldWizards.core.user
 {
     /// <summary>
-    /// The user package contains all the UI and user controls.
+    ///     The user package contains all the UI and user controls.
     /// </summary>
-    class UserPackageInfo
+    internal class UserPackageInfo
     {
     }
 }

@@ -1,78 +1,70 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using worldWizards.core.controller.level.utils;
-using worldWizards.core.controller.level;
-using worldWizards.core.entity.coordinate;
-using worldWizards.core.entity.coordinate.utils;
-using worldWizards.core.entity.gameObject;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.controller.level;
 
-public class ShowMenu : MonoBehaviour {
-
-    private SteamVR_TrackedObject trackedObj;
-    private SceneGraphController sceneGraphController;
-    private GameObject menu;
-    private Transform menuTransform;
-    public Transform cameraRigTransform;
-    public Transform headTransform;
-    public Camera headCamera;
-
-    private bool isMenuActive;
-
-    private SteamVR_Controller.Device Controller
+namespace WorldWizards.core.viveControllers
+{
+    public class ShowMenu : MonoBehaviour
     {
-        get { return SteamVR_Controller.Input((int)trackedObj.index); }
-    }
+        public Transform cameraRigTransform;
+        public Camera headCamera;
+        public Transform headTransform;
 
-    void Awake()
-    {
-        trackedObj = GetComponent<SteamVR_TrackedObject>();
-        menu = GameObject.Find("Menu");
-        menuTransform = menu.transform;
-    }
+        private bool isMenuActive;
+        private GameObject menu;
+        private Transform menuTransform;
+        private SceneGraphController sceneGraphController;
 
-    void Start()
-    {
-        sceneGraphController = FindObjectOfType<SceneGraphController>();
+        private SteamVR_TrackedObject trackedObj;
 
-        isMenuActive = false;
-        menu.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if(isMenuActive)
+        private SteamVR_Controller.Device Controller
         {
-            // Change position of the menu based on player head position
-            //menuTransform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, headCamera.nearClipPlane));
-            //menuTransform.LookAt(headTransform);
+            get { return SteamVR_Controller.Input((int) trackedObj.index); }
         }
 
-        if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+        private void Awake()
         {
-            if (!isMenuActive)
-            {
-                ShowMainMenu();
-            }
-            else
-            {
-                OnOK();
-            }
+            trackedObj = GetComponent<SteamVR_TrackedObject>();
+            menu = GameObject.Find("Menu");
+            menuTransform = menu.transform;
         }
-    }
 
-    void ShowMainMenu()
-    {
-        isMenuActive = true;
-        menu.SetActive(true);
-        Debug.Log("On show, menu active: " + menu.activeInHierarchy);
-    }
+        private void Start()
+        {
+            sceneGraphController = FindObjectOfType<SceneGraphController>();
 
-    void OnOK()
-    {
-        isMenuActive = false;
-        menu.SetActive(false);
-        Debug.Log("On hide, menu active: " + menu.activeInHierarchy);
+            isMenuActive = false;
+            menu.SetActive(false);
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            if (isMenuActive)
+            {
+                // Change position of the menu based on player head position
+                //menuTransform.position = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, headCamera.nearClipPlane));
+                //menuTransform.LookAt(headTransform);
+            }
+
+            if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+                if (!isMenuActive)
+                    ShowMainMenu();
+                else
+                    OnOK();
+        }
+
+        private void ShowMainMenu()
+        {
+            isMenuActive = true;
+            menu.SetActive(true);
+            Debug.Log("On show, menu active: " + menu.activeInHierarchy);
+        }
+
+        private void OnOK()
+        {
+            isMenuActive = false;
+            menu.SetActive(false);
+            Debug.Log("On hide, menu active: " + menu.activeInHierarchy);
+        }
     }
 }

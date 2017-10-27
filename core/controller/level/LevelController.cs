@@ -1,12 +1,18 @@
 ﻿using UnityEngine;
-using worldWizards.core.entity.level;
+using WorldWizards.core.entity.level;
 
-namespace worldWizards.core.controller.level
+namespace WorldWizards.core.controller.level
 {
     public class LevelController : MonoBehaviour
     {
         private Level level;
-        public void LoadLevel() { }
-        public void SaveLevel() { }
+
+        public void LoadLevel()
+        {
+        }
+
+        public void SaveLevel()
+        {
+        }
     }
 }

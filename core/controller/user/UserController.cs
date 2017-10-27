@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using worldWizards.core.entity.user;
+using WorldWizards.core.entity.common.user;
 
-namespace worldWizards.core.controller.user
+namespace WorldWizards.core.controller.user
 {
     public class UserController : MonoBehaviour
     {

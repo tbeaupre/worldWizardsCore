@@ -1,35 +1,32 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
-using worldWizards.core.entity.gameObject;
 using System.IO;
+using UnityEngine;
+using WorldWizards.core.entity.gameObject.resource;
 
-namespace worldWizards.core.controller.level
+namespace WorldWizards.core.controller.level
 {
-
     public class ResourceLoader
     {
         public static List<string> FindAssetBundlePaths()
         {
-            List<string> results = new List<string>();
+            var results = new List<string>();
 
-            string assetBundlesDirPath = Application.dataPath + "/../AssetBundles/";
-            DirectoryInfo assetBundlesDirInfo = new DirectoryInfo(assetBundlesDirPath);
+            var assetBundlesDirPath = Application.dataPath + "/../AssetBundles/";
+            var assetBundlesDirInfo = new DirectoryInfo(assetBundlesDirPath);
 
-            FileInfo[] manifestList = assetBundlesDirInfo.GetFiles("*.manifest");
+            var manifestList = assetBundlesDirInfo.GetFiles("*.manifest");
 
-            foreach (FileInfo manifest in manifestList)
+            foreach (var manifest in manifestList)
             {
-                StreamReader sr = manifest.OpenText();
-                string s = "";
+                var sr = manifest.OpenText();
+                var s = "";
                 if ((s = sr.ReadToEnd()) != null)
-                {
                     if (s.Contains(".prefab"))
                     {
-                        string assetBundlePath = Path.ChangeExtension(manifest.FullName, null);
+                        var assetBundlePath = Path.ChangeExtension(manifest.FullName, null);
                         results.Add(assetBundlePath);
                     }
-                }
-				sr.Close ();
+                sr.Close();
             }
 
             return results;
@@ -37,23 +34,23 @@ namespace worldWizards.core.controller.level
 
         public static void LoadResources()
         {
-            foreach (string assetBundlePath in FindAssetBundlePaths())
+            foreach (var assetBundlePath in FindAssetBundlePaths())
             {
-                AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
+                var assetBundle = AssetBundle.LoadFromFile(assetBundlePath);
                 if (assetBundle == null)
                 {
                     Debug.Log("Unable to load Asset Bundle");
                 }
                 else
                 {
-                    string[] allAssetNames = assetBundle.GetAllAssetNames();
-                    foreach (string assetName in allAssetNames)
+                    var allAssetNames = assetBundle.GetAllAssetNames();
+                    foreach (var assetName in allAssetNames)
                     {
-                        UnityEngine.GameObject obj = assetBundle.LoadAsset(assetName) as GameObject;
+                        var obj = assetBundle.LoadAsset(assetName) as GameObject;
                         if (obj != null && obj.GetComponent<WWResourceMetaData>() != null)
                         {
-                            string assetBundleTag = Path.GetFileName(assetBundlePath);
-                            string tag = assetBundleTag + "_" + Path.GetFileNameWithoutExtension(assetName);
+                            var assetBundleTag = Path.GetFileName(assetBundlePath);
+                            var tag = assetBundleTag + "_" + Path.GetFileNameWithoutExtension(assetName);
                             WWResourceController.LoadResource(tag, assetBundleTag, assetName);
                         }
                     }

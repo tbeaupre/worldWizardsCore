@@ -1,7 +1,6 @@
-﻿namespace worldWizards.core.entity.world
+﻿namespace WorldWizards.core.entity.world
 {
     public class WorldSettings
     {
-
     }
 }

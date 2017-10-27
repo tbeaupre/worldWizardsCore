@@ -1,7 +1,9 @@
-﻿namespace worldWizards.core.controller.camera
+﻿namespace WorldWizards.core.controller.camera
 {
     public enum CameraMode
     {
-        Player, Free, Overview
+        Player,
+        Free,
+        Overview
     }
 }

@@ -1,45 +1,48 @@
-﻿using System.Collections.Generic;
-using worldWizards.core.controller.level.utils;
-using worldWizards.core.controller.level;
-using worldWizards.core.entity.coordinate;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.level.utils;
 
-namespace worldWizards.core.experimental
+namespace WorldWizards.core.experimental
 {
-	public class SaveLoadSceneGraph : MonoBehaviour
-	{
-		SceneGraphController sceneGraphController;
+    public class SaveLoadSceneGraph : MonoBehaviour
+    {
+        private SceneGraphController sceneGraphController;
 
-		void Start ()
-		{
-			sceneGraphController = FindObjectOfType<SceneGraphController>();
-			WWResourceController.LoadResource("white", null, "whiteCube");
-			WWResourceController.LoadResource("tree", null, "treeProp");
-		}
-			
-		public void Save(){
-			sceneGraphController.Save ();
-		}
+        private void Start()
+        {
+            sceneGraphController = FindObjectOfType<SceneGraphController>();
+            WWResourceController.LoadResource("white", null, "whiteCube");
+            WWResourceController.LoadResource("tree", null, "treeProp");
+        }
 
-		public void Load(){
-			sceneGraphController.Load ();
-		}
+        public void Save()
+        {
+            sceneGraphController.Save();
+        }
 
-		public void CreateMaze(){
-			string imagePath = "Heightmaps/MazeHeightmap";
-			Texture2D heightmap = Resources.Load<Texture2D> (imagePath);
+        public void Load()
+        {
+            sceneGraphController.Load();
+        }
 
-			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (sceneGraphController, heightmap);
-		}
+        public void CreateMaze()
+        {
+            var imagePath = "Heightmaps/MazeHeightmap";
+            var heightmap = Resources.Load<Texture2D>(imagePath);
 
-		public void CreateTerrain(){
-			string imagePath = "Heightmaps/TerrainHeightmap";
-			Texture2D heightmap = Resources.Load<Texture2D> (imagePath);
-			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (sceneGraphController, heightmap);
-		}
+            var terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(sceneGraphController, heightmap);
+        }
 
-		public void DeleteObjects(){
-			sceneGraphController.ClearAll ();
-		}
-	}
+        public void CreateTerrain()
+        {
+            var imagePath = "Heightmaps/TerrainHeightmap";
+            var heightmap = Resources.Load<Texture2D>(imagePath);
+            var terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(sceneGraphController, heightmap);
+        }
+
+        public void DeleteObjects()
+        {
+            sceneGraphController.ClearAll();
+        }
+    }
 }

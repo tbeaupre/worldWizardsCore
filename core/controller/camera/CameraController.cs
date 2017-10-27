@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace worldWizards.core.controller.camera
+namespace WorldWizards.core.controller.camera
 {
-	public class CameraController : MonoBehaviour
+    public class CameraController : MonoBehaviour
     {
         private CameraMode cameraMode;
     }

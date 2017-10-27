@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using NUnit.Framework;
 using System.Collections.Generic;
-
-using worldWizards.core.controller.level.utils;
-using worldWizards.core.controller.level;
-using worldWizards.core.entity.coordinate;
-using worldWizards.core.entity.gameObject;
+using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.entity.gameObject;
 
 namespace worldWizards.core.unitTests{
 	

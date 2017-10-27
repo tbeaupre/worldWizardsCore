@@ -1,217 +1,214 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Collections;
-
-using worldWizards.core.entity.gameObject;
-using worldWizards.core.entity.common;
-using worldWizards.core.entity.utils;
-using worldWizards.core.controller.level.utils;
-using worldWizards.core.entity.coordinate;
-
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.entity.gameObject;
+using Object = UnityEngine.Object;
 
-namespace worldWizards.core.entity.level
+namespace WorldWizards.core.entity.level
 {
-    /// <summary>
-    /// The Scene Graph is the data structure that holds all the World
-    /// Wizards Objects in the current level.
-    /// </summary>
-    public class SceneGraph
+	/// <summary>
+	///     The Scene Graph is the data structure that holds all the World
+	///     Wizards Objects in the current level.
+	/// </summary>
+	public class SceneGraph
     {
-		private Dictionary<Guid, WWObject> objects;
+        private readonly Dictionary<Guid, WWObject> objects;
 
-		/// <summary>
-		/// Determine how many WWObjects are in the scene graph
-		/// </summary>
-		/// <returns>The number if WWObjects in the scene graph.</returns>
-		public int SceneSize(){
-			return objects.Count;
-		}
 
-		/// <summary>
-		/// Clears all the objects in the scene graph.
-		/// </summary>
-		public void ClearAll(){
-			var keys = new List<Guid>(objects.Keys);
-			foreach (var key in keys) {
-				Delete (key);
-			}
-		}
-			
-		/// <summary>
-		/// Gets the objects in the SceneGraph in the given coordinate index space.
-		/// </summary>
-		/// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
-		/// <param name="coordinate">The coordinate to space to get.</param>
-		public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate){
-			List<WWObject> result = new List<WWObject> ();
-			foreach (WWObject wwObject in objects.Values){
-				if (coordinate.index.Equals (wwObject.GetCoordinate().index)) {
-					result.Add (wwObject);
-				}
-			}
-			return result;
-		}
-
-			
-        public SceneGraph ()
+        public SceneGraph()
         {
             objects = new Dictionary<Guid, WWObject>();
         }
 
-        public void Add(WWObject worldWizardsObject)
+	    /// <summary>
+	    ///     Determine how many WWObjects are in the scene graph
+	    /// </summary>
+	    /// <returns>The number if WWObjects in the scene graph.</returns>
+	    public int SceneSize()
         {
-//			List<WWObject> collidingObjects =  GetObjectsInCoordinateIndex (worldWizardsObject.objectData.coordinate);
-//			if (collidingObjects.Count == 0) {
-//				objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
-//			} else {
-//				Destroy (worldWizardsObject);
-//			}
-			objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
+            return objects.Count;
         }
 
-        /// <summary>
-        /// Remove an object from the scene graph.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>returns removed object, which may be null.</returns>
-        private WWObject Remove(Guid id)
+	    /// <summary>
+	    ///     Clears all the objects in the scene graph.
+	    /// </summary>
+	    public void ClearAll()
+        {
+            var keys = new List<Guid>(objects.Keys);
+            foreach (var key in keys) Delete(key);
+        }
+
+	    /// <summary>
+	    ///     Gets the objects in the SceneGraph in the given coordinate index space.
+	    /// </summary>
+	    /// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
+	    /// <param name="coordinate">The coordinate to space to get.</param>
+	    public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
+        {
+            var result = new List<WWObject>();
+            foreach (var wwObject in objects.Values)
+                if (coordinate.index.Equals(wwObject.GetCoordinate().index)) result.Add(wwObject);
+            return result;
+        }
+
+        public void Add(WWObject worldWizardsObject)
+        {
+            //			List<WWObject> collidingObjects =  GetObjectsInCoordinateIndex (worldWizardsObject.objectData.coordinate);
+            //			if (collidingObjects.Count == 0) {
+            //				objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
+            //			} else {
+            //				Destroy (worldWizardsObject);
+            //			}
+            objects.Add(worldWizardsObject.GetId(), worldWizardsObject);
+        }
+
+	    /// <summary>
+	    ///     Remove an object from the scene graph.
+	    /// </summary>
+	    /// <param name="id"></param>
+	    /// <returns>returns removed object, which may be null.</returns>
+	    private WWObject Remove(Guid id)
         {
             WWObject removedObject;
-            objects.TryGetValue (id, out removedObject);
-            if (removedObject) {
-                objects.Remove(id);
-            }
+            objects.TryGetValue(id, out removedObject);
+            if (removedObject) objects.Remove(id);
             return removedObject;
         }
 
-//		public void Delete(Guid id){
-//			// check if id exists in the sceneGraph
-//			if (objects.ContainsKey (id)) {
-//				WWObject objectToDestroy = Remove (id);
-//				Destroy (objectToDestroy);
-//			}
-//		}
+        //		public void Delete(Guid id){
+        //			// check if id exists in the sceneGraph
+        //			if (objects.ContainsKey (id)) {
+        //				WWObject objectToDestroy = Remove (id);
+        //				Destroy (objectToDestroy);
+        //			}
+        //		}
 
-		private void Destroy(WWObject objectToDestroy){
-			#if UNITY_EDITOR
-			GameObject.DestroyImmediate (objectToDestroy.gameObject);
-			#else
+        private void Destroy(WWObject objectToDestroy)
+        {
+#if UNITY_EDITOR
+            Object.DestroyImmediate(objectToDestroy.gameObject);
+#else
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
-		}
-
-			
-		public void Delete(Guid id){
-			if (objects.ContainsKey(id)){
-				WWObject rootObject = Get (id);
-
-				// remove child from parent if there is a parent
-				WWObjectData parent = rootObject.GetParent();
-				if (parent != null) {
-					WWObject parentObject = Get (parent.id);
-					parentObject.RemoveChild (rootObject);
-				}
-
-				List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
-				// include the root
-				objectsToDelete.Add(rootObject.objectData);
-				foreach (WWObjectData objectToDelete in objectsToDelete) {
-					WWObject objectToDestroy = Remove (objectToDelete.id);
-						Destroy (objectToDestroy);
-				}
-			}
-		}
-
-		public WWObject Get(Guid id)
-        {
-			WWObject objectToGet;
-			objects.TryGetValue (id, out objectToGet);
-			if (!objectToGet) {
-				Debug.LogError ("SceneGraph : Failed to get Object with Guid " + id.ToString());
-			}
-			return objectToGet;
         }
-			
 
 
-//        public List<WWObject> GetAllOfType(WWType type)
-//        {
-//            return null;
-//        }
-//
-//        public List<WWObject> GetAllOfMetaData(MetaData metaData)
-//        {
-//            return null;
-//        }
-//
-//        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
-//        {
-//            return null;
-//        }
-//
-//        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
-//        {
-//            return null;
-//        }
+        public void Delete(Guid id)
+        {
+            if (objects.ContainsKey(id))
+            {
+                var rootObject = Get(id);
 
-//        public WWObject GetRootParent(List<Guid> selection)
-//        {
-//            return null;
-//        }
+                // remove child from parent if there is a parent
+                var parent = rootObject.GetParent();
+                if (parent != null)
+                {
+                    var parentObject = Get(parent.id);
+                    parentObject.RemoveChild(rootObject);
+                }
 
-//        public List<WWObject> GetAllChildren(List<Guid> selection)
-//        {
-//            return null;
-//        }
+                var objectsToDelete = rootObject.GetAllDescendents();
+                // include the root
+                objectsToDelete.Add(rootObject.objectData);
+                foreach (var objectToDelete in objectsToDelete)
+                {
+                    var objectToDestroy = Remove(objectToDelete.id);
+                    Destroy(objectToDestroy);
+                }
+            }
+        }
 
-//        // TODO: Does it return itself? or just its siblings?
-//        public List<WWObject> GetAllSiblings(List<Guid> selection)
-//        {
-//            return null;
-//        }
+        public WWObject Get(Guid id)
+        {
+            WWObject objectToGet;
+            objects.TryGetValue(id, out objectToGet);
+            if (!objectToGet) Debug.LogError("SceneGraph : Failed to get Object with Guid " + id);
+            return objectToGet;
+        }
 
-		public void Save(){
-			List<WWObjectDataMemento> objectstoSave = new List<WWObjectDataMemento> ();
-			Debug.Log (objects.Count);
-			foreach(KeyValuePair<Guid, WWObject> entry in objects)
-			{
-				WWObjectDataMemento memento = new WWObjectDataMemento (entry.Value.objectData);
-				objectstoSave.Add (memento);
-			}
 
-			string json = JsonConvert.SerializeObject (objectstoSave);
-			FileIO.SaveJSONToFile (json, FileIO.testPath);
-		}
-			
-		public void Load(){
-			string json = FileIO.LoadJsonFromFile (FileIO.testPath);
+        //        public List<WWObject> GetAllOfType(WWType type)
+        //        {
+        //            return null;
+        //        }
+        //
+        //        public List<WWObject> GetAllOfMetaData(MetaData metaData)
+        //        {
+        //            return null;
+        //        }
+        //
+        //        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
+        //        {
+        //            return null;
+        //        }
+        //
+        //        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
+        //        {
+        //            return null;
+        //        }
 
-			List<WWObjectDataMemento> objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectDataMemento>> (json);
-			Debug.Log (String.Format ("Loaded {0} objects from file", objectsToRestore.Count));
+        //        public WWObject GetRootParent(List<Guid> selection)
+        //        {
+        //            return null;
+        //        }
 
-			foreach (WWObjectDataMemento obj in objectsToRestore) {
-				WWObjectData objectData = new WWObjectData (obj);
-				WWObject go = WWObjectFactory.Instantiate(objectData);
+        //        public List<WWObject> GetAllChildren(List<Guid> selection)
+        //        {
+        //            return null;
+        //        }
+
+        //        // TODO: Does it return itself? or just its siblings?
+        //        public List<WWObject> GetAllSiblings(List<Guid> selection)
+        //        {
+        //            return null;
+        //        }
+
+        public void Save()
+        {
+            var objectstoSave = new List<WWObjectDataMemento>();
+            Debug.Log(objects.Count);
+            foreach (var entry in objects)
+            {
+                var memento = new WWObjectDataMemento(entry.Value.objectData);
+                objectstoSave.Add(memento);
+            }
+
+            var json = JsonConvert.SerializeObject(objectstoSave);
+            FileIO.SaveJSONToFile(json, FileIO.testPath);
+        }
+
+        public void Load()
+        {
+            var json = FileIO.LoadJsonFromFile(FileIO.testPath);
+
+            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectDataMemento>>(json);
+            Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
+
+            foreach (var obj in objectsToRestore)
+            {
+                var objectData = new WWObjectData(obj);
+                var go = WWObjectFactory.Instantiate(objectData);
                 Add(go);
-			}
+            }
 
-			// re-link children since all the objects have been instantiated in game world
-			foreach (WWObjectDataMemento obj in objectsToRestore) {
-				WWObject root = Get (obj.id);
-				List<WWObject> childrenToRestore = new List<WWObject> ();
-				foreach (Guid childID in obj.children) {
-					WWObject childObject = Get (childID);
-//					if (childObject) { // TODO remove the null check by ensuring no dangling children
-					childrenToRestore.Add (childObject);
-//					}
-				}
-				root.AddChildren (childrenToRestore);
-			}
-
-		}
-			
+            // re-link children since all the objects have been instantiated in game world
+            foreach (var obj in objectsToRestore)
+            {
+                var root = Get(obj.id);
+                var childrenToRestore = new List<WWObject>();
+                foreach (var childID in obj.children)
+                {
+                    var childObject = Get(childID);
+                    //					if (childObject) { // TODO remove the null check by ensuring no dangling children
+                    childrenToRestore.Add(childObject);
+                    //					}
+                }
+                root.AddChildren(childrenToRestore);
+            }
+        }
     }
-
 }

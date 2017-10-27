@@ -1,128 +1,122 @@
 ﻿using System;
 using System.Collections.Generic;
-using worldWizards.core.entity.common;
-using worldWizards.core.entity.coordinate;
-
 using Newtonsoft.Json;
+using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.coordinate;
 
-namespace worldWizards.core.entity.gameObject
+namespace WorldWizards.core.entity.gameObject
 {
     public class WWObjectData
     {
-        public Guid id { get; }
-
-//		public WWType type { get; }
-//		public MetaData metaData { get;}
-
-        public Coordinate coordinate { get; }
-
-		public WWObjectData parent { get; set;}
-		public List<WWObjectData> children { get; }
-	
-
-        public string resourceTag { get; }
-
- 
-		public WWObjectData(Guid id, Coordinate coordinate,
-			WWObjectData parent, List<WWObjectData> children, string resourceTag)
-		{
+        public WWObjectData(Guid id, Coordinate coordinate,
+            WWObjectData parent, List<WWObjectData> children, string resourceTag)
+        {
             this.id = id;
-//			this.type = type;
-//            this.metaData = metaData;
+            //			this.type = type;
+            //            this.metaData = metaData;
             this.coordinate = coordinate;
             this.parent = parent;
             this.children = children;
             this.resourceTag = resourceTag;
         }
 
-		public WWObjectData(WWObjectDataMemento m)
-		{
-			this.id = m.id;
-//			this.type = m.type;
-//			this.metaData = m.metaData;
-			this.coordinate = m.coordinate;
-			this.resourceTag = m.resourceTag;
+        public WWObjectData(WWObjectDataMemento m)
+        {
+            id = m.id;
+            //			this.type = m.type;
+            //			this.metaData = m.metaData;
+            coordinate = m.coordinate;
+            resourceTag = m.resourceTag;
 
-			// Note parent and children relationships are re-linked in the SceneGraphController during the Load
-			this.parent = null;
-			this.children = new List<WWObjectData>();
-		}
-			
+            // Note parent and children relationships are re-linked in the SceneGraphController during the Load
+            parent = null;
+            children = new List<WWObjectData>();
+        }
 
-		public void AddChildren(List<WWObject> children) {
-			foreach (WWObject child in children) {
-				this.children.Add (child.objectData);
-			}
-		}
+        public Guid id { get; }
 
-		/// <summary>
-		/// Gets all descendents.
-		/// </summary>
-		/// <returns>The all descendents.</returns>
-		public List<WWObjectData> GetAllDescendents()
-		{
-			List<WWObjectData> descendents = new List<WWObjectData> ();
-			foreach(WWObjectData child in this.children){
-				descendents.Add (child);
-				List<WWObjectData> childsDescendents = child.GetAllDescendents ();
-				foreach (WWObjectData childsDescendent in childsDescendents) {
-					descendents.Add (childsDescendent);
-				}
-			}
-			return descendents;
-		}
-			
-		public void Unparent(){
-			if (this.parent != null) {
-				this.parent.RemoveChild (this);
-				this.parent = null;
-			}
-		} 
-			
-		public void Parent(WWObjectData parent){
-			this.parent = parent;
-		}
+        //		public WWType type { get; }
+        //		public MetaData metaData { get;}
+
+        public Coordinate coordinate { get; }
+
+        public WWObjectData parent { get; set; }
+        public List<WWObjectData> children { get; }
 
 
-		public void RemoveChild(WWObjectData child) {
-			if (this.children.Contains (child)) {
-				this.children.Remove (child);
-			}
-		}
+        public string resourceTag { get; }
 
 
+        public void AddChildren(List<WWObject> children)
+        {
+            foreach (var child in children) this.children.Add(child.objectData);
+        }
+
+	    /// <summary>
+	    ///     Gets all descendents.
+	    /// </summary>
+	    /// <returns>The all descendents.</returns>
+	    public List<WWObjectData> GetAllDescendents()
+        {
+            var descendents = new List<WWObjectData>();
+            foreach (var child in children)
+            {
+                descendents.Add(child);
+                var childsDescendents = child.GetAllDescendents();
+                foreach (var childsDescendent in childsDescendents) descendents.Add(childsDescendent);
+            }
+            return descendents;
+        }
+
+        public void Unparent()
+        {
+            if (parent != null)
+            {
+                parent.RemoveChild(this);
+                parent = null;
+            }
+        }
+
+        public void Parent(WWObjectData parent)
+        {
+            this.parent = parent;
+        }
+
+
+        public void RemoveChild(WWObjectData child)
+        {
+            if (children.Contains(child)) children.Remove(child);
+        }
     }
 
-	[Serializable]
-	public class WWObjectDataMemento{
-		public Guid id;
-		public WWType type;
-//		public MetaData metaData;
-		public Coordinate coordinate;
-		public string resourceTag;
-		public Guid parent;
-		public List<Guid> children;
+    [Serializable]
+    public class WWObjectDataMemento
+    {
+        public List<Guid> children;
 
-		public WWObjectDataMemento(WWObjectData state){
-			this.id = state.id;
-//			this.type = state.type;
-//			this.metaData = state.metaData;
-			this.coordinate = state.coordinate;
-			this.resourceTag = state.resourceTag;
-			if (state.parent != null) { // can be null if no parent
-				this.parent = state.parent.id;
-			}
-			this.children = new List<Guid> ();
-			foreach (var child in state.children) {
-				this.children.Add (child.id);
-			}
-		}
-			
-		[JsonConstructor]
-		public WWObjectDataMemento(){
-		}
+        //		public MetaData metaData;
+        public Coordinate coordinate;
 
-	}
+        public Guid id;
+        public Guid parent;
+        public string resourceTag;
+        public WWType type;
 
+        public WWObjectDataMemento(WWObjectData state)
+        {
+            id = state.id;
+            //			this.type = state.type;
+            //			this.metaData = state.metaData;
+            coordinate = state.coordinate;
+            resourceTag = state.resourceTag;
+            if (state.parent != null) parent = state.parent.id;
+            children = new List<Guid>();
+            foreach (var child in state.children) children.Add(child.id);
+        }
 
+        [JsonConstructor]
+        public WWObjectDataMemento()
+        {
+        }
+    }
 }

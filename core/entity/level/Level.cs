@@ -1,4 +1,4 @@
-﻿namespace worldWizards.core.entity.level
+﻿namespace WorldWizards.core.entity.level
 {
     public class Level
     {

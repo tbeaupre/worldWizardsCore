@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace worldWizards.core.controller.level
+namespace WorldWizards.core.controller.level
 {
     public static class WWAssetBundleController
     {
-        static Dictionary<string, AssetBundle> bundles = new Dictionary<string, AssetBundle>();
+        private static readonly Dictionary<string, AssetBundle> bundles = new Dictionary<string, AssetBundle>();
 
         public static void LoadAssetBundle(string tag, string path)
         {
@@ -15,15 +15,11 @@ namespace worldWizards.core.controller.level
             }
             else
             {
-                AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
+                var assetBundle = AssetBundle.LoadFromFile(path);
                 if (assetBundle == null)
-                {
                     Debug.Log("Unable to load Asset Bundle");
-                }
                 else
-                {
                     bundles.Add(tag, assetBundle);
-                }
             }
         }
 
@@ -34,11 +30,8 @@ namespace worldWizards.core.controller.level
             {
                 return assetBundle;
             }
-            else
-            {
-                Debug.Log("An asset bundle with the tag: " + tag + " has not been loaded.");
-                return null;
-            }
+            Debug.Log("An asset bundle with the tag: " + tag + " has not been loaded.");
+            return null;
         }
     }
 }

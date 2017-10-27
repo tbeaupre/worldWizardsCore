@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using worldWizards.core.entity.world;
+using WorldWizards.core.entity.world;
 
-namespace worldWizards.core.entity.user
+namespace WorldWizards.core.entity.common.user
 {
     /// <summary>
-    /// A User Profile contains a user's general global settings, as well as
-    /// their different projects (worlds).
+    ///     A User Profile contains a user's general global settings, as well as
+    ///     their different projects (worlds).
     /// </summary>
     public class UserProfile
     {

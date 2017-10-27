@@ -1,8 +1,8 @@
-﻿namespace worldWizards.core.entity.level
+﻿namespace WorldWizards.core.entity.level
 {
     /// <summary>
-    /// The Level Settings is class that hold settings specific to a level
-    /// like global lighting settings.
+    ///     The Level Settings is class that hold settings specific to a level
+    ///     like global lighting settings.
     /// </summary>
     public class LevelSettings
     {
