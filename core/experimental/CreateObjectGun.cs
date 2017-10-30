@@ -75,8 +75,10 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        sceneGraphController.Add(curObject);
-                        curObject = null;
+                        if (sceneGraphController.Add(curObject))
+                        {
+                            curObject = null;
+                        }
                     }
             }
         }

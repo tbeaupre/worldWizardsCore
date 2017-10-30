@@ -21,10 +21,12 @@ namespace WorldWizards.core.controller.level
             return sceneGraph.SceneSize();
         }
 
-        public void Add(WWObject wwObject)
+        public bool Add(WWObject wwObject)
         {
             if (wwObject != null)
-                sceneGraph.Add(wwObject);
+                return sceneGraph.Add(wwObject);
+            
+            return false;
         }
 
         public void Delete(Guid id)

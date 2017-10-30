@@ -50,9 +50,9 @@ namespace WorldWizards.core.entity.level
             return _sceneDictionary.GetObjectsInCoordinateIndex(coordinate);
         }
 
-        public void Add(WWObject worldWizardsObject)
+        public bool Add(WWObject worldWizardsObject)
         {
-           _sceneDictionary.Add(worldWizardsObject);
+          return _sceneDictionary.Add(worldWizardsObject);
         }
 
 	    /// <summary>
@@ -65,14 +65,6 @@ namespace WorldWizards.core.entity.level
 
             return _sceneDictionary.Remove(id);
         }
-
-        //		public void Delete(Guid id){
-        //			// check if id exists in the sceneGraph
-        //			if (objects.ContainsKey (id)) {
-        //				WWObject objectToDestroy = Remove (id);
-        //				Destroy (objectToDestroy);
-        //			}
-        //		}
 
         private void Destroy(WWObject objectToDestroy)
         {

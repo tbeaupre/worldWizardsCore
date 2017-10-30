@@ -2,20 +2,23 @@
 using WorldWizards.core.entity.gameObject;
 using System.Collections.Generic;
 using System;
-using UnityEngine.Assertions;
 using UnityEngine;
+using UnityEngine.Assertions;
+using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.level
 {
     public class SceneDictionary
     {
-        private readonly Dictionary<Coordinate, List<Guid>> coordinates;
+        private readonly Dictionary<IntVector3, List<Guid>> coordinates;
         private readonly Dictionary<Guid, WWObject> objects;
 
         public SceneDictionary()
         {
             objects = new Dictionary<Guid, WWObject>();
-            coordinates = new Dictionary<Coordinate, List<Guid>>();
+            coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
         public List<WWObjectDataMemento> GetMementoObjects()
@@ -33,7 +36,7 @@ namespace WorldWizards.core.entity.level
         
         public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            var guids = coordinates[coordinate];
+            var guids = coordinates[coordinate.index];
             
             var result = new List<WWObject>();
 
@@ -54,24 +57,51 @@ namespace WorldWizards.core.entity.level
             return objects.Count;
         }
 
-        public void Add(WWObject wwObject)
+        private bool Collides(WWObject wwObject)
+        {
+            if (coordinates.ContainsKey(wwObject.GetCoordinate().index))
+            {
+                var objectsAtCoord = Get(wwObject.GetCoordinate());
+                WWWalls existingWalls = 0;
+                foreach (var obj in objectsAtCoord)
+                {
+                    if (obj.resourceMetaData.type.Equals(WWType.Tile))
+                    {
+                        var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate());
+                        existingWalls = existingWalls | walls;
+                    }
+                }
+                var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate());
+                var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
+                return doesCollide;
+            }
+            return false;
+        }
+
+        public bool Add(WWObject wwObject)
         {
             var coord = wwObject.GetCoordinate();
             var guid = wwObject.GetId();
-            
-            Assert.IsNotNull(coord);
-            
-            if (coordinates.ContainsKey(coord))
+
+            if (Collides(wwObject) && wwObject.resourceMetaData.type.Equals(WWType.Tile))
             {
-                coordinates[coord].Add(guid);
+                Debug.Log("Tile collides with existing tiles. Preventing placement of new tile.");
+                return false;
             }
-            else
-            {
-                var guidList = new List<Guid>();
-                guidList.Add(guid);
-                coordinates.Add(coord, guidList);
-            }
+            if (coordinates.ContainsKey(coord.index))
+                {
+                    Debug.Log("Updating Guid list.");
+                    coordinates[coord.index].Add(guid);
+                }
+                else
+                {
+                    Debug.Log("Creating new Guid list.");
+                    var guidList = new List<Guid>();
+                    guidList.Add(guid);
+                    coordinates.Add(coord.index, guidList);
+                }
             objects.Add(wwObject.GetId(), wwObject);
+            return true;
         }
 
 
@@ -111,9 +141,9 @@ namespace WorldWizards.core.entity.level
         public List<WWObject> Get(Coordinate coord)
         {
             var result = new List<WWObject>();
-            if (coordinates.ContainsKey(coord))
+            if (coordinates.ContainsKey(coord.index))
             {
-                var guids = coordinates[coord];
+                var guids = coordinates[coord.index];
                 foreach (var guid in guids)
                 {
                     result.Add(objects[guid]);

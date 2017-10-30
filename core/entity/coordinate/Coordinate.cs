@@ -35,5 +35,6 @@ namespace WorldWizards.core.entity.coordinate
         public IntVector3 index { get; set; }
         public Vector3 offset { get; set; } // normalizedOffset [0,1]
         public int rotation { get; set; } // y rotation
+        
     }
 }
