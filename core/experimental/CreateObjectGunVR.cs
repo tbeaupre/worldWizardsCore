@@ -36,7 +36,6 @@ namespace WorldWizards.core.experimental
 
         private void Awake()
         {
-            Debug.Log((int) (-1.1f / 10f));
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
             sceneGraphController = FindObjectOfType<SceneGraphController>();
@@ -138,7 +137,7 @@ namespace WorldWizards.core.experimental
             var offset = (int)(possibleTiles.Count * swipe.GetSwipeRatio(Controller));
             if (offset != 0)
             {
-                curTile = (curTile + offset) % curTile;
+                curTile = (curTile + offset) % possibleTiles.Count;
                 if (curObject != null) Destroy(curObject.gameObject);
                 curObject = PlaceObject(position);
             }
