@@ -21,8 +21,8 @@ namespace WorldWizards.core.entity.gameObject.resource
             this.path = path;
         }
 
-        public string assetBundleTag { get; }
-        public string path { get; }
+        public string assetBundleTag { get; private set; }
+        public string path { get; private set; }
 
         public GameObject GetPrefab()
         {

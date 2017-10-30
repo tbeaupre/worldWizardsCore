@@ -10,7 +10,7 @@ namespace WorldWizards.core.entity.coordinate.utils
 	public static class CoordinateHelper
     {
         public static float baseTileLength = 10; // the base size of what a tile should be
-        public static float tileLengthScale = .25f; // how much to scale up the base size
+        public static float tileLengthScale = 1f; // how much to scale up the base size
 
 	    /// <summary>
 	    ///     Gets the tile scale. Takes into account original scale of tiles.

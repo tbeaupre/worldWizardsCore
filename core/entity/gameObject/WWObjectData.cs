@@ -33,18 +33,18 @@ namespace WorldWizards.core.entity.gameObject
             children = new List<WWObjectData>();
         }
 
-        public Guid id { get; }
+        public Guid id { get; private set; }
 
         //		public WWType type { get; }
         //		public MetaData metaData { get;}
 
-        public Coordinate coordinate { get; }
+        public Coordinate coordinate { get; private set; }
 
         public WWObjectData parent { get; set; }
-        public List<WWObjectData> children { get; }
+        public List<WWObjectData> children { get; private set; }
 
 
-        public string resourceTag { get; }
+        public string resourceTag { get; private set; }
 
 
         public void AddChildren(List<WWObject> children)

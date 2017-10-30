@@ -42,5 +42,14 @@ namespace WorldWizards.core.entity.common
             var other = (IntVector3) obj;
             return x == other.x && y == other.y && z == other.z;
         }
+
+        /// <summary>
+        /// from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return ((199 + x.GetHashCode()) * 199 + y.GetHashCode()) * 199 + z.GetHashCode();
+        }
     }
 }
