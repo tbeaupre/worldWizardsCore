@@ -7,20 +7,20 @@ namespace WorldWizards.core.entity.gameObject.utils
 {
     public class WWWallsHelper
     {
-   
         public static WWWalls getRotatedWWWalls(WWResourceMetaData metaData, Coordinate coordinate)
         {
-            int yRotation = (coordinate.rotation % 360) + (coordinate.rotation < 0 ? 360 : 0);
-            
+            var yRotation = coordinate.rotation % 360 + (coordinate.rotation < 0 ? 360 : 0);
+
             // rotation should only be 1 of 4 discrete values, 0, 90, 180, and 270
             Debug.Log(yRotation);
-            Assert.IsTrue(yRotation == 0 || yRotation == 90 || yRotation == 180 || yRotation == 270 || yRotation == 360);
+            Assert.IsTrue(yRotation == 0 || yRotation == 90 || yRotation == 180 || yRotation == 270 ||
+                          yRotation == 360);
 
             bool north;
             bool east;
             bool south;
             bool west;
-            
+
             if (yRotation == 0 || yRotation == 360)
             {
                 north = metaData.north;
@@ -50,13 +50,13 @@ namespace WorldWizards.core.entity.gameObject.utils
                 west = metaData.north;
             }
 
-            bool t = metaData.top;
-            bool b = metaData.bottom;
-            
-            var rotatedMeteData  = new WWResourceMetaData(north,east,south,west,t,b, metaData.type);
+            var t = metaData.top;
+            var b = metaData.bottom;
 
-            var walls = rotatedMeteData.GetWallsEnum();
-            
+            var rotatedMetaData = new WWResourceMetaData(north, east, south, west, t, b, metaData.type);
+
+            var walls = rotatedMetaData.GetWallsEnum();
+
             return walls;
         }
     }

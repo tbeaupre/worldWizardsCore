@@ -6,14 +6,15 @@ using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level
 {
-	/// <summary>
-	///     The Scene Graph is the data structure that holds all the World
-	///     Wizards Objects in the current level.
-	/// </summary>
-	public class SceneGraph
+    /// <summary>
+    ///     The Scene Graph is the data structure that holds all the World
+    ///     Wizards Objects in the current level.
+    /// </summary>
+    public class SceneGraph
     {
         private readonly SceneDictionary _sceneDictionary;
 
@@ -22,60 +23,59 @@ namespace WorldWizards.core.entity.level
             _sceneDictionary = new SceneDictionary();
         }
 
-	    /// <summary>
-	    ///     Determine how many WWObjects are in the scene graph
-	    /// </summary>
-	    /// <returns>The number if WWObjects in the scene graph.</returns>
-	    public int SceneSize()
-	    {
-	        return _sceneDictionary.GetCount();
-	    }
+        /// <summary>
+        ///     Determine how many WWObjects are in the scene graph
+        /// </summary>
+        /// <returns>The number if WWObjects in the scene graph.</returns>
+        public int SceneSize()
+        {
+            return _sceneDictionary.GetCount();
+        }
 
-	    /// <summary>
-	    ///     Clears all the objects in the scene graph.
-	    /// </summary>
-	    public void ClearAll()
+        /// <summary>
+        ///     Clears all the objects in the scene graph.
+        /// </summary>
+        public void ClearAll()
         {
             var keys = _sceneDictionary.GetAllGuids();
             foreach (var key in keys) Delete(key);
         }
 
-	    /// <summary>
-	    ///     Gets the objects in the SceneGraph in the given coordinate index space.
-	    /// </summary>
-	    /// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
-	    /// <param name="coordinate">The coordinate to space to get.</param>
-	    public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
+        /// <summary>
+        ///     Gets the objects in the SceneGraph in the given coordinate index space.
+        /// </summary>
+        /// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
+        /// <param name="coordinate">The coordinate to space to get.</param>
+        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
             return _sceneDictionary.GetObjectsInCoordinateIndex(coordinate);
         }
 
         public bool Add(WWObject worldWizardsObject)
         {
-          return _sceneDictionary.Add(worldWizardsObject);
+            return _sceneDictionary.Add(worldWizardsObject);
         }
 
-	    /// <summary>
-	    ///     Remove an object from the scene graph.
-	    /// </summary>
-	    /// <param name="id"></param>
-	    /// <returns>returns removed object, which may be null.</returns>
-	    private WWObject Remove(Guid id)
+        /// <summary>
+        ///     Remove an object from the scene graph.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>returns removed object, which may be null.</returns>
+        private WWObject Remove(Guid id)
         {
-
             return _sceneDictionary.Remove(id);
         }
 
         private void Destroy(WWObject objectToDestroy)
         {
 #if UNITY_EDITOR
-            UnityEngine.Object.DestroyImmediate(objectToDestroy.gameObject);
+            Object.DestroyImmediate(objectToDestroy.gameObject);
 #else
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
         }
 
-        
+
         public void Delete(Guid id)
         {
             if (_sceneDictionary.ContainsGuid(id))

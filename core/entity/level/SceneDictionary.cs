@@ -1,11 +1,9 @@
-﻿using WorldWizards.core.entity.coordinate;
-using WorldWizards.core.entity.gameObject;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
-using UnityEngine.Assertions;
 using WorldWizards.core.entity.common;
-using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.level
@@ -32,19 +30,17 @@ namespace WorldWizards.core.entity.level
             }
             return objectstoSave;
         }
-        
-        
+
+
         public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
             var guids = coordinates[coordinate.index];
-            
+
             var result = new List<WWObject>();
 
             foreach (var guid in guids)
-            {
                 result.Add(objects[guid]);
-            }
-            return result;            
+            return result;
         }
 
         public bool ContainsGuid(Guid id)
@@ -64,13 +60,11 @@ namespace WorldWizards.core.entity.level
                 var objectsAtCoord = Get(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
                 foreach (var obj in objectsAtCoord)
-                {
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
                     {
                         var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate());
                         existingWalls = existingWalls | walls;
                     }
-                }
                 var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate());
                 var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
@@ -89,17 +83,17 @@ namespace WorldWizards.core.entity.level
                 return false;
             }
             if (coordinates.ContainsKey(coord.index))
-                {
-                    Debug.Log("Updating Guid list.");
-                    coordinates[coord.index].Add(guid);
-                }
-                else
-                {
-                    Debug.Log("Creating new Guid list.");
-                    var guidList = new List<Guid>();
-                    guidList.Add(guid);
-                    coordinates.Add(coord.index, guidList);
-                }
+            {
+                Debug.Log("Updating Guid list.");
+                coordinates[coord.index].Add(guid);
+            }
+            else
+            {
+                Debug.Log("Creating new Guid list.");
+                var guidList = new List<Guid>();
+                guidList.Add(guid);
+                coordinates.Add(coord.index, guidList);
+            }
             objects.Add(wwObject.GetId(), wwObject);
             return true;
         }
@@ -118,18 +112,14 @@ namespace WorldWizards.core.entity.level
             {
                 objects.Remove(id);
                 // now we have to remove the the id from the coordinate to List<Guid> Dictionary
-                
+
                 foreach (var kvp in coordinates)
-                {
                     if (kvp.Value.Contains(id))
-                    {
                         kvp.Value.Remove(id);
-                    }
-                }
             }
             return removedObject;
         }
-        
+
         public WWObject Get(Guid id)
         {
             WWObject objectToGet;
@@ -145,13 +135,9 @@ namespace WorldWizards.core.entity.level
             {
                 var guids = coordinates[coord.index];
                 foreach (var guid in guids)
-                {
                     result.Add(objects[guid]);
-                }
             }
             return result;
         }
-
-        
     }
 }
