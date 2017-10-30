@@ -33,6 +33,9 @@ namespace WorldWizards.core.experimental
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
+            
+            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+
         }
 
 
@@ -55,9 +58,9 @@ namespace WorldWizards.core.experimental
             {
                 var position = raycastHit.point;
                 // because the tile center is in the middle need to offset
-                position.x += .5f * CoordinateHelper.baseTileLength;
-                position.y += CoordinateHelper.baseTileLength;
-                position.z += .5f * CoordinateHelper.baseTileLength;
+                position.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+                position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+                position.z += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 CycleObjectsScrollWheel(position);
                 RotateObjects(position);
                 coordDebugText.text = string.Format("x : {0}, z : {1}", position.x, position.z);
@@ -65,7 +68,7 @@ namespace WorldWizards.core.experimental
                 if (curObject == null) curObject = PlaceObject(position);
                 else
                     curObject.transform.position = new Vector3(raycastHit.point.x,
-                        raycastHit.point.y + 0.5f * CoordinateHelper.baseTileLength,
+                        raycastHit.point.y + 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
                         raycastHit.point.z);
                 if (Input.GetMouseButtonUp(0))
                     if (curObject != null)

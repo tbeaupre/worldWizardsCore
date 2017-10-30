@@ -6,7 +6,6 @@ using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
-using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level
 {
@@ -16,12 +15,11 @@ namespace WorldWizards.core.entity.level
 	/// </summary>
 	public class SceneGraph
     {
-        private readonly Dictionary<Guid, WWObject> objects;
-
+        private readonly SceneDictionary _sceneDictionary;
 
         public SceneGraph()
         {
-            objects = new Dictionary<Guid, WWObject>();
+            _sceneDictionary = new SceneDictionary();
         }
 
 	    /// <summary>
@@ -29,16 +27,16 @@ namespace WorldWizards.core.entity.level
 	    /// </summary>
 	    /// <returns>The number if WWObjects in the scene graph.</returns>
 	    public int SceneSize()
-        {
-            return objects.Count;
-        }
+	    {
+	        return _sceneDictionary.GetCount();
+	    }
 
 	    /// <summary>
 	    ///     Clears all the objects in the scene graph.
 	    /// </summary>
 	    public void ClearAll()
         {
-            var keys = new List<Guid>(objects.Keys);
+            var keys = _sceneDictionary.GetAllGuids();
             foreach (var key in keys) Delete(key);
         }
 
@@ -49,21 +47,12 @@ namespace WorldWizards.core.entity.level
 	    /// <param name="coordinate">The coordinate to space to get.</param>
 	    public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            var result = new List<WWObject>();
-            foreach (var wwObject in objects.Values)
-                if (coordinate.index.Equals(wwObject.GetCoordinate().index)) result.Add(wwObject);
-            return result;
+            return _sceneDictionary.GetObjectsInCoordinateIndex(coordinate);
         }
 
         public void Add(WWObject worldWizardsObject)
         {
-            //			List<WWObject> collidingObjects =  GetObjectsInCoordinateIndex (worldWizardsObject.objectData.coordinate);
-            //			if (collidingObjects.Count == 0) {
-            //				objects.Add (worldWizardsObject.GetId (), worldWizardsObject);
-            //			} else {
-            //				Destroy (worldWizardsObject);
-            //			}
-            objects.Add(worldWizardsObject.GetId(), worldWizardsObject);
+           _sceneDictionary.Add(worldWizardsObject);
         }
 
 	    /// <summary>
@@ -73,10 +62,8 @@ namespace WorldWizards.core.entity.level
 	    /// <returns>returns removed object, which may be null.</returns>
 	    private WWObject Remove(Guid id)
         {
-            WWObject removedObject;
-            objects.TryGetValue(id, out removedObject);
-            if (removedObject) objects.Remove(id);
-            return removedObject;
+
+            return _sceneDictionary.Remove(id);
         }
 
         //		public void Delete(Guid id){
@@ -90,16 +77,16 @@ namespace WorldWizards.core.entity.level
         private void Destroy(WWObject objectToDestroy)
         {
 #if UNITY_EDITOR
-            Object.DestroyImmediate(objectToDestroy.gameObject);
+            UnityEngine.Object.DestroyImmediate(objectToDestroy.gameObject);
 #else
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
         }
 
-
+        
         public void Delete(Guid id)
         {
-            if (objects.ContainsKey(id))
+            if (_sceneDictionary.ContainsGuid(id))
             {
                 var rootObject = Get(id);
 
@@ -124,60 +111,14 @@ namespace WorldWizards.core.entity.level
 
         public WWObject Get(Guid id)
         {
-            WWObject objectToGet;
-            objects.TryGetValue(id, out objectToGet);
-            if (!objectToGet) Debug.LogError("SceneGraph : Failed to get Object with Guid " + id);
-            return objectToGet;
+            return _sceneDictionary.Get(id);
         }
 
 
-        //        public List<WWObject> GetAllOfType(WWType type)
-        //        {
-        //            return null;
-        //        }
-        //
-        //        public List<WWObject> GetAllOfMetaData(MetaData metaData)
-        //        {
-        //            return null;
-        //        }
-        //
-        //        public List<WWObject> GetAdjacentTiles(List<Guid> selection)
-        //        {
-        //            return null;
-        //        }
-        //
-        //        public List<WWObject> GetPropsContainedInTiles(List<Guid> selection)
-        //        {
-        //            return null;
-        //        }
-
-        //        public WWObject GetRootParent(List<Guid> selection)
-        //        {
-        //            return null;
-        //        }
-
-        //        public List<WWObject> GetAllChildren(List<Guid> selection)
-        //        {
-        //            return null;
-        //        }
-
-        //        // TODO: Does it return itself? or just its siblings?
-        //        public List<WWObject> GetAllSiblings(List<Guid> selection)
-        //        {
-        //            return null;
-        //        }
-
         public void Save()
         {
-            var objectstoSave = new List<WWObjectDataMemento>();
-            Debug.Log(objects.Count);
-            foreach (var entry in objects)
-            {
-                var memento = new WWObjectDataMemento(entry.Value.objectData);
-                objectstoSave.Add(memento);
-            }
-
-            var json = JsonConvert.SerializeObject(objectstoSave);
+            var objectsToSave = _sceneDictionary.GetMementoObjects();
+            var json = JsonConvert.SerializeObject(objectsToSave);
             FileIO.SaveJSONToFile(json, FileIO.testPath);
         }
 
@@ -203,9 +144,7 @@ namespace WorldWizards.core.entity.level
                 foreach (var childID in obj.children)
                 {
                     var childObject = Get(childID);
-                    //					if (childObject) { // TODO remove the null check by ensuring no dangling children
                     childrenToRestore.Add(childObject);
-                    //					}
                 }
                 root.AddChildren(childrenToRestore);
             }
