@@ -17,16 +17,19 @@ namespace WorldWizards.core.experimental
             else if (controller.GetTouchUp(Valve.VR.EVRButtonId.k_EButton_Axis0)) // Was down, is up.
             {
                 trackingSwipe = false;
+                return CalculateSwipe(controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
             }
             if (trackingSwipe)
             {
-                Vector2 curPosition = controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
-                float deltaX = curPosition.x - startPosition.x;
-
-                return deltaX / 2;
+                return CalculateSwipe(controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0));
             }
             
             return 0;
+        }
+
+        private float CalculateSwipe(Vector2 curPosition)
+        {
+            return (curPosition.x - startPosition.x) / 2;
         }
     }
 }
