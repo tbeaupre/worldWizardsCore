@@ -2,12 +2,12 @@
 
 namespace WorldWizards.core.experimental.controllers
 {
-    public class ControllerListener : MonoBehaviour
+    public abstract class ControllerListener : MonoBehaviour
     {
         private SteamVR_TrackedController controller;
-        private Tool tool;
+        protected Tool tool;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             controller = GetComponent<SteamVR_TrackedController>();
             tool.Init(controller);
