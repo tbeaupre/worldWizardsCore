@@ -10,95 +10,80 @@ namespace WorldWizards.core.experimental.controllers
         protected const ulong APP_MENU_ID = SteamVR_Controller.ButtonMask.ApplicationMenu;
         protected const ulong TOUCHPAD_ID = SteamVR_Controller.ButtonMask.Touchpad;
         protected const float DEADZONE_SIZE = 0.7f; // The distance from the center of the touchpad which is dead.
-        
-        protected SteamVR_TrackedObject trackedObj;
-        protected SteamVR_Controller.Device Controller
-        {
-            get { return SteamVR_Controller.Input((int)trackedObj.index); }
-        }
 
+        protected SteamVR_TrackedController controller;
+
+        public bool listenForTrigger = false;
+        public bool listenForGrip = false;
+        public bool listenForMenu = false;
+        public bool listenForPress = false;
+        public bool listenForTouch = false;
+        
         protected bool trigger = false;
         protected bool grip = false;
-        protected bool appMenu = false;
+        protected bool menu = false;
         protected bool press = false;
         protected bool touch = false;
+        protected Vector2 padPos;
 
-        protected virtual void Awake()
+        public virtual void Init(SteamVR_TrackedController newController)
         {
-            trackedObj = GetComponent<SteamVR_TrackedObject>();
+            controller = newController;
         }
 
-        protected virtual void Update()
+        public virtual void Update()
         {
             if (trigger)
             {
-                if (Controller.GetHairTrigger())
-                {
-                    UpdateTrigger();
-                }
-                else if (Controller.GetHairTriggerUp())
-                {
-                    OnTrigger();
-                }
+                UpdateTrigger();
             }
             if (grip)
             {
-                if (Controller.GetPress(GRIP_ID))
-                {
-                    UpdateGrip();
-                }
-                else if (Controller.GetPressUp(GRIP_ID))
-                {
-                    OnGrip();
-                }
+                UpdateGrip();
             }
-            if (appMenu)
+            if (menu)
             {
-                if (Controller.GetPress(APP_MENU_ID))
-                {
-                    UpdateAppMenu();
-                }
-                if (Controller.GetPressUp(APP_MENU_ID))
-                {
-                    OnAppMenu();
-                }
+                UpdateMenu();
             }
             if (press)
             {
-                if (Controller.GetPress(TOUCHPAD_ID))
-                {
-                    UpdateTouchpadPress(Controller.GetAxis()); 
-                }
-                if (Controller.GetPressUp(TOUCHPAD_ID))
-                {
-                    OnTouchpadPress(Controller.GetAxis());
-                }
+                UpdatePress();
             }
-            if (touch)
+            else if (touch)
             {
-                if (Controller.GetTouch(TOUCHPAD_ID))
-                {
-                    UpdateTouchpadTouch(Controller.GetAxis());
-                }
-                if (Controller.GetTouchUp(TOUCHPAD_ID))
-                {
-                    OnTouchpadTouch(Controller.GetAxis());
-                }
+                UpdateTouch();
             }
         }
-
-        // These methods are called when the button is released
-        protected virtual void OnTrigger() {}
-        protected virtual void OnGrip() {}
-        protected virtual void OnAppMenu() {}
-        protected virtual void OnTouchpadPress(Vector2 pos) {}
-        protected virtual void OnTouchpadTouch(Vector2 pos) {}
+        
+        // These methods are called when the button is pressed or released
+        public void OnTriggerClick() { trigger = true; }
+        public virtual void OnTriggerUnclick() { trigger = false; }
+        
+        public void OnGrip() { grip = true; }
+        public virtual void OnUngrip() { grip = false; }
+        
+        public void OnMenuClick() { menu = true; }
+        public virtual void OnMenuUnclick() { menu = false; }
+        
+        public void OnPadClick(Vector2 pos) 
+        { 
+            press = true;
+            padPos = pos;
+        }
+        public virtual void OnPadUnclick() { press = false; }
+        
+        public void OnPadTouch(Vector2 pos)
+        { 
+            touch = true;
+            padPos = pos;
+        }
+        public virtual void OnPadUntouch() { touch = false; }
         
         // These methods are called if the button is held down
         protected virtual void UpdateTrigger() {}
         protected virtual void UpdateGrip() {}
-        protected virtual void UpdateAppMenu() {}
-        protected virtual void UpdateTouchpadPress(Vector2 pos) {}
-        protected virtual void UpdateTouchpadTouch(Vector2 pos) {}
+        protected virtual void UpdateMenu() {}
+        protected virtual void UpdatePress() {}
+        protected virtual void UpdateTouch() {}
     }
 }

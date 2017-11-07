@@ -23,15 +23,16 @@ namespace WorldWizards.core.experimental.controllers
         private bool shouldTeleport; // True when valid teleport location is found
         private Vector3 hitPoint; // Hit point of the laser raycast
         
-        protected override void Awake()
+        public override void Init(SteamVR_TrackedController newController)
         {
-            base.Awake();
-            trigger = true;
-            grip = true;
-            appMenu = true;
-            press = true;
-            touch = true;
-
+            base.Init(newController);
+            
+            listenForTrigger = true;
+            listenForGrip = true;
+            listenForMenu = true;
+            listenForPress = true;
+            listenForTouch = true;
+            
             SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
             cameraRigTransform = controllerManager.transform;
             headTransform = controllerManager.GetComponent<Camera>().transform;
@@ -44,14 +45,14 @@ namespace WorldWizards.core.experimental.controllers
         }
 
         // Trigger
-        protected override void OnTrigger()
+        public override void OnTriggerUnclick()
         {
             // Selection Logic.
         }
         
         
         // Grip
-        protected override void OnGrip()
+        public override void OnUngrip()
         {
             // Hide laser and reticle when button is released.
             laser.SetActive(false);
@@ -67,7 +68,7 @@ namespace WorldWizards.core.experimental.controllers
         {
             RaycastHit hit;
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(trackedObj.transform.position, transform.forward, out hit, 100))
+            if (Physics.Raycast(controller.transform.position, transform.forward, out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -90,7 +91,7 @@ namespace WorldWizards.core.experimental.controllers
             reticle.SetActive(true);
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(trackedObj.transform.position, hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(controller.transform.position, hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -116,20 +117,20 @@ namespace WorldWizards.core.experimental.controllers
         
         
         // Application Menu
-        protected override void OnAppMenu()
+        public override void OnMenuUnclick()
         {
             // Menu Logic.
         }
 
         
         // Touchpad Press
-        protected override void UpdateTouchpadPress(Vector2 pos)
+        protected override void UpdatePress()
         {
-            if (pos.y > DEADZONE_SIZE)
+            if (padPos.y > DEADZONE_SIZE)
             {
                 cameraRigTransform.position += Vector3.up * MOVE_OFFSET;
             }
-            if (pos.y < -DEADZONE_SIZE)
+            if (padPos.y < -DEADZONE_SIZE)
             {
                 cameraRigTransform.position += Vector3.down * MOVE_OFFSET;
             }
@@ -137,10 +138,10 @@ namespace WorldWizards.core.experimental.controllers
 
         
         // Touchpad Touch
-        protected override void UpdateTouchpadTouch(Vector2 pos)
+        protected override void UpdateTouch()
         {
-            cameraRigTransform.position += pos.y * Vector3.forward * MOVE_OFFSET;
-            cameraRigTransform.position += pos.x * Vector3.right * MOVE_OFFSET;
+            cameraRigTransform.position += padPos.y * Vector3.forward * MOVE_OFFSET;
+            cameraRigTransform.position += padPos.x * Vector3.right * MOVE_OFFSET;
         }
     }
 }

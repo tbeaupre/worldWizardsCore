@@ -11,7 +11,8 @@ namespace WorldWizards.core.experimental.controllers
 {
     public class CreateObjectTool : Tool
     {
-        private readonly SwipeGesture swipe = new SwipeGesture();
+        private bool trackingSwipe = false;
+        private Vector2 startPosition;
         
         // Controllers
         private SceneGraphController sceneGraphController;
@@ -31,14 +32,15 @@ namespace WorldWizards.core.experimental.controllers
         private bool validTarget = false;
         private Vector3 hitPoint;
         
-        protected override void Awake()
+        public override void Init(SteamVR_TrackedController newController)
         {
-            base.Awake();
-            trigger = true;
-            grip = true;
-            appMenu = true;
-            press = true;
-            touch = true;
+            base.Init(newController);
+            
+            listenForTrigger = true;
+            listenForGrip = true;
+            listenForMenu = true;
+            listenForPress = true;
+            listenForTouch = true;
             
             sceneGraphController = FindObjectOfType<SceneGraphController>();
             
@@ -48,10 +50,10 @@ namespace WorldWizards.core.experimental.controllers
             gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
         }
 
-        protected override void Update()
+        public override void Update()
         {
             RaycastHit raycastHit;
-            if (Physics.Raycast(trackedObj.transform.position, transform.forward, out raycastHit, 100))
+            if (Physics.Raycast(controller.transform.position, transform.forward, out raycastHit, 100))
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
@@ -79,7 +81,7 @@ namespace WorldWizards.core.experimental.controllers
 
         
         // Trigger
-        protected override void OnTrigger()
+        public override void OnTriggerUnclick()
         {
             if (validTarget)
             {
@@ -112,10 +114,10 @@ namespace WorldWizards.core.experimental.controllers
 
         
         // Grip
-        protected override void OnGrip()
+        public override void OnUngrip()
         {
             RaycastHit raycastHit;
-            if (Physics.Raycast(trackedObj.transform.position, transform.forward, out raycastHit, 100))
+            if (Physics.Raycast(controller.transform.position, transform.forward, out raycastHit, 100))
             {
                 WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                 if (!wwObject.Equals(curObject))
@@ -127,18 +129,18 @@ namespace WorldWizards.core.experimental.controllers
         
         
         // Touchpad Press
-        protected override void OnTouchpadPress(Vector2 pos)
+        public override void OnPadUnclick()
         {
             // Rotation
             if (validTarget && curObject != null)
             {
-                if (pos.x < -DEADZONE_SIZE)
+                if (padPos.x < -DEADZONE_SIZE)
                 {
                     curRotation += 90;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
-                if (pos.x > DEADZONE_SIZE)
+                if (padPos.x > DEADZONE_SIZE)
                 {
                     curRotation -= 90;
                     Destroy(curObject.gameObject);
@@ -148,11 +150,11 @@ namespace WorldWizards.core.experimental.controllers
 
             // Move Grid
             Vector3 gridPosition = gridCollider.transform.position;
-            if (pos.y > DEADZONE_SIZE)
+            if (padPos.y > DEADZONE_SIZE)
             {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
-            if (pos.y < -DEADZONE_SIZE)
+            if (padPos.y < -DEADZONE_SIZE)
             {
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
@@ -161,11 +163,22 @@ namespace WorldWizards.core.experimental.controllers
         
         
         // Touchpad Touch
-        protected override void UpdateTouchpadPress(Vector2 pos)
+        public override void OnPadUntouch()
+        {
+            trackingSwipe = false;
+        }
+        
+        protected override void UpdateTouch()
         {
             if (curObject != null)
             {
-                var offset = (int)(possibleTiles.Count * swipe.GetSwipeRatio(Controller));
+                if (!trackingSwipe)
+                {
+                    trackingSwipe = true;
+                    startPosition = padPos;
+                }
+                
+                var offset = (int)(possibleTiles.Count * CalculateSwipe());
                 if (offset != 0)
                 {
                     curTileIndex = (curTileIndex + offset) % possibleTiles.Count;
@@ -173,6 +186,11 @@ namespace WorldWizards.core.experimental.controllers
                     curObject = PlaceObject(hitPoint);
                 }
             }
+        }
+        
+        private float CalculateSwipe()
+        {
+            return (padPos.x - startPosition.x) / 2;
         }
     }
 }
