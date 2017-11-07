@@ -31,18 +31,6 @@ namespace WorldWizards.core.entity.level
             return objectstoSave;
         }
 
-
-        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
-        {
-            var guids = coordinates[coordinate.index];
-
-            var result = new List<WWObject>();
-
-            foreach (var guid in guids)
-                result.Add(objects[guid]);
-            return result;
-        }
-
         public bool ContainsGuid(Guid id)
         {
             return objects.ContainsKey(id);
@@ -57,7 +45,7 @@ namespace WorldWizards.core.entity.level
         {
             if (coordinates.ContainsKey(wwObject.GetCoordinate().index))
             {
-                var objectsAtCoord = Get(wwObject.GetCoordinate());
+                var objectsAtCoord = GetObjects(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
                 foreach (var obj in objectsAtCoord)
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
@@ -128,16 +116,43 @@ namespace WorldWizards.core.entity.level
             return objectToGet;
         }
 
-        public List<WWObject> Get(Coordinate coord)
+        public List<WWObject> GetObjects(Coordinate coord)
+        {
+            return GetObjects(coord.index);
+        }
+        
+        public List<WWObject> GetObjects(IntVector3 index)
         {
             var result = new List<WWObject>();
-            if (coordinates.ContainsKey(coord.index))
+            if (coordinates.ContainsKey(index))
             {
-                var guids = coordinates[coord.index];
+                var guids = coordinates[index];
                 foreach (var guid in guids)
                     result.Add(objects[guid]);
             }
             return result;
         }
+        
+//        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
+//        {
+//            var guids = coordinates[coordinate.index];
+//
+//            var result = new List<WWObject>();
+//
+//            foreach (var guid in guids)
+//                result.Add(objects[guid]);
+//            return result;
+//        }
+        
+        public List<WWObject> GetPossibleTiles() {
+
+            return null;
+        }
+
+        public List<WWObject> RankObjectsToPlace()
+        {
+            return null;
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -48,7 +49,7 @@ namespace WorldWizards.core.entity.level
         /// <param name="coordinate">The coordinate to space to get.</param>
         public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            return _sceneDictionary.GetObjectsInCoordinateIndex(coordinate);
+            return _sceneDictionary.GetObjects(coordinate);
         }
 
         public bool Add(WWObject worldWizardsObject)
@@ -73,6 +74,77 @@ namespace WorldWizards.core.entity.level
 #else
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
+        }
+
+
+        public Dictionary<IntVector3, WWWalls>  SelectPerimeter(WWObject wwObject)
+        {
+            Dictionary<IntVector3, WWWalls> wallsToPlace = new Dictionary<IntVector3, WWWalls>();
+            List<IntVector3> visited = new List<IntVector3>();
+            IntVector3 curIndex = wwObject.GetCoordinate().index;
+            SelectPerimeter(wallsToPlace, visited, curIndex);
+            return wallsToPlace;
+        }
+
+        private void UpdateWallsDict( List<WWObject> objects, IntVector3 curIndex, WWWalls direction, Dictionary<IntVector3,
+            WWWalls> wallsToPlace, List<IntVector3> visited, IntVector3 origIndex)
+        {
+            Debug.Log("UpdateWallsDict called");
+            Debug.Log("Objects count " + objects.Count);
+
+            // TODO only consider the floor type tiles in Count
+            if (objects.Count == 0)
+            {
+                Debug.Log("Adding to walls to place");
+                if (wallsToPlace.ContainsKey(origIndex))
+                {
+                    wallsToPlace[origIndex] =  direction | wallsToPlace[origIndex];
+                }
+                else
+                {
+                    wallsToPlace.Add(origIndex, direction);
+                }
+            }
+            else // we need to search further for perimeter
+            {
+                SelectPerimeter(wallsToPlace, visited, curIndex);
+            }
+        }
+
+        private void SelectPerimeter(Dictionary<IntVector3, WWWalls> wallsToPlace, List<IntVector3> visited, IntVector3 curIndex)
+        {
+            Debug.Log("SelectPerimeter called.");
+            IntVector3 northIndex = new IntVector3(curIndex.x, curIndex.y, curIndex.z + 1);
+            IntVector3 eastIndex = new IntVector3(curIndex.x + 1, curIndex.y, curIndex.z);
+            IntVector3 southIndex = new IntVector3(curIndex.x, curIndex.y, curIndex.z - 1);
+            IntVector3 westIndex = new IntVector3(curIndex.x - 1, curIndex.y, curIndex.z);
+            
+            visited.Add(curIndex);
+
+            if (!visited.Contains(northIndex))
+            {
+                List<WWObject> northObjects = _sceneDictionary.GetObjects(northIndex);
+//                visited.Add(northIndex);
+                UpdateWallsDict(northObjects, northIndex, WWWalls.North, wallsToPlace, visited, curIndex);
+            }
+            if (!visited.Contains(eastIndex))
+            {
+                List<WWObject> eastObjects = _sceneDictionary.GetObjects(eastIndex);
+//                visited.Add(eastIndex);
+                UpdateWallsDict(eastObjects, eastIndex, WWWalls.East, wallsToPlace, visited, curIndex);
+            }
+            if (!visited.Contains(southIndex))
+            {
+                List<WWObject> southObjects = _sceneDictionary.GetObjects(southIndex);
+//                visited.Add(southIndex);
+                UpdateWallsDict(southObjects, southIndex, WWWalls.South, wallsToPlace, visited, curIndex);
+            }
+            if (!visited.Contains(westIndex))
+            {
+                List<WWObject> westObjectsList = _sceneDictionary.GetObjects(westIndex);
+//                visited.Add(westIndex);
+                UpdateWallsDict(westObjectsList, westIndex, WWWalls.West, wallsToPlace, visited, curIndex);
+            }
         }
 
 
@@ -105,7 +177,6 @@ namespace WorldWizards.core.entity.level
         {
             return _sceneDictionary.Get(id);
         }
-
 
         public void Save()
         {
