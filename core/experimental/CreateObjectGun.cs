@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 
@@ -22,6 +26,8 @@ namespace WorldWizards.core.experimental
         private List<string> possibleTiles;
         private SceneGraphController sceneGraphController;
 
+        private bool placeState = true;
+
         private void Awake()
         {
             groundPlane = new Plane(Vector3.up, Vector3.up);
@@ -34,13 +40,108 @@ namespace WorldWizards.core.experimental
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
             
+            
             gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
         }
 
+        private int GetWallIndex()
+        {
+            for (int i = 0; i < possibleTiles.Count; i++)
+            {
+                if (possibleTiles[i].Equals("ww_basic_assets_tile_wallbrick")){
+//                if (possibleTiles[i].Equals("ww_basic_assets_tile_arch")){
+                    return i;
+                }
+            }
+            return 0;
+        }
+
+        
+        private void PlaceWallObject(IntVector3 coordIndex, int rotation)
+        {
+            var tileIndex = GetWallIndex();
+            var coordinate = new Coordinate(coordIndex, rotation);
+            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
+            var go = WWObjectFactory.Instantiate(objData);
+            if (!sceneGraphController.Add(go))
+            {
+                Debug.Log("Could not place wall because of collision, deleting temp");
+                Destroy(go.gameObject);
+            }
+        }
+
+        private void BuildWallsInput()
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse0) && Input.GetKey(KeyCode.LeftShift))
+            {
+                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                var hit = new RaycastHit();
+                if (Physics.Raycast(ray, out hit))
+                {
+                    var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
+                    if (wwObject != null)
+                    {
+                        if (!wwObject.Equals(curObject)) BuildWalls(wwObject);
+                    }
+                }
+            }
+        }
+        
+
+        private void BuildWalls(WWObject wwObject)
+        {
+            Debug.Log("Execute Build Walls");
+            var walls = sceneGraphController.SelectPerimeter(wwObject);
+            Debug.Log("Found " + walls.Count + " to build.");
+            foreach (var wall in walls)
+            {
+                Debug.Log(string.Format(" build a wall at inded : {0} and diretions {1}", wall.Key, wall.Value));
+                
+                if (Convert.ToBoolean(WWWalls.North & wall.Value))
+                {
+                    Debug.Log("North Wall detected");
+                    PlaceWallObject(wall.Key, 0);
+                }
+                if (Convert.ToBoolean(WWWalls.East & wall.Value))
+                {
+                    Debug.Log("East Wall detected");    
+                    PlaceWallObject(wall.Key, 90);
+                }
+                if (Convert.ToBoolean(WWWalls.South & wall.Value))
+                {
+                    Debug.Log("South Wall detected"); 
+                    PlaceWallObject(wall.Key, 180);
+                }
+                if (Convert.ToBoolean(WWWalls.West & wall.Value))
+                {
+                    Debug.Log("West Wall detected");  
+                    PlaceWallObject(wall.Key, 270);
+                }
+
+
+
+            }
+        }
+
+        private void TogglePlaceState()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                placeState = !placeState;
+            }
+        }
 
         private void Update()
         {
+            TogglePlaceState();
+            if (!placeState)
+            {
+                BuildWallsInput();
+                return;
+            }
+            
+            
             DeleteHitObject();
             // move the builder grid
             var gridPosition = gridCollider.transform.position;

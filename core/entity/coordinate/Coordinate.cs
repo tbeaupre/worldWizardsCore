@@ -26,7 +26,6 @@ namespace WorldWizards.core.entity.coordinate
         {
         }
 
-
         [JsonConstructor]
         public Coordinate()
         {
