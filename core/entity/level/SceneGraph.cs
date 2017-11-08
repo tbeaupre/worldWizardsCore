@@ -7,6 +7,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.file.entity;
 using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level
@@ -124,25 +125,21 @@ namespace WorldWizards.core.entity.level
             if (!visited.Contains(northIndex))
             {
                 List<WWObject> northObjects = _sceneDictionary.GetObjects(northIndex);
-//                visited.Add(northIndex);
                 UpdateWallsDict(northObjects, northIndex, WWWalls.North, wallsToPlace, visited, curIndex);
             }
             if (!visited.Contains(eastIndex))
             {
                 List<WWObject> eastObjects = _sceneDictionary.GetObjects(eastIndex);
-//                visited.Add(eastIndex);
                 UpdateWallsDict(eastObjects, eastIndex, WWWalls.East, wallsToPlace, visited, curIndex);
             }
             if (!visited.Contains(southIndex))
             {
                 List<WWObject> southObjects = _sceneDictionary.GetObjects(southIndex);
-//                visited.Add(southIndex);
                 UpdateWallsDict(southObjects, southIndex, WWWalls.South, wallsToPlace, visited, curIndex);
             }
             if (!visited.Contains(westIndex))
             {
                 List<WWObject> westObjectsList = _sceneDictionary.GetObjects(westIndex);
-//                visited.Add(westIndex);
                 UpdateWallsDict(westObjectsList, westIndex, WWWalls.West, wallsToPlace, visited, curIndex);
             }
         }
@@ -189,7 +186,7 @@ namespace WorldWizards.core.entity.level
         {
             var json = FileIO.LoadJsonFromFile(FileIO.testPath);
 
-            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectDataMemento>>(json);
+            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectJSONBlob>>(json);
             Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
 
             foreach (var obj in objectsToRestore)

@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using UnityEngine;
+﻿using UnityEngine;
 using WorldWizards.core.entity.common;
+using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.coordinate
 {
@@ -11,6 +11,12 @@ namespace WorldWizards.core.entity.coordinate
             this.index = index;
             this.offset = offset;
             this.rotation = rotation;
+        }
+        
+        public Coordinate(CoordinateJSONBlob b) : this(
+            new IntVector3(b.indexX,b.indexY,b.indexZ),
+            new Vector3(b.offsetX,b.offsetY,b.offsetZ), b.rotation)
+        {
         }
 
         public Coordinate(IntVector3 index) : this(index, Vector3.zero, 0)
@@ -26,13 +32,8 @@ namespace WorldWizards.core.entity.coordinate
         {
         }
 
-        [JsonConstructor]
-        public Coordinate()
-        {
-        }
-
-        public IntVector3 index { get; set; }
+        public IntVector3 index { get; private set; }
         public Vector3 offset { get; set; } // normalizedOffset [0,1]
-        public int rotation { get; set; } // y rotation
+        public int rotation { get; private set; } // y rotation
     }
 }

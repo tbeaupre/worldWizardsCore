@@ -5,6 +5,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.level
 {
@@ -19,14 +20,14 @@ namespace WorldWizards.core.entity.level
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
-        public List<WWObjectDataMemento> GetMementoObjects()
+        public List<WWObjectJSONBlob> GetMementoObjects()
         {
-            var objectstoSave = new List<WWObjectDataMemento>();
+            var objectstoSave = new List<WWObjectJSONBlob>();
             Debug.Log(GetCount());
             foreach (var entry in objects)
             {
-                var memento = new WWObjectDataMemento(entry.Value.objectData);
-                objectstoSave.Add(memento);
+                var blob = new WWObjectJSONBlob(entry.Value.objectData);
+                objectstoSave.Add(blob);
             }
             return objectstoSave;
         }
@@ -132,17 +133,6 @@ namespace WorldWizards.core.entity.level
             }
             return result;
         }
-        
-//        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
-//        {
-//            var guids = coordinates[coordinate.index];
-//
-//            var result = new List<WWObject>();
-//
-//            foreach (var guid in guids)
-//                result.Add(objects[guid]);
-//            return result;
-//        }
         
         public List<WWObject> GetPossibleTiles() {
 
