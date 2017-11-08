@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.gameObject
 {
@@ -20,13 +21,13 @@ namespace WorldWizards.core.entity.gameObject
             this.resourceTag = resourceTag;
         }
 
-        public WWObjectData(WWObjectDataMemento m)
+        public WWObjectData(WWObjectJSONBlob b)
         {
-            id = m.id;
+            id = b.id;
             //			this.type = m.type;
             //			this.metaData = m.metaData;
-            coordinate = m.coordinate;
-            resourceTag = m.resourceTag;
+            coordinate = new Coordinate(b.coordinate);
+            resourceTag = b.resourceTag;
 
             // Note parent and children relationships are re-linked in the SceneGraphController during the Load
             parent = null;
@@ -86,37 +87,6 @@ namespace WorldWizards.core.entity.gameObject
         public void RemoveChild(WWObjectData child)
         {
             if (children.Contains(child)) children.Remove(child);
-        }
-    }
-
-    [Serializable]
-    public class WWObjectDataMemento
-    {
-        public List<Guid> children;
-
-        //		public MetaData metaData;
-        public Coordinate coordinate;
-
-        public Guid id;
-        public Guid parent;
-        public string resourceTag;
-        public WWType type;
-
-        public WWObjectDataMemento(WWObjectData state)
-        {
-            id = state.id;
-            //			this.type = state.type;
-            //			this.metaData = state.metaData;
-            coordinate = state.coordinate;
-            resourceTag = state.resourceTag;
-            if (state.parent != null) parent = state.parent.id;
-            children = new List<Guid>();
-            foreach (var child in state.children) children.Add(child.id);
-        }
-
-        [JsonConstructor]
-        public WWObjectDataMemento()
-        {
         }
     }
 }

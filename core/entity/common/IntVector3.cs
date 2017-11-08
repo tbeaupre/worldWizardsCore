@@ -19,10 +19,6 @@ namespace WorldWizards.core.entity.common
             z = (int) Mathf.Floor(vector.z);
         }
 
-        [JsonConstructor]
-        public IntVector3()
-        {
-        }
 
         public int x { get; private set; }
         public int y { get; private set; }
