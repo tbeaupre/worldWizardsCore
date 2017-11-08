@@ -7,7 +7,7 @@ namespace WorldWizards.core.entity.gameObject
     {
         public override void SetPosition(Coordinate coordinate)
         {
-            coordinate.offset = Vector3.zero;
+            coordinate.SetOffset(Vector3.zero);
             base.SetPosition(coordinate);
         }
     }
