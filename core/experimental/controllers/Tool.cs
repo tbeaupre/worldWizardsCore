@@ -1,6 +1,5 @@
-﻿using System.Diagnostics.Tracing;
-using System.Text.RegularExpressions;
-using UnityEngine;
+﻿using UnityEngine;
+using WorldWizards.core.viveControllers;
 
 namespace WorldWizards.core.experimental.controllers
 {
@@ -19,12 +18,12 @@ namespace WorldWizards.core.experimental.controllers
         public bool listenForPress = false;
         public bool listenForTouch = false;
         
-        protected bool trigger = false;
-        protected bool grip = false;
-        protected bool menu = false;
-        protected bool press = false;
-        protected bool touch = false;
-        protected Vector2 padPos;
+        private bool trigger = false;
+        private bool grip = false;
+        private bool menu = false;
+        private bool press = false;
+        private bool touch = false;
+        protected Vector2 lastPadPos;
 
         public virtual void Init(SteamVR_TrackedController newController)
         {
@@ -47,11 +46,13 @@ namespace WorldWizards.core.experimental.controllers
             }
             if (press)
             {
-                UpdatePress();
+                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
+                UpdatePress(lastPadPos);
             }
             else if (touch)
             {
-                UpdateTouch();
+                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
+                UpdateTouch(lastPadPos);
             }
         }
         
@@ -65,25 +66,17 @@ namespace WorldWizards.core.experimental.controllers
         public void OnMenuClick() { menu = true; }
         public virtual void OnMenuUnclick() { menu = false; }
         
-        public void OnPadClick(Vector2 pos) 
-        { 
-            press = true;
-            padPos = pos;
-        }
+        public void OnPadClick(Vector2 pos) { press = true; }
         public virtual void OnPadUnclick() { press = false; }
         
-        public void OnPadTouch(Vector2 pos)
-        { 
-            touch = true;
-            padPos = pos;
-        }
+        public void OnPadTouch(Vector2 pos) { touch = true; }
         public virtual void OnPadUntouch() { touch = false; }
         
         // These methods are called if the button is held down
         protected virtual void UpdateTrigger() {}
         protected virtual void UpdateGrip() {}
         protected virtual void UpdateMenu() {}
-        protected virtual void UpdatePress() {}
-        protected virtual void UpdateTouch() {}
+        protected virtual void UpdatePress(Vector2 padPos) {}
+        protected virtual void UpdateTouch(Vector2 padPos) {}
     }
 }

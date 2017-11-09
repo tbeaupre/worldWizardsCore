@@ -47,7 +47,8 @@ namespace WorldWizards.core.experimental.controllers
             ResourceLoader.LoadResources(); // Should be removed at some point.
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
             
-            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            float tileLengthScale = CoordinateHelper.tileLengthScale;
+            gridCollider.transform.localScale = Vector3.one * tileLengthScale;
         }
 
         public override void Update()
@@ -134,13 +135,13 @@ namespace WorldWizards.core.experimental.controllers
             // Rotation
             if (validTarget && curObject != null)
             {
-                if (padPos.x < -DEADZONE_SIZE)
+                if (lastPadPos.x < -DEADZONE_SIZE)
                 {
                     curRotation += 90;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
-                if (padPos.x > DEADZONE_SIZE)
+                if (lastPadPos.x > DEADZONE_SIZE)
                 {
                     curRotation -= 90;
                     Destroy(curObject.gameObject);
@@ -150,11 +151,11 @@ namespace WorldWizards.core.experimental.controllers
 
             // Move Grid
             Vector3 gridPosition = gridCollider.transform.position;
-            if (padPos.y > DEADZONE_SIZE)
+            if (lastPadPos.y > DEADZONE_SIZE)
             {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
-            if (padPos.y < -DEADZONE_SIZE)
+            if (lastPadPos.y < -DEADZONE_SIZE)
             {
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
@@ -168,7 +169,7 @@ namespace WorldWizards.core.experimental.controllers
             trackingSwipe = false;
         }
         
-        protected override void UpdateTouch()
+        protected override void UpdateTouch(Vector2 padPos)
         {
             if (curObject != null)
             {
@@ -178,7 +179,7 @@ namespace WorldWizards.core.experimental.controllers
                     startPosition = padPos;
                 }
                 
-                var offset = (int)(possibleTiles.Count * CalculateSwipe());
+                var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
                 if (offset != 0)
                 {
                     curTileIndex = (curTileIndex + offset) % possibleTiles.Count;
@@ -188,9 +189,9 @@ namespace WorldWizards.core.experimental.controllers
             }
         }
         
-        private float CalculateSwipe()
+        private float CalculateSwipe(float x)
         {
-            return (padPos.x - startPosition.x) / 2;
+            return (x - startPosition.x) / 2;
         }
     }
 }

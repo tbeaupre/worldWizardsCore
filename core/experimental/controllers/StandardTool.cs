@@ -10,7 +10,7 @@ namespace WorldWizards.core.experimental.controllers
         
         // Prefabs
         public GameObject laserPrefab;
-        public GameObject teleportReticlePrefab; // Teleport reticle prefab
+        public GameObject reticlePrefab; // Teleport reticle prefab
         
         // VR Headset Transform Information
         private Transform cameraRigTransform; // Tranform of [Camera Rig]
@@ -35,19 +35,14 @@ namespace WorldWizards.core.experimental.controllers
             
             SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
             cameraRigTransform = controllerManager.transform;
-            headTransform = controllerManager.GetComponent<Camera>().transform;
-        }
-
-        private void Start()
-        {
-            laser = Instantiate(laserPrefab);
-            reticle = Instantiate(teleportReticlePrefab);
+            headTransform = controllerManager.GetComponentInChildren<Camera>().transform;
         }
 
         // Trigger
         public override void OnTriggerUnclick()
         {
             // Selection Logic.
+            base.OnTriggerUnclick();
         }
         
         
@@ -55,13 +50,13 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnUngrip()
         {
             // Hide laser and reticle when button is released.
-            laser.SetActive(false);
-            reticle.SetActive(false);
+            DeactivateLaser();
 
             if (shouldTeleport)
             {
                 Teleport(hitPoint);
             }
+            base.OnUngrip();
         }
 
         protected override void UpdateGrip()
@@ -78,8 +73,25 @@ namespace WorldWizards.core.experimental.controllers
             else
             {
                 // Hide laser and reticle when no valid target is found.
-                laser.SetActive(false);
-                reticle.SetActive(false);
+                DeactivateLaser();
+            }
+        }
+
+        private void DeactivateLaser()
+        {
+            if (laser != null)
+            {
+                Destroy(laser);
+                Destroy(reticle);
+            }
+        }
+
+        private void ActivateLaser()
+        {
+            if (laser == null)
+            {
+                laser = Instantiate(laserPrefab);
+                reticle = Instantiate(reticlePrefab);
             }
         }
 
@@ -87,8 +99,7 @@ namespace WorldWizards.core.experimental.controllers
         private void DrawLaser(RaycastHit hit)
         {
             // Show laser and Reticle
-            laser.SetActive(true);
-            reticle.SetActive(true);
+            ActivateLaser();
             
             // Put laser between controller and where raycast hits
             laser.transform.position = Vector3.Lerp(controller.transform.position, hit.point, .5f);
@@ -120,28 +131,43 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnMenuUnclick()
         {
             // Menu Logic.
+            base.OnMenuUnclick();
         }
 
         
         // Touchpad Press
-        protected override void UpdatePress()
+        protected override void UpdatePress(Vector2 padPos)
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.up * MOVE_OFFSET;
+                cameraRigTransform.position += Vector3.down * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.down * MOVE_OFFSET;
+                cameraRigTransform.position += Vector3.up * MOVE_OFFSET;
             }
         }
 
         
         // Touchpad Touch
-        protected override void UpdateTouch()
+        protected override void UpdateTouch(Vector2 padPos)
         {
-            cameraRigTransform.position += padPos.y * Vector3.forward * MOVE_OFFSET;
-            cameraRigTransform.position += padPos.x * Vector3.right * MOVE_OFFSET;
+            if (Math.Abs(padPos.x) > DEADZONE_SIZE / 2)
+            {
+                Vector3 strafeVector = padPos.x * gameObject.transform.right;
+                strafeVector.y = 0;
+                strafeVector = strafeVector.normalized * MOVE_OFFSET;
+                
+                cameraRigTransform.position += strafeVector;
+            }
+            if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
+            {
+                Vector3 forwardMoveVector = padPos.y * gameObject.transform.forward;
+                forwardMoveVector.y = 0;
+                forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
+            
+                cameraRigTransform.position += forwardMoveVector;  
+            }
         }
     }
 }
