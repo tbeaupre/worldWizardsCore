@@ -9,6 +9,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.experimental
 {
@@ -49,8 +50,8 @@ namespace WorldWizards.core.experimental
         {
             for (int i = 0; i < possibleTiles.Count; i++)
             {
-                if (possibleTiles[i].Equals("ww_basic_assets_tile_wallbrick")){
-//                if (possibleTiles[i].Equals("ww_basic_assets_tile_arch")){
+//                if (possibleTiles[i].Equals("ww_basic_assets_tile_wallbrick")){
+                if (possibleTiles[i].Equals("ww_basic_assets_tile_arch")){
                     return i;
                 }
             }
@@ -70,6 +71,38 @@ namespace WorldWizards.core.experimental
                 Destroy(go.gameObject);
             }
         }
+        
+        
+        private void TryToFitWall(IntVector3 coordIndex, WWWalls wallOpening)
+        { 
+            var tileIndex = GetWallIndex();
+
+            WWWalls wallsToFit = 0;
+            // close off everything
+            foreach (WWWalls w in Enum.GetValues(typeof(WWWalls)))
+            {
+                wallsToFit = wallsToFit | w;
+            }
+            wallsToFit = wallsToFit & (~ wallOpening); // carve out walls we want to fit into
+            
+            // check to see if any of the 4 possible rotations would fit given resource's walls
+
+            var resourceTag = possibleTiles[tileIndex];
+            
+            var resource = WWResourceController.GetResource(resourceTag);
+            var resourceMetaData = resource.GetMetaData();
+            
+            for (int r = 0; r < 360; r += 90)
+            {
+                var newWalls = WWWallsHelper.getRotatedWWWalls(resourceMetaData, r);
+                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
+                if (!doesCollide)
+                {
+                    PlaceWallObject(coordIndex, r);
+                    break;
+                }
+            }
+        }
 
         private void BuildWallsInput()
         {
@@ -87,7 +120,7 @@ namespace WorldWizards.core.experimental
                 }
             }
         }
-        
+
 
         private void BuildWalls(WWObject wwObject)
         {
@@ -101,26 +134,27 @@ namespace WorldWizards.core.experimental
                 if (Convert.ToBoolean(WWWalls.North & wall.Value))
                 {
                     Debug.Log("North Wall detected");
-                    PlaceWallObject(wall.Key, 0);
+//                    PlaceWallObject(wall.Key, 0);
+                    TryToFitWall(wall.Key, WWWalls.North);
                 }
                 if (Convert.ToBoolean(WWWalls.East & wall.Value))
                 {
-                    Debug.Log("East Wall detected");    
-                    PlaceWallObject(wall.Key, 90);
+                    Debug.Log("East Wall detected");   
+                    TryToFitWall(wall.Key, WWWalls.East);
+//                    PlaceWallObject(wall.Key, 90);
                 }
                 if (Convert.ToBoolean(WWWalls.South & wall.Value))
                 {
                     Debug.Log("South Wall detected"); 
-                    PlaceWallObject(wall.Key, 180);
+                    TryToFitWall(wall.Key, WWWalls.South);
+//                    PlaceWallObject(wall.Key, 180);
                 }
                 if (Convert.ToBoolean(WWWalls.West & wall.Value))
                 {
                     Debug.Log("West Wall detected");  
-                    PlaceWallObject(wall.Key, 270);
+                    TryToFitWall(wall.Key, WWWalls.West);
+//                    PlaceWallObject(wall.Key, 270);
                 }
-
-
-
             }
         }
 
@@ -216,23 +250,63 @@ namespace WorldWizards.core.experimental
             }
         }
 
+//        private WWObject PlaceObject(Vector3 position)
+//        {
+//            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+//
+//
+//            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+//            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
+//            var go = WWObjectFactory.Instantiate(objData);
+//
+//
+//            //			Debug.Log (curObject.objectData.metaData.GetType ());
+//            //			Debug.Log (curObject.objectData.GetType());
+//
+//            return go;
+//        }
+
+
         private WWObject PlaceObject(Vector3 position)
-        {
+        { 
             var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
-
-
+            
             var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
-            var go = WWObjectFactory.Instantiate(objData);
 
+            WWWalls wallsToFit = 0;
+            // close off everything
+            foreach (WWWalls w in Enum.GetValues(typeof(WWWalls)))
+            {
+                wallsToFit = wallsToFit | w;
+            }
+            wallsToFit = wallsToFit & sceneGraphController.GetWallsAtCoordinate(coordinate); // carve out walls we want to fit into
+            
+            // check to see if any of the 4 possible rotations would fit given resource's walls
 
-            //			Debug.Log (curObject.objectData.metaData.GetType ());
-            //			Debug.Log (curObject.objectData.GetType());
-
-            return go;
+            var resourceTag = possibleTiles[tileIndex];
+            
+            var resource = WWResourceController.GetResource(resourceTag);
+            var resourceMetaData = resource.GetMetaData();
+            
+//            for (int r = 0; r < 360; r += 90)
+            int r = curRotation;
+            for (int i = 0; i < 4; i ++)
+            {
+                r = (curRotation + (i * 90)) % 360;
+                var newWalls = WWWallsHelper.getRotatedWWWalls(resourceMetaData, r);
+                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
+                if (!doesCollide)
+                {
+                    var coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, r);
+                    var objData = WWObjectFactory.CreateNew(coordRotated, possibleTiles[tileIndex]);
+                    var go = WWObjectFactory.Instantiate(objData);
+                    return go;
+                }
+            }
+            return null;
         }
-
-
+        
+        
         private void DeleteHitObject()
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))

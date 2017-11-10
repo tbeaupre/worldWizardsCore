@@ -144,6 +144,19 @@ namespace WorldWizards.core.entity.level
             }
         }
 
+        public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
+        {
+            var objects = GetObjectsInCoordinateIndex(coordinate);
+            WWWalls walls = 0;
+            foreach (var obj in objects)
+            {
+                walls = walls | obj.GetWallsWRotationApplied();
+            }
+           
+
+            return walls;
+        }
+
 
         public void Delete(Guid id)
         {

@@ -35,11 +35,12 @@ namespace WorldWizards.core.entity.coordinate
         public IntVector3 index { get; private set; }
         public Vector3 offset { get; private set; } // normalizedOffset [0,1]
 
-        public void SetOffset(Vector3 offset)
+        private void SetOffset(Vector3 offset)
         {
             this.offset = offset.normalized;
         }
 
         public int rotation { get; private set; } // y rotation
+        
     }
 }
