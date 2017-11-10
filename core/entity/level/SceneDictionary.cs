@@ -51,10 +51,10 @@ namespace WorldWizards.core.entity.level
                 foreach (var obj in objectsAtCoord)
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
                     {
-                        var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate());
+                        var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
                         existingWalls = existingWalls | walls;
                     }
-                var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate());
+                var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
                 var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }

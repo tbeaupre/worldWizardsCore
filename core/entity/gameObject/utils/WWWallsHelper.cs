@@ -7,9 +7,9 @@ namespace WorldWizards.core.entity.gameObject.utils
 {
     public class WWWallsHelper
     {
-        public static WWWalls getRotatedWWWalls(WWResourceMetaData metaData, Coordinate coordinate)
+        public static WWWalls getRotatedWWWalls(WWResourceMetaData metaData, int rotation)
         {
-            var yRotation = coordinate.rotation % 360 + (coordinate.rotation < 0 ? 360 : 0);
+            var yRotation = rotation % 360 + (rotation < 0 ? 360 : 0);
 
             // rotation should only be 1 of 4 discrete values, 0, 90, 180, and 270
 //            Debug.Log(yRotation);

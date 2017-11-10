@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.level;
 
@@ -31,6 +32,10 @@ namespace WorldWizards.core.controller.level
             return false;
         }
 
+        public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
+        {
+            return sceneGraph.GetWallsAtCoordinate(coordinate);
+        }
 
         public Dictionary<IntVector3, WWWalls> SelectPerimeter(WWObject wwObject)
         {

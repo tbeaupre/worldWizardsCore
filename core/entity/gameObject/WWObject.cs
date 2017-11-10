@@ -4,6 +4,7 @@ using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject
 {
@@ -37,6 +38,11 @@ namespace WorldWizards.core.entity.gameObject
         public Coordinate GetCoordinate()
         {
             return objectData.coordinate;
+        }
+
+        public WWWalls GetWallsWRotationApplied()
+        {
+            return WWWallsHelper.getRotatedWWWalls(this.resourceMetaData, GetCoordinate().rotation);
         }
 
         public void SetCoordinate(Coordinate coordinate)
