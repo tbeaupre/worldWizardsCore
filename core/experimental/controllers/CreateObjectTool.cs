@@ -46,6 +46,9 @@ namespace WorldWizards.core.experimental.controllers
             
             ResourceLoader.LoadResources(); // Should be removed at some point.
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
+            Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
+            curTileIndex = 0;
+            curRotation = 0;
             
             float tileLengthScale = CoordinateHelper.tileLengthScale;
 
@@ -55,8 +58,9 @@ namespace WorldWizards.core.experimental.controllers
 
         public override void Update()
         {
+            Ray ray = new Ray(controller.transform.position, controller.transform.forward);
             RaycastHit raycastHit;
-            if (Physics.Raycast(controller.transform.position, transform.forward, out raycastHit, 100))
+            if (gridCollider.Raycast(ray, out raycastHit, 100))
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
@@ -96,6 +100,7 @@ namespace WorldWizards.core.experimental.controllers
                     curObject = null;
                 }
             }
+            base.OnTriggerUnclick();
         }
 
         protected override void UpdateTrigger()
@@ -108,9 +113,7 @@ namespace WorldWizards.core.experimental.controllers
                 }
                 else
                 {
-                    curObject.transform.position = new Vector3(hitPoint.x,
-                        hitPoint.y + 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
-                        hitPoint.z);
+                    curObject.transform.position = hitPoint;
                 }
             }
         }
@@ -119,15 +122,19 @@ namespace WorldWizards.core.experimental.controllers
         // Grip
         public override void OnUngrip()
         {
-            RaycastHit raycastHit;
-            if (Physics.Raycast(controller.transform.position, transform.forward, out raycastHit, 100))
+            if (curObject == null)
             {
-                WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
-                if (!wwObject.Equals(curObject))
+                RaycastHit raycastHit;
+                if (Physics.Raycast(controller.transform.position, controller.transform.forward, out raycastHit, 100))
                 {
-                    sceneGraphController.Delete(wwObject.GetId());
+                    WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
+                    if (wwObject != null)
+                    {
+                        sceneGraphController.Delete(wwObject.GetId());
+                    }
                 }
             }
+            base.OnUngrip();
         }
         
         
@@ -162,6 +169,7 @@ namespace WorldWizards.core.experimental.controllers
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
             gridCollider.transform.position = gridPosition;
+            base.OnPadUnclick();
         }
         
         
@@ -169,6 +177,7 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnPadUntouch()
         {
             trackingSwipe = false;
+            base.OnPadUntouch();
         }
         
         protected override void UpdateTouch(Vector2 padPos)
@@ -184,7 +193,8 @@ namespace WorldWizards.core.experimental.controllers
                 var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
                 if (offset != 0)
                 {
-                    curTileIndex = (curTileIndex + offset) % possibleTiles.Count;
+                    startPosition = padPos;
+                    curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
@@ -193,7 +203,7 @@ namespace WorldWizards.core.experimental.controllers
         
         private float CalculateSwipe(float x)
         {
-            return (x - startPosition.x) / 2;
+            return (x - startPosition.x) / 5;
         }
     }
 }
