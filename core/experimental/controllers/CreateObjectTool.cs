@@ -48,6 +48,8 @@ namespace WorldWizards.core.experimental.controllers
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
             
             float tileLengthScale = CoordinateHelper.tileLengthScale;
+
+            gridCollider = FindObjectOfType<MeshCollider>();
             gridCollider.transform.localScale = Vector3.one * tileLengthScale;
         }
 
