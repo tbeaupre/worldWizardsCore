@@ -2,18 +2,9 @@
 
 namespace WorldWizards.core.experimental.controllers
 {
-    public abstract class ControllerListener : MonoBehaviour
+    public abstract class ControllerListener : InputListener
     {
         private SteamVR_TrackedController controller;
-        protected Tool tool;
-        private bool debug = false;
-        
-        private bool trigger = false;
-        private bool grip = false;
-        private bool menu = false;
-        private bool press = false;
-        private bool touch = false;
-        private Vector2 lastPadPos; // May be possible to remove.
 
         protected virtual void Awake()
         {
@@ -44,99 +35,58 @@ namespace WorldWizards.core.experimental.controllers
                 controller.PadUntouched += OnPadUntouch;
             }
         }
-        
-        private void Update()
+
+        protected override Transform GetCurrentTransform()
         {
-            tool.UpdateTransform(controller.transform);
-            
-            if (trigger)
-            {
-                tool.UpdateTrigger();
-            }
-            if (grip)
-            {
-                tool.UpdateGrip();
-            }
-            if (menu)
-            {
-                tool.UpdateMenu();
-            }
-            if (press)
-            {
-                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
-                tool.UpdatePress(lastPadPos);
-            }
-            else if (touch)
-            {
-                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
-                tool.UpdateTouch(lastPadPos);
-            }
+            return controller.transform;
+        }
+
+        protected override Vector2 GetCurrentPadPosition()
+        {
+            return new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
         }
 
         #region Listener Functions
         private void OnTriggerClick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnTriggerClick", sender);
-            trigger = true;
+            OnTriggerClick(sender);
         }
         private void OnTriggerUnclick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnTriggerUnclick", sender);
-            trigger = false;
-            tool.OnTriggerUnclick();
+            OnTriggerUnclick(sender);
         }
         private void OnGrip(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnGrip", sender);
-            grip = true;
+            OnGrip(sender);
         }
         private void OnUngrip(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnUngrip", sender);
-            grip = false;
-            tool.OnUngrip();
+            OnUngrip(sender);
         }
         private void OnMenuClick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnMenuClick", sender);
-            menu = true;
+            OnMenuClick(sender);
         }
         private void OnMenuUnclick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnMenuUnclick", sender);
-            menu = false;
-            tool.OnMenuUnclick();
+            OnMenuUnclick(sender);
         }
         private void OnPadClick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnPadClick", sender);
-            press = true;
+            OnPadClick(sender);
         }
         private void OnPadUnclick(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnPadUnclick", sender);
-            press = false;
-            tool.OnPadUnclick(new Vector2(e.padX, e.padY));
+            OnPadUnclick(sender);
         }
         private void OnPadTouch(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnPadTouch", sender);
-            touch = true;
+            OnPadTouch(sender);
         }
         private void OnPadUntouch(object sender, ClickedEventArgs e)
         {
-            DebugMessage("OnPadUntouch", sender);
-            touch = false;
-            tool.OnPadUntouch(new Vector2(e.padX, e.padY));
+            OnPadUntouch(sender);
         }
         #endregion
-
-        private void DebugMessage(string functionName, object sender)
-        {
-            if (debug)
-            {
-                Debug.Log("ControllerListener::" + functionName + ": " + sender);
-            }
-        }
     }
 }
