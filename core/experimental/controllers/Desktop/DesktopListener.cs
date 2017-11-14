@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using worldWizards.core.experimental.controllers.Tools;
 using WorldWizards.core.experimental.controllers;
 
 namespace worldWizards.core.experimental.controllers.Desktop
 {
-    public abstract class DesktopListener : InputListener
+    public class DesktopListener : InputListener
     {
         private KeyCode trigger;
         private KeyCode grip;
