@@ -32,10 +32,8 @@ namespace WorldWizards.core.experimental.controllers
         private bool validTarget = false;
         private Vector3 hitPoint;
         
-        public override void Init(SteamVR_TrackedController newController)
+        private void Awake()
         {
-            base.Init(newController);
-            
             listenForTrigger = true;
             listenForGrip = true;
             listenForMenu = true;
@@ -56,9 +54,9 @@ namespace WorldWizards.core.experimental.controllers
             gridCollider.transform.localScale = Vector3.one * tileLengthScale;
         }
 
-        public override void Update()
+        public void Update()
         {
-            Ray ray = new Ray(controller.transform.position, controller.transform.forward);
+            Ray ray = new Ray(controllerTransform.position, controllerTransform.forward);
             RaycastHit raycastHit;
             if (gridCollider.Raycast(ray, out raycastHit, 100))
             {
@@ -74,8 +72,6 @@ namespace WorldWizards.core.experimental.controllers
             {
                 validTarget = false;
             }
-            
-            base.Update();
         }
         
         private WWObject PlaceObject(Vector3 position)
@@ -100,10 +96,9 @@ namespace WorldWizards.core.experimental.controllers
                     curObject = null;
                 }
             }
-            base.OnTriggerUnclick();
         }
 
-        protected override void UpdateTrigger()
+        public override void UpdateTrigger()
         {
             if (validTarget)
             {
@@ -125,7 +120,7 @@ namespace WorldWizards.core.experimental.controllers
             if (curObject == null)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(controller.transform.position, controller.transform.forward, out raycastHit, 100))
+                if (Physics.Raycast(controllerTransform.position, controllerTransform.forward, out raycastHit, 100))
                 {
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
@@ -134,12 +129,11 @@ namespace WorldWizards.core.experimental.controllers
                     }
                 }
             }
-            base.OnUngrip();
         }
         
         
         // Touchpad Press
-        public override void OnPadUnclick()
+        public override void OnPadUnclick(Vector2 lastPadPos)
         {
             // Rotation
             if (validTarget && curObject != null)
@@ -169,18 +163,16 @@ namespace WorldWizards.core.experimental.controllers
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
             gridCollider.transform.position = gridPosition;
-            base.OnPadUnclick();
         }
         
         
         // Touchpad Touch
-        public override void OnPadUntouch()
+        public override void OnPadUntouch(Vector2 lastPadPos)
         {
             trackingSwipe = false;
-            base.OnPadUntouch();
         }
         
-        protected override void UpdateTouch(Vector2 padPos)
+        public override void UpdateTouch(Vector2 padPos)
         {
             if (curObject != null)
             {

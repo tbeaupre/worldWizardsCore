@@ -23,10 +23,8 @@ namespace WorldWizards.core.experimental.controllers
         private bool shouldTeleport; // True when valid teleport location is found
         private Vector3 hitPoint; // Hit point of the laser raycast
         
-        public override void Init(SteamVR_TrackedController newController)
+        private void Awake()
         {
-            base.Init(newController);
-            
             listenForTrigger = true;
             listenForGrip = true;
             listenForMenu = true;
@@ -42,7 +40,6 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnTriggerUnclick()
         {
             // Selection Logic.
-            base.OnTriggerUnclick();
         }
         
         
@@ -56,14 +53,13 @@ namespace WorldWizards.core.experimental.controllers
             {
                 Teleport(hitPoint);
             }
-            base.OnUngrip();
         }
 
-        protected override void UpdateGrip()
+        public override void UpdateGrip()
         {
             RaycastHit hit;
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(controller.transform.position, transform.forward, out hit, 100))
+            if (Physics.Raycast(controllerTransform.position, transform.forward, out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -102,7 +98,7 @@ namespace WorldWizards.core.experimental.controllers
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(controller.transform.position, hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(controllerTransform.position, hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -131,12 +127,11 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnMenuUnclick()
         {
             // Menu Logic.
-            base.OnMenuUnclick();
         }
 
         
         // Touchpad Press
-        protected override void UpdatePress(Vector2 padPos)
+        public override void UpdatePress(Vector2 padPos)
         {
             if (padPos.y > DEADZONE_SIZE)
             {
@@ -150,7 +145,7 @@ namespace WorldWizards.core.experimental.controllers
 
         
         // Touchpad Touch
-        protected override void UpdateTouch(Vector2 padPos)
+        public override void UpdateTouch(Vector2 padPos)
         {
             if (Math.Abs(padPos.x) > DEADZONE_SIZE / 2)
             {

@@ -7,11 +7,17 @@ namespace WorldWizards.core.experimental.controllers
         private SteamVR_TrackedController controller;
         protected Tool tool;
         private bool debug = false;
+        
+        private bool trigger = false;
+        private bool grip = false;
+        private bool menu = false;
+        private bool press = false;
+        private bool touch = false;
+        private Vector2 lastPadPos; // May be possible to remove.
 
         protected virtual void Awake()
         {
             controller = GetComponent<SteamVR_TrackedController>();
-            tool.Init(controller);
             if (tool.listenForTrigger)
             {
                 controller.TriggerClicked += OnTriggerClick;
@@ -38,57 +44,90 @@ namespace WorldWizards.core.experimental.controllers
                 controller.PadUntouched += OnPadUntouch;
             }
         }
+        
+        private void Update()
+        {
+            tool.UpdateTransform(controller.transform);
+            
+            if (trigger)
+            {
+                tool.UpdateTrigger();
+            }
+            if (grip)
+            {
+                tool.UpdateGrip();
+            }
+            if (menu)
+            {
+                tool.UpdateMenu();
+            }
+            if (press)
+            {
+                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
+                tool.UpdatePress(lastPadPos);
+            }
+            else if (touch)
+            {
+                lastPadPos = new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
+                tool.UpdateTouch(lastPadPos);
+            }
+        }
 
         #region Listener Functions
         private void OnTriggerClick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnTriggerClick", sender);
-            tool.OnTriggerClick();
+            trigger = true;
         }
         private void OnTriggerUnclick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnTriggerUnclick", sender);
+            trigger = false;
             tool.OnTriggerUnclick();
         }
         private void OnGrip(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnGrip", sender);
-            tool.OnGrip();
+            grip = true;
         }
         private void OnUngrip(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnUngrip", sender);
+            grip = false;
             tool.OnUngrip();
         }
         private void OnMenuClick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnMenuClick", sender);
-            tool.OnMenuClick();
+            menu = true;
         }
         private void OnMenuUnclick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnMenuUnclick", sender);
+            menu = false;
             tool.OnMenuUnclick();
         }
         private void OnPadClick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnPadClick", sender);
-            tool.OnPadClick(new Vector2(e.padX, e.padY));
+            press = true;
         }
         private void OnPadUnclick(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnPadUnclick", sender);
-            tool.OnPadUnclick();
+            press = false;
+            tool.OnPadUnclick(new Vector2(e.padX, e.padY));
         }
         private void OnPadTouch(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnPadTouch", sender);
-            tool.OnPadTouch(new Vector2(e.padX, e.padY));
+            touch = true;
         }
         private void OnPadUntouch(object sender, ClickedEventArgs e)
         {
             DebugMessage("OnPadUntouch", sender);
-            tool.OnPadUntouch();
+            touch = false;
+            tool.OnPadUntouch(new Vector2(e.padX, e.padY));
         }
         #endregion
 
@@ -96,7 +135,7 @@ namespace WorldWizards.core.experimental.controllers
         {
             if (debug)
             {
-                Debug.Log("ControllerListener::" + functionName + ": " + sender.ToString());
+                Debug.Log("ControllerListener::" + functionName + ": " + sender);
             }
         }
     }
