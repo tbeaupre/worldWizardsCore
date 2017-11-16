@@ -1,17 +1,12 @@
 ﻿using UnityEngine;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
     public class ObjectSelector : MonoBehaviour
     {
-        private SceneGraphController sceneGraphController;
-
-        private void Start()
-        {
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
-        }
 
         private void Update()
         {
@@ -22,7 +17,7 @@ namespace WorldWizards.core.experimental
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (wwObject) sceneGraphController.Delete(wwObject.GetId());
+                    if (wwObject)  ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
                 }
             }
 

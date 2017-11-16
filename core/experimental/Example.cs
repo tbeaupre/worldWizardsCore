@@ -2,6 +2,7 @@
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
@@ -15,10 +16,7 @@ namespace WorldWizards.core.experimental
         string assetName = "tile_wallbrick"; // the exact name of the tile inside of the Asset Bundle
 
         void Start()
-        {
-            // Get a reference to the SceneGraphController
-            SceneGraphController sceneGraphController = FindObjectOfType<SceneGraphController>();
-        
+        {        
             // load all asset bundles located at Project/AssetBundles
             ResourceLoader.LoadResources();
             
@@ -29,7 +27,7 @@ namespace WorldWizards.core.experimental
             // instantiate the tile in the world
             var tile = WWObjectFactory.Instantiate(tileData); 
             // add the newly created tile to the SceneGraph
-            sceneGraphController.Add(tile);
+            ManagerRegistry.Instance.sceneGraphImpl.Add(tile);
         }  
     }
 }
