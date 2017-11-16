@@ -20,21 +20,21 @@ namespace WorldWizards.core.experimental
             {
                 var objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "defaultWhiteCube");
                 var go = WWObjectFactory.Instantiate(objData);
-                ManagerRegistry.Instance.sceneGraphImpl.Add(go);
+                ManagerRegistry.Instance.sceneGraphManager.Add(go);
             }
 
             for (var i = 0; i < 5; i++)
             {
                 var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "test_blackcube");
                 var go = WWObjectFactory.Instantiate(objData);
-                ManagerRegistry.Instance.sceneGraphImpl.Add(go);
+                ManagerRegistry.Instance.sceneGraphManager.Add(go);
             }
 
             for (var i = 0; i < 5; i++)
             {
                 var objData = WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "test_bluecube");
                 var go = WWObjectFactory.Instantiate(objData);
-                ManagerRegistry.Instance.sceneGraphImpl.Add(go);
+                ManagerRegistry.Instance.sceneGraphManager.Add(go);
             }
         }
     }
