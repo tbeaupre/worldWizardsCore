@@ -6,19 +6,21 @@ using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.level;
+using WorldWizards.core.file.entity;
 using Object = UnityEngine.Object;
 
-namespace WorldWizards.core.entity.level
+namespace WorldWizards.core.manager
 {
     /// <summary>
     ///     The Scene Graph is the data structure that holds all the World
     ///     Wizards Objects in the current level.
     /// </summary>
-    public class SceneGraph
+    public class SceneGraphManagerImpl : SceneGraphManager
     {
         private readonly SceneDictionary _sceneDictionary;
 
-        public SceneGraph()
+        public SceneGraphManagerImpl()
         {
             _sceneDictionary = new SceneDictionary();
         }
@@ -48,12 +50,16 @@ namespace WorldWizards.core.entity.level
         /// <param name="coordinate">The coordinate to space to get.</param>
         public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            return _sceneDictionary.GetObjectsInCoordinateIndex(coordinate);
+            return _sceneDictionary.GetObjects(coordinate);
         }
 
         public bool Add(WWObject worldWizardsObject)
         {
-            return _sceneDictionary.Add(worldWizardsObject);
+            if (worldWizardsObject != null)
+            {
+                return _sceneDictionary.Add(worldWizardsObject);
+            }
+            return false;
         }
 
         /// <summary>
@@ -74,7 +80,53 @@ namespace WorldWizards.core.entity.level
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
         }
+        
+        public void HideObjectsAbove(int height)
+        {
+            var objects = _sceneDictionary.GetObjectsAbove(height);
+            foreach (var obj in objects)
+            {
+                var meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+                var skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
 
+                foreach (var mesh in meshRenders)
+                {
+                    mesh.enabled = false;
+                }
+                foreach (var skin in skinnedRenders)
+                {
+                    skin.enabled = false;
+                }
+            }
+            
+            var objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
+            foreach (var obj in objectsAtAndBelow)
+            {
+                var meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+                var skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+                foreach (var mesh in meshRenders)
+                {
+                    mesh.enabled = true;
+                }
+                foreach (var skin in skinnedRenders)
+                {
+                    skin.enabled = true;
+                }
+            }
+        }
+
+
+        public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
+        {
+            var objects = GetObjectsInCoordinateIndex(coordinate);
+            WWWalls walls = 0;
+            foreach (var obj in objects)
+            {
+                walls = walls | obj.GetWallsWRotationApplied();
+            }
+            return walls;
+        }
 
         public void Delete(Guid id)
         {
@@ -106,7 +158,6 @@ namespace WorldWizards.core.entity.level
             return _sceneDictionary.Get(id);
         }
 
-
         public void Save()
         {
             var objectsToSave = _sceneDictionary.GetMementoObjects();
@@ -118,7 +169,7 @@ namespace WorldWizards.core.entity.level
         {
             var json = FileIO.LoadJsonFromFile(FileIO.testPath);
 
-            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectDataMemento>>(json);
+            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectJSONBlob>>(json);
             Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
 
             foreach (var obj in objectsToRestore)

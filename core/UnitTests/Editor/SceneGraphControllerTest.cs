@@ -5,6 +5,7 @@ using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace worldWizards.core.unitTests{
 	
@@ -14,13 +15,9 @@ namespace worldWizards.core.unitTests{
 	/// </summary>
 	internal class SceneGraphControllerTest {
 		static GameObject root;
-		static SceneGraphController sceneGraphController;
 
 		[SetUp]
 		public static void Setup(){
-			root = new GameObject ();
-			sceneGraphController = root.AddComponent<SceneGraphController>();
-			sceneGraphController.Awake ();
 			WWResourceController.LoadResource("white", null, "whiteCube");
 			WWResourceController.LoadResource("tree", null, "treeProp");
 		}
@@ -28,24 +25,24 @@ namespace worldWizards.core.unitTests{
 		[TearDown]
 		public static void TearDown(){
 			// remove everything from the SceneGraph
-			sceneGraphController.ClearAll ();
-			Assert.AreEqual (0, sceneGraphController.sceneGraph.SceneSize());
+		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
+			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
 		}
 			
 		[Test]
 		public static void SceneGraphNotNull() {
 			// Use the Assert class to test conditions
-			Assert.IsNotNull (sceneGraphController.sceneGraph);
+			Assert.IsNotNull ( ManagerRegistry.Instance.sceneGraphImpl);
 		}
 			
 		[Test]
 		public static void AddObjectToSceneGraph() {
-			Assert.AreEqual (0, sceneGraphController.sceneGraph.SceneSize());
+			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
 			Coordinate coordinate = new Coordinate (0,0,0);
 			WWObjectData wwObjectData = WWObjectFactory.CreateNew (coordinate, "white");
 			WWObject wwObject = WWObjectFactory.Instantiate(wwObjectData);
-			sceneGraphController.Add (wwObject);
-			Assert.AreEqual (1, sceneGraphController.sceneGraph.SceneSize());
+		    ManagerRegistry.Instance.sceneGraphImpl.Add (wwObject);
+			Assert.AreEqual (1,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
 		}
 
 		[Test]
@@ -55,11 +52,11 @@ namespace worldWizards.core.unitTests{
 		/// </summary>
 		public static void SaveLoadSceneGraph() {
 			CreateMaze ();
-			sceneGraphController.Save ();
-			int objectCountBeforeSave = sceneGraphController.SceneSize ();
-			sceneGraphController.ClearAll ();
-			sceneGraphController.Load ();
-			int objectCountAfterSave = sceneGraphController.SceneSize ();
+		    ManagerRegistry.Instance.sceneGraphImpl.Save ();
+			int objectCountBeforeSave =  ManagerRegistry.Instance.sceneGraphImpl.SceneSize ();
+		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
+		    ManagerRegistry.Instance.sceneGraphImpl.Load ();
+			int objectCountAfterSave =  ManagerRegistry.Instance.sceneGraphImpl.SceneSize ();
 			Assert.AreEqual (objectCountAfterSave, objectCountBeforeSave);
 		}
 			
@@ -68,17 +65,17 @@ namespace worldWizards.core.unitTests{
 			string imagePath = "Heightmaps/MazeHeightmap";
 			Texture2D heightmap = Resources.Load<Texture2D> (imagePath);
 	
-			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (sceneGraphController, heightmap);
+			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (heightmap);
 		}
 	
 		private void CreateTerrain(){
 			string imagePath = "Heightmaps/TerrainHeightmap";
 			Texture2D heightmap = Resources.Load<Texture2D> (imagePath);
-			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (sceneGraphController, heightmap);
+			List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage (heightmap);
 		}
 	
 		private void DeleteObjects(){
-			sceneGraphController.ClearAll ();
+		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
 		}
 
 

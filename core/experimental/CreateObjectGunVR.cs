@@ -6,6 +6,7 @@ using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
@@ -21,7 +22,6 @@ namespace WorldWizards.core.experimental
         public Plane groundPlane;
         public Transform markerObject;
         private List<string> possibleTiles;
-        private SceneGraphController sceneGraphController;
         public LayerMask teleportMask;
 
         private SteamVR_TrackedObject trackedObj;
@@ -38,7 +38,6 @@ namespace WorldWizards.core.experimental
             Debug.Log((int) (-1.1f / 10f));
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
             ResourceLoader.LoadResources();
 
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
@@ -107,7 +106,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        sceneGraphController.Add(curObject);
+                        ManagerRegistry.Instance.sceneGraphImpl.Add(curObject);
                         curObject = null;
                     }
             }
@@ -202,7 +201,7 @@ namespace WorldWizards.core.experimental
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (!wwObject.Equals(curObject)) sceneGraphController.Delete(wwObject.GetId());
+                    if (!wwObject.Equals(curObject))  ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
                 }
             }
         }

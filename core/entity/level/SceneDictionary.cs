@@ -5,6 +5,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.level
 {
@@ -19,28 +20,50 @@ namespace WorldWizards.core.entity.level
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
-        public List<WWObjectDataMemento> GetMementoObjects()
+
+        public List<WWObject> GetObjectsAbove(int height)
         {
-            var objectstoSave = new List<WWObjectDataMemento>();
+            var result = new List<WWObject>();
+            foreach (var kvp in coordinates)
+            {
+                if (kvp.Key.y > height)
+                {
+                    foreach (var g in coordinates[kvp.Key])
+                    {
+                        result.Add(objects[g]);
+                    }
+                }
+            }
+            return result;
+        }
+        
+        public List<WWObject> GetObjectsAtAndBelow(int height)
+        {
+            var result = new List<WWObject>();
+            foreach (var kvp in coordinates)
+            {
+                if (kvp.Key.y <= height)
+                {
+                    foreach (var g in coordinates[kvp.Key])
+                    {
+                        result.Add(objects[g]);
+                    }
+                }
+            }
+            return result;
+        }
+        
+
+        public List<WWObjectJSONBlob> GetMementoObjects()
+        {
+            var objectstoSave = new List<WWObjectJSONBlob>();
             Debug.Log(GetCount());
             foreach (var entry in objects)
             {
-                var memento = new WWObjectDataMemento(entry.Value.objectData);
-                objectstoSave.Add(memento);
+                var blob = new WWObjectJSONBlob(entry.Value.objectData);
+                objectstoSave.Add(blob);
             }
             return objectstoSave;
-        }
-
-
-        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
-        {
-            var guids = coordinates[coordinate.index];
-
-            var result = new List<WWObject>();
-
-            foreach (var guid in guids)
-                result.Add(objects[guid]);
-            return result;
         }
 
         public bool ContainsGuid(Guid id)
@@ -57,15 +80,15 @@ namespace WorldWizards.core.entity.level
         {
             if (coordinates.ContainsKey(wwObject.GetCoordinate().index))
             {
-                var objectsAtCoord = Get(wwObject.GetCoordinate());
+                var objectsAtCoord = GetObjects(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
                 foreach (var obj in objectsAtCoord)
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
                     {
-                        var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate());
+                        var walls = WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
                         existingWalls = existingWalls | walls;
                     }
-                var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate());
+                var newWalls = WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
                 var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }
@@ -128,16 +151,32 @@ namespace WorldWizards.core.entity.level
             return objectToGet;
         }
 
-        public List<WWObject> Get(Coordinate coord)
+        public List<WWObject> GetObjects(Coordinate coord)
+        {
+            return GetObjects(coord.index);
+        }
+        
+        public List<WWObject> GetObjects(IntVector3 index)
         {
             var result = new List<WWObject>();
-            if (coordinates.ContainsKey(coord.index))
+            if (coordinates.ContainsKey(index))
             {
-                var guids = coordinates[coord.index];
+                var guids = coordinates[index];
                 foreach (var guid in guids)
                     result.Add(objects[guid]);
             }
             return result;
         }
+        
+        public List<WWObject> GetPossibleTiles() {
+
+            return null;
+        }
+
+        public List<WWObject> RankObjectsToPlace()
+        {
+            return null;
+        }
+
     }
 }

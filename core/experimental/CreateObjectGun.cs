@@ -5,6 +5,9 @@ using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.level;
+using WorldWizards.core.entity.level.utils;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
@@ -19,37 +22,86 @@ namespace WorldWizards.core.experimental
 
         public Plane groundPlane;
         public Transform markerObject;
+
+        private bool placeState = true;
         private List<string> possibleTiles;
-        private SceneGraphController sceneGraphController;
 
         private void Awake()
         {
+            // Need to make sure Manager registry is initialized first
+            var touch = ManagerRegistry.Instance;
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
             ResourceLoader.LoadResources();
 
             foreach (var s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
-            
-            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
+            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
         }
 
 
-        private void Update()
+        private void BuildWallsInput()
         {
-            DeleteHitObject();
-            // move the builder grid
+            if (Input.GetKeyDown(KeyCode.Mouse0) && Input.GetKey(KeyCode.LeftShift))
+            {
+                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                var hit = new RaycastHit();
+                if (Physics.Raycast(ray, out hit))
+                {
+                    var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
+                    if (wwObject != null)
+                    {
+                        if (!wwObject.Equals(curObject))
+                        {
+                            BuilderAlgorithms.BuildPerimeterWalls(GetResourceTag(), wwObject);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void TogglePlaceState()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                placeState = !placeState;
+            }
+        }
+
+        private void MoveGrid()
+        {
             var gridPosition = gridCollider.transform.position;
             if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+            }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+            }
             gridCollider.transform.position = gridPosition;
 
+            var c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
+            ManagerRegistry.Instance.sceneGraphImpl.HideObjectsAbove(c.index.y);
+        }
+
+        private void Update()
+        {
+            TogglePlaceState();
+            if (!placeState)
+            {
+                BuildWallsInput();
+                return;
+            }
+            
+            DeleteHitObject();
+            // move the builder grid
+
+            MoveGrid();
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
@@ -65,21 +117,28 @@ namespace WorldWizards.core.experimental
                 RotateObjects(position);
                 coordDebugText.text = string.Format("x : {0}, z : {1}", position.x, position.z);
                 Debug.DrawRay(raycastHit.point, Camera.main.transform.position, Color.red, 0, false);
-                if (curObject == null) curObject = PlaceObject(position);
+                if (curObject == null)
+                {
+                    curObject = PlaceObject(position);
+                }
                 else
+                {
                     curObject.transform.position = new Vector3(raycastHit.point.x,
                         raycastHit.point.y + 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
                         raycastHit.point.z);
+                }
                 if (Input.GetMouseButtonUp(0))
+                {
                     if (curObject != null)
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        if (sceneGraphController.Add(curObject))
+                        if ( ManagerRegistry.Instance.sceneGraphImpl.Add(curObject))
                         {
                             curObject = null;
                         }
                     }
+                }
             }
         }
 
@@ -88,13 +147,19 @@ namespace WorldWizards.core.experimental
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 curRotation += 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 curRotation -= 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
         }
@@ -104,30 +169,47 @@ namespace WorldWizards.core.experimental
             if (Input.GetAxis("Mouse ScrollWheel") > 0)
             {
                 curTile++;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
             else if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
                 curTile--;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
         }
 
-        private WWObject PlaceObject(Vector3 position)
+        private string GetResourceTag()
         {
             var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+            return possibleTiles[tileIndex];
+        }
 
+        private WWObject PlaceObject(Vector3 position)
+        {
+            var possibleConfigurations =
+                BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
 
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
+            if (possibleConfigurations.Count == 0)
+            {
+                return null;
+            }
+
+            var theRot = possibleConfigurations[0];
+            if (possibleConfigurations.Contains(curRotation))
+            {
+                theRot = curRotation;
+            }
+            var coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            var objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             var go = WWObjectFactory.Instantiate(objData);
-
-
-            //			Debug.Log (curObject.objectData.metaData.GetType ());
-            //			Debug.Log (curObject.objectData.GetType());
-
             return go;
         }
 
@@ -141,7 +223,10 @@ namespace WorldWizards.core.experimental
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (!wwObject.Equals(curObject)) sceneGraphController.Delete(wwObject.GetId());
+                    if (!wwObject.Equals(curObject))
+                    {
+                        ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
+                    }
                 }
             }
         }

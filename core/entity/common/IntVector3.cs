@@ -19,14 +19,10 @@ namespace WorldWizards.core.entity.common
             z = (int) Mathf.Floor(vector.z);
         }
 
-        [JsonConstructor]
-        public IntVector3()
-        {
-        }
 
-        public int x { get; set; }
-        public int y { get; set; }
-        public int z { get; set; }
+        public int x { get; private set; }
+        public int y { get; private set; }
+        public int z { get; private set; }
 
         public override string ToString()
         {
