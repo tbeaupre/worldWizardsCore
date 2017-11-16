@@ -38,7 +38,7 @@ namespace WorldWizards.core.viveControllers
 
             var data = WWObjectFactory.CreateNew(cubePosition, "white");
             var obj = WWObjectFactory.Instantiate(data);
-            ManagerRegistry.Instance.sceneGraphImpl.Add(obj);
+            ManagerRegistry.Instance.sceneGraphManager.Add(obj);
         }
     }
 }

@@ -25,24 +25,24 @@ namespace worldWizards.core.unitTests{
 		[TearDown]
 		public static void TearDown(){
 			// remove everything from the SceneGraph
-		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
-			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
+		    ManagerRegistry.Instance.sceneGraphManager.ClearAll ();
+			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphManager.SceneSize());
 		}
 			
 		[Test]
 		public static void SceneGraphNotNull() {
 			// Use the Assert class to test conditions
-			Assert.IsNotNull ( ManagerRegistry.Instance.sceneGraphImpl);
+			Assert.IsNotNull ( ManagerRegistry.Instance.sceneGraphManager);
 		}
 			
 		[Test]
 		public static void AddObjectToSceneGraph() {
-			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
+			Assert.AreEqual (0,  ManagerRegistry.Instance.sceneGraphManager.SceneSize());
 			Coordinate coordinate = new Coordinate (0,0,0);
 			WWObjectData wwObjectData = WWObjectFactory.CreateNew (coordinate, "white");
 			WWObject wwObject = WWObjectFactory.Instantiate(wwObjectData);
-		    ManagerRegistry.Instance.sceneGraphImpl.Add (wwObject);
-			Assert.AreEqual (1,  ManagerRegistry.Instance.sceneGraphImpl.SceneSize());
+		    ManagerRegistry.Instance.sceneGraphManager.Add (wwObject);
+			Assert.AreEqual (1,  ManagerRegistry.Instance.sceneGraphManager.SceneSize());
 		}
 
 		[Test]
@@ -52,11 +52,11 @@ namespace worldWizards.core.unitTests{
 		/// </summary>
 		public static void SaveLoadSceneGraph() {
 			CreateMaze ();
-		    ManagerRegistry.Instance.sceneGraphImpl.Save ();
-			int objectCountBeforeSave =  ManagerRegistry.Instance.sceneGraphImpl.SceneSize ();
-		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
-		    ManagerRegistry.Instance.sceneGraphImpl.Load ();
-			int objectCountAfterSave =  ManagerRegistry.Instance.sceneGraphImpl.SceneSize ();
+		    ManagerRegistry.Instance.sceneGraphManager.Save ();
+			int objectCountBeforeSave =  ManagerRegistry.Instance.sceneGraphManager.SceneSize ();
+		    ManagerRegistry.Instance.sceneGraphManager.ClearAll ();
+		    ManagerRegistry.Instance.sceneGraphManager.Load ();
+			int objectCountAfterSave =  ManagerRegistry.Instance.sceneGraphManager.SceneSize ();
 			Assert.AreEqual (objectCountAfterSave, objectCountBeforeSave);
 		}
 			
@@ -75,7 +75,7 @@ namespace worldWizards.core.unitTests{
 		}
 	
 		private void DeleteObjects(){
-		    ManagerRegistry.Instance.sceneGraphImpl.ClearAll ();
+		    ManagerRegistry.Instance.sceneGraphManager.ClearAll ();
 		}
 
 

@@ -106,7 +106,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        ManagerRegistry.Instance.sceneGraphImpl.Add(curObject);
+                        ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
                         curObject = null;
                     }
             }
@@ -201,7 +201,7 @@ namespace WorldWizards.core.experimental
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (!wwObject.Equals(curObject))  ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
+                    if (!wwObject.Equals(curObject))  ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
                 }
             }
         }

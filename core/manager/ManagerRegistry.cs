@@ -9,12 +9,12 @@
         {
         } // guarantee this will be always a singleton only - can't use the constructor!
 
-        public SceneGraphManager sceneGraphImpl { get; private set; }
+        public SceneGraphManager sceneGraphManager { get; private set; }
 
         // Use this for initialization
         private void Start()
         {
-            sceneGraphImpl = new SceneGraphManagerImpl();
+            sceneGraphManager = new SceneGraphManagerImpl();
         }
     }
 }

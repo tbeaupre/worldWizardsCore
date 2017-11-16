@@ -21,7 +21,7 @@ namespace WorldWizards.core.controller.level.utils
 
                 var parentData = WWObjectFactory.CreateNew(c, "white");
                 var parentObj = WWObjectFactory.Instantiate(parentData);
-                ManagerRegistry.Instance.sceneGraphImpl.Add(parentObj);
+                ManagerRegistry.Instance.sceneGraphManager.Add(parentObj);
 
                 //					// prop
                 //					IntVector3 intVector3 = new IntVector3(x,height+1,y);
@@ -44,7 +44,7 @@ namespace WorldWizards.core.controller.level.utils
                     var childData = WWObjectFactory.CreateNew(c, "white");
 
                     var childObj = WWObjectFactory.Instantiate(childData);
-                    ManagerRegistry.Instance.sceneGraphImpl.Add(childObj);
+                    ManagerRegistry.Instance.sceneGraphManager.Add(childObj);
 
                     var children = new List<WWObject>();
                     children.Add(childObj);

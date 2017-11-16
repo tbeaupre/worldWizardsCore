@@ -17,7 +17,7 @@ namespace WorldWizards.core.experimental
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (wwObject)  ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
+                    if (wwObject)  ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
                 }
             }
 

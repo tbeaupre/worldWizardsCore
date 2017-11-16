@@ -86,7 +86,7 @@ namespace WorldWizards.core.experimental
             gridCollider.transform.position = gridPosition;
 
             var c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
-            ManagerRegistry.Instance.sceneGraphImpl.HideObjectsAbove(c.index.y);
+            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.index.y);
         }
 
         private void Update()
@@ -133,7 +133,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        if ( ManagerRegistry.Instance.sceneGraphImpl.Add(curObject))
+                        if ( ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
                         {
                             curObject = null;
                         }
@@ -225,7 +225,7 @@ namespace WorldWizards.core.experimental
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
                     if (!wwObject.Equals(curObject))
                     {
-                        ManagerRegistry.Instance.sceneGraphImpl.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
                     }
                 }
             }
