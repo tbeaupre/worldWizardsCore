@@ -32,14 +32,19 @@ namespace WorldWizards.core.controller.level
             return false;
         }
 
+        public void HideObjectsAbove(int height)
+        {
+            sceneGraph.HideObjectsAbove(height);
+        }
+
         public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
         {
             return sceneGraph.GetWallsAtCoordinate(coordinate);
         }
 
-        public Dictionary<IntVector3, WWWalls> SelectPerimeter(WWObject wwObject)
+        public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            return sceneGraph.SelectPerimeter(wwObject);
+            return sceneGraph.GetObjectsInCoordinateIndex(coordinate);
         }
 
         public void Delete(Guid id)
