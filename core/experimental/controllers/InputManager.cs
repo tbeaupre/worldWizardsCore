@@ -1,24 +1,41 @@
 ﻿using UnityEngine;
 using worldWizards.core.experimental.controllers.Desktop;
+using worldWizards.core.experimental.controllers.Tools;
 using worldWizards.core.experimental.controllers.VRControls;
 
 namespace WorldWizards.core.experimental.controllers
 {
     public class InputManager : MonoBehaviour
     {
+        private bool vrEnabled;
+        
         private void Awake()
         {
-            SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
-            if (UnityEngine.VR.VRDevice.isPresent)
+            vrEnabled = UnityEngine.VR.VRDevice.isPresent;
+            if (vrEnabled)
             {
                 Debug.Log("InputManager::Awake(): VR Controls Enabled");
-                controllerManager.left.AddComponent<LeftVRController>();
-                controllerManager.right.AddComponent<RightVRController>();
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                
+                VRListener leftListener = controllerManager.left.AddComponent<VRListener>();
+                leftListener.Init(false, typeof(StandardTool));
+                
+                VRListener rightListener = controllerManager.right.AddComponent<VRListener>();
+                rightListener.Init(true, typeof(CreateObjectTool));
             }
             else
             {
                 Debug.Log("InputManager::Awake(): Desktop Controls Enabled");
-                gameObject.AddComponent<DesktopController>();
+                
+                ControlScheme leftControlScheme = new ControlScheme(KeyCode.E, KeyCode.Q, KeyCode.Alpha2,
+                    KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift);
+                DesktopListener leftListener = gameObject.AddComponent<DesktopListener>();
+                leftListener.Init(leftControlScheme, false, typeof(StandardTool));
+                
+                ControlScheme rightControlScheme = new ControlScheme(KeyCode.U, KeyCode.O, KeyCode.Alpha8,
+                    KeyCode.I, KeyCode.K, KeyCode.J, KeyCode.L, KeyCode.Slash);
+                DesktopListener rightListener = gameObject.AddComponent<DesktopListener>();
+                rightListener.Init(rightControlScheme, true, typeof(CreateObjectTool));
             }
         }
     }

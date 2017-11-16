@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using WorldWizards.core.experimental.controllers;
 
 namespace worldWizards.core.experimental.controllers.Tools
 {
@@ -12,30 +13,14 @@ namespace worldWizards.core.experimental.controllers.Tools
         public GameObject laserPrefab;
         public GameObject reticlePrefab; // Teleport reticle prefab
         
-        // VR Headset Transform Information
-        private Transform cameraRigTransform; // Tranform of [Camera Rig]
-        private Transform headTransform; // Player's head transform
-        
         // Prefab Instances
         private GameObject laser; // Stores reference to an instance of a laser
         private GameObject reticle; // Instance of reticle
 
         private bool shouldTeleport; // True when valid teleport location is found
         private Vector3 hitPoint; // Hit point of the laser raycast
-        
-        private void Awake()
-        {
-            listenForTrigger = true;
-            listenForGrip = true;
-            listenForMenu = true;
-            listenForPress = true;
-            listenForTouch = true;
-            
-            SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
-            cameraRigTransform = controllerManager.transform;
-            headTransform = controllerManager.GetComponentInChildren<Camera>().transform;
-        }
 
+        
         // Trigger
         public override void OnTriggerUnclick()
         {
@@ -58,8 +43,9 @@ namespace worldWizards.core.experimental.controllers.Tools
         public override void UpdateGrip()
         {
             RaycastHit hit;
+            Transform controllerTrans = GetComponentInParent<InputListener>().GetControllerTransform();
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(controllerTransform.position, transform.forward, out hit, 100))
+            if (Physics.Raycast(controllerTrans.position, controllerTrans.forward, out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -98,7 +84,8 @@ namespace worldWizards.core.experimental.controllers.Tools
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(controllerTransform.position, hit.point, .5f);
+            Transform controllerTrans = GetComponentInParent<InputListener>().GetControllerTransform();
+            laser.transform.position = Vector3.Lerp(controllerTrans.position, hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -115,11 +102,11 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             shouldTeleport = false;
             
-            var difference = cameraRigTransform.position - headTransform.position;
+            var difference = controller.GetHeadOffset();
 
             difference.y = 0;
 
-            cameraRigTransform.position = target + difference;
+            controller.GetHeadTransform().position = target + difference;
         }
         
         
@@ -135,11 +122,11 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.down * MOVE_OFFSET;
+                controller.GetHeadTransform().position += Vector3.down * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.up * MOVE_OFFSET;
+                controller.GetHeadTransform().position += Vector3.up * MOVE_OFFSET;
             }
         }
 
@@ -153,7 +140,7 @@ namespace worldWizards.core.experimental.controllers.Tools
                 strafeVector.y = 0;
                 strafeVector = strafeVector.normalized * MOVE_OFFSET;
                 
-                cameraRigTransform.position += strafeVector;
+                controller.GetHeadTransform().position += strafeVector;
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
@@ -161,7 +148,7 @@ namespace worldWizards.core.experimental.controllers.Tools
                 forwardMoveVector.y = 0;
                 forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
             
-                cameraRigTransform.position += forwardMoveVector;  
+                controller.GetHeadTransform().position += forwardMoveVector;  
             }
         }
     }

@@ -4,57 +4,58 @@ using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.experimental.controllers;
 
 namespace worldWizards.core.experimental.controllers.Tools
 {
     public class CreateObjectTool : Tool
     {
-        private bool trackingSwipe = false;
-        private Vector2 startPosition;
-        
         // Controllers
         private SceneGraphController sceneGraphController;
         
         // Prefabs
         public Collider gridCollider;
         
+        // Resources
+        private string currentAssetBundle;
+        private List<string> possibleTiles;
+        
         // Object Properties
         private WWObject curObject;
         private int curRotation;
         private int curTileIndex;
-        
-        // Resources
-        private List<string> possibleTiles;
 
         // Raycast Information
         private bool validTarget = false;
         private Vector3 hitPoint;
         
-        private void Awake()
+        // Swipe
+        private bool trackingSwipe = false;
+        private Vector2 swipeStartPosition;
+        
+        
+        protected override void Awake()
         {
-            listenForTrigger = true;
-            listenForGrip = true;
-            listenForMenu = true;
-            listenForPress = true;
-            listenForTouch = true;
-            
+            base.Awake();
             sceneGraphController = FindObjectOfType<SceneGraphController>();
             
             ResourceLoader.LoadResources(); // Should be removed at some point.
-            possibleTiles = new List<string>(WWResourceController.bundles.Keys);
+
+            currentAssetBundle = "ww_basic_assets";
+            possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
             Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
+            
             curTileIndex = 0;
             curRotation = 0;
             
-            float tileLengthScale = CoordinateHelper.tileLengthScale;
-
             gridCollider = FindObjectOfType<MeshCollider>();
-            gridCollider.transform.localScale = Vector3.one * tileLengthScale;
+            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
         }
 
         public void Update()
         {
-            Ray ray = new Ray(controllerTransform.position, controllerTransform.forward);
+            Transform controllerTrans = controller.GetControllerTransform();
+            Ray ray = new Ray(controllerTrans.position, controllerTrans.forward);
             RaycastHit raycastHit;
             if (gridCollider.Raycast(ray, out raycastHit, 100))
             {
@@ -117,8 +118,9 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             if (curObject == null)
             {
+                Transform controllerTrans = controller.GetControllerTransform();
                 RaycastHit raycastHit;
-                if (Physics.Raycast(controllerTransform.position, controllerTransform.forward, out raycastHit, 100))
+                if (Physics.Raycast(controllerTrans.position, controllerTrans.forward, out raycastHit, 100))
                 {
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
@@ -177,13 +179,13 @@ namespace worldWizards.core.experimental.controllers.Tools
                 if (!trackingSwipe)
                 {
                     trackingSwipe = true;
-                    startPosition = padPos;
+                    swipeStartPosition = padPos;
                 }
                 
                 var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
                 if (offset != 0)
                 {
-                    startPosition = padPos;
+                    swipeStartPosition = padPos;
                     curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
@@ -193,7 +195,7 @@ namespace worldWizards.core.experimental.controllers.Tools
         
         private float CalculateSwipe(float x)
         {
-            return (x - startPosition.x) / 5;
+            return (x - swipeStartPosition.x) / 5;
         }
     }
 }

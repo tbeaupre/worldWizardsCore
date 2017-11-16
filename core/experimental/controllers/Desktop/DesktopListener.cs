@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Text;
+using UnityEngine;
 using worldWizards.core.experimental.controllers.Tools;
 using WorldWizards.core.experimental.controllers;
 
@@ -6,119 +8,134 @@ namespace worldWizards.core.experimental.controllers.Desktop
 {
     public class DesktopListener : InputListener
     {
-        private KeyCode trigger;
-        private KeyCode grip;
-        private KeyCode menu;
-        private KeyCode up;
-        private KeyCode down;
-        private KeyCode left;
-        private KeyCode right;
-        private KeyCode pressMod;
+        private ControlScheme controls;
         
-        private bool press = false;
-        private bool padRelease = true;
+        private readonly Vector2 upDelta = new Vector2(0, 1);
+        private readonly Vector2 downDelta = new Vector2(0, -1);
+        private readonly Vector2 leftDelta = new Vector2(-1, 0);
+        private readonly Vector2 rightDelta = new Vector2(1, 0);
+
+        private bool pressMod;
         private Vector2 padPos = Vector2.zero;
 
-        public void Init(KeyCode trigger, KeyCode grip, KeyCode menu,
-            KeyCode up, KeyCode down, KeyCode left, KeyCode right, KeyCode pressMod,
-            Tool tool)
+        public void Init(ControlScheme controlScheme, bool canChange, Type toolType)
         {
-            this.trigger = trigger;
-            this.grip = grip;
-            this.menu = menu;
-            this.up = up;
-            this.down = down;
-            this.left = left;
-            this.right = right;
-            this.pressMod = pressMod;
-            this.tool = tool;
+            controls = controlScheme;
+            canChangeTools = canChange;
+            tool = gameObject.AddComponent(toolType) as Tool;
         }
 
-        public void ChangeTool(Tool newTool)
-        {
-            tool = newTool;
-        }
-        
-        private void OnGUI()
+        protected override void Update()
         {
             object sender = "Desktop";
-            
-            Event e = Event.current;
-            if (e.isKey)
+            if (Trigger)
             {
-                if (e.keyCode == trigger)
-                {
-                    if(e.type == EventType.KeyDown) OnTriggerClick(sender);
-                    else OnTriggerUnclick(sender);
-                    return;
-                }
-                if (e.keyCode == grip)
-                {
-                    if(e.type == EventType.KeyDown) OnGrip(sender);
-                    else OnUngrip(sender);
-                    return;
-                }
-                if (e.keyCode == menu)
-                {
-                    if(e.type == EventType.KeyDown) OnMenuClick(sender);
-                    else OnMenuUnclick(sender);
-                    return;
-                }
-                if (e.keyCode == pressMod)
-                {
-                    press = e.type == EventType.KeyDown;
-                    return;
-                }
-
-                padRelease = false; // Changed in ChangePad() based on EventType
-                if (e.keyCode == up)
-                {
-                    ChangePad(e, new Vector2(0, 1));
-                }
-                if (e.keyCode == down)
-                {
-                    ChangePad(e, new Vector2(0, -1));
-                }
-                if (e.keyCode == left)
-                {
-                    ChangePad(e, new Vector2(-1, 0));
-                }
-                if (e.keyCode == right)
-                {
-                    ChangePad(e, new Vector2(1, 0));
-                }
-
-                if (padRelease)
-                {
-                    if (press) OnPadUnclick(padPos);
-                    else OnPadUntouch(padPos);
-                }
-                else if (padPos != Vector2.zero) // Digital pad has been pressed.
-                {
-                    if (press) OnPadClick(padPos);
-                    else OnPadTouch(padPos);
-                }
-            }
-        }
-
-        private void ChangePad(Event e, Vector2 offset)
-        {
-            if (e.type == EventType.KeyDown)
-            {
-                padPos += offset;
+                if (Input.GetKeyUp(controls.triggerKey)) OnTriggerUnclick(sender);
             }
             else
             {
-                padRelease = true;
-                padPos -= offset;
+                if (Input.GetKeyDown(controls.triggerKey)) OnTriggerClick(sender);
             }
+
+            if (Grip)
+            {
+                if (Input.GetKeyUp(controls.gripKey)) OnUngrip(sender);
+            }
+            else
+            {
+                if (Input.GetKeyDown(controls.gripKey)) OnGrip(sender);
+            }
+
+            if (Menu)
+            {
+                if (Input.GetKeyUp(controls.menuKey)) OnMenuUnclick(sender);
+            }
+            else
+            {
+                if (Input.GetKeyDown(controls.menuKey)) OnMenuClick(sender);
+            }
+
+            pressMod = Input.GetKey(controls.pressModKey);
+
+            if (Press || Touch)
+            {
+                bool padRelease = false;
+                if (Input.GetKeyUp(controls.upKey))
+                {
+                    padPos -= upDelta;
+                    padRelease = true;
+                }
+                if (Input.GetKeyUp(controls.downKey))
+                {
+                    padPos -= downDelta;
+                    padRelease = true;
+                }
+                if (Input.GetKeyUp(controls.leftKey))
+                {
+                    padPos -= leftDelta;
+                    padRelease = true;
+                }
+                if (Input.GetKeyUp(controls.rightKey))
+                {
+                    padPos -= rightDelta;
+                    padRelease = true;
+                }
+                
+                if (padRelease && padPos == Vector2.zero)
+                {
+                    if (pressMod) OnPadUnclick(sender);
+                    else OnPadUntouch(sender);
+                }
+            }
+            else
+            {
+                bool padPress = false;
+                if (Input.GetKeyDown(controls.upKey))
+                {
+                    padPos += upDelta;
+                    padPress = true;
+                }
+                if (Input.GetKeyDown(controls.downKey))
+                {
+                    padPos += downDelta;
+                    padPress = true;
+                }
+                if (Input.GetKeyDown(controls.leftKey))
+                {
+                    padPos += leftDelta;
+                    padPress = true;
+                }
+                if (Input.GetKeyDown(controls.rightKey))
+                {
+                    padPos += rightDelta;
+                    padPress = true;
+                }
+                
+                if (padPress)
+                {
+                    if (pressMod) OnPadClick(sender);
+                    else OnPadTouch(sender);
+                }
+            }
+            base.Update();
         }
-        
-        protected override Transform GetCurrentTransform()
+
+        public override Vector3 GetHeadOffset()
+        {
+            return Vector3.zero;
+        }
+
+        public override Transform GetHeadTransform()
         {
             return Camera.main.transform;
         }
 
+        public override Transform GetControllerTransform()
+        {
+            // TODO make this calculate vector from camera to mouse pos.
+            return Camera.main.transform;
+        }
+        
         protected override Vector2 GetCurrentPadPosition()
         {
             return padPos;

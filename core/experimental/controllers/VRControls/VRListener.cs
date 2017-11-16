@@ -1,43 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using worldWizards.core.experimental.controllers.Tools;
 using WorldWizards.core.experimental.controllers;
 
 namespace worldWizards.core.experimental.controllers.VRControls
 {
-    public abstract class VRListener : InputListener
+    public class VRListener : InputListener
     {
         private SteamVR_TrackedController controller;
+
+        public void Init(bool canChange, Type initToolType)
+        {
+            canChangeTools = canChange;
+            tool = gameObject.AddComponent(initToolType) as Tool;
+        }
 
         protected virtual void Awake()
         {
             controller = GetComponent<SteamVR_TrackedController>();
-            if (tool.listenForTrigger)
-            {
-                controller.TriggerClicked += OnTriggerClick;
-                controller.TriggerUnclicked += OnTriggerUnclick;
-            }
-            if (tool.listenForGrip)
-            {
-                controller.Gripped += OnGrip;
-                controller.Ungripped += OnUngrip;
-            }
-            if (tool.listenForMenu)
-            {
-                controller.MenuButtonClicked += OnMenuClick;
-                controller.MenuButtonUnclicked += OnMenuUnclick;
-            }
-            if (tool.listenForPress)
-            {
-                controller.PadClicked += OnPadClick;
-                controller.PadUnclicked += OnPadUnclick;
-            }
-            if (tool.listenForTouch)
-            {
-                controller.PadTouched += OnPadTouch;
-                controller.PadUntouched += OnPadUntouch;
-            }
+            
+            controller.TriggerClicked += OnTriggerClick;
+            controller.TriggerUnclicked += OnTriggerUnclick;
+            controller.Gripped += OnGrip;
+            controller.Ungripped += OnUngrip;
+            controller.MenuButtonClicked += OnMenuClick;
+            controller.MenuButtonUnclicked += OnMenuUnclick;
+            controller.PadClicked += OnPadClick;
+            controller.PadUnclicked += OnPadUnclick;
+            controller.PadTouched += OnPadTouch;
+            controller.PadUntouched += OnPadUntouch;
         }
 
-        protected override Transform GetCurrentTransform()
+        public override Vector3 GetHeadOffset()
+        {
+            // TODO Actually put this stuff in here.
+            return Vector3.forward;
+        }
+
+        public override Transform GetHeadTransform()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Transform GetControllerTransform()
         {
             return controller.transform;
         }
@@ -46,48 +51,5 @@ namespace worldWizards.core.experimental.controllers.VRControls
         {
             return new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
         }
-
-        #region Listener Functions
-        private void OnTriggerClick(object sender, ClickedEventArgs e)
-        {
-            OnTriggerClick(sender);
-        }
-        private void OnTriggerUnclick(object sender, ClickedEventArgs e)
-        {
-            OnTriggerUnclick(sender);
-        }
-        private void OnGrip(object sender, ClickedEventArgs e)
-        {
-            OnGrip(sender);
-        }
-        private void OnUngrip(object sender, ClickedEventArgs e)
-        {
-            OnUngrip(sender);
-        }
-        private void OnMenuClick(object sender, ClickedEventArgs e)
-        {
-            OnMenuClick(sender);
-        }
-        private void OnMenuUnclick(object sender, ClickedEventArgs e)
-        {
-            OnMenuUnclick(sender);
-        }
-        private void OnPadClick(object sender, ClickedEventArgs e)
-        {
-            OnPadClick(sender);
-        }
-        private void OnPadUnclick(object sender, ClickedEventArgs e)
-        {
-            OnPadUnclick(sender);
-        }
-        private void OnPadTouch(object sender, ClickedEventArgs e)
-        {
-            OnPadTouch(sender);
-        }
-        private void OnPadUntouch(object sender, ClickedEventArgs e)
-        {
-            OnPadUntouch(sender);
-        }
-        #endregion
     }
 }

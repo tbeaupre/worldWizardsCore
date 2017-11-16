@@ -1,106 +1,117 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using worldWizards.core.experimental.controllers.Tools;
 
 namespace WorldWizards.core.experimental.controllers
 {
     public abstract class InputListener : MonoBehaviour
     {
-        protected Tool tool;
-        private bool debug = false;
+        private bool debug = true;
         
-        private bool trigger = false;
-        private bool grip = false;
-        private bool menu = false;
-        private bool press = false;
-        private bool touch = false;
+        protected Tool tool;
+        protected bool canChangeTools = true;
+        
+        protected bool Trigger { get; private set; }
+        protected bool Grip { get; private set; }
+        protected bool Menu { get; private set; }
+        protected bool Press { get; private set; }
+        protected bool Touch { get; private set; }
         private Vector2 lastPadPos; // May be possible to remove.
         
-        private void Update()
+        protected virtual void Update()
         {
-            tool.UpdateTransform(GetCurrentTransform());
-            
-            if (trigger)
+            if (Trigger)
             {
                 tool.UpdateTrigger();
             }
-            if (grip)
+            if (Grip)
             {
                 tool.UpdateGrip();
             }
-            if (menu)
+            if (Menu)
             {
                 tool.UpdateMenu();
             }
-            if (press)
+            if (Press)
             {
                 lastPadPos = GetCurrentPadPosition();
                 tool.UpdatePress(lastPadPos);
             }
-            else if (touch)
+            else if (Touch)
             {
                 lastPadPos = GetCurrentPadPosition();
                 tool.UpdateTouch(lastPadPos);
             }
         }
 
-        protected abstract Transform GetCurrentTransform();
-
+        public void ChangeTool(Type newToolType)
+        {
+            if (canChangeTools)
+            {
+                Destroy(GetComponent<Tool>());
+                tool = gameObject.AddComponent(newToolType) as Tool;
+            }
+        }
+        
+        public abstract Vector3 GetHeadOffset();
+        public abstract Transform GetHeadTransform();
+        public abstract Transform GetControllerTransform();
         protected abstract Vector2 GetCurrentPadPosition();
         
         #region Listener Functions
-        protected void OnTriggerClick(object sender)
+        protected void OnTriggerClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnTriggerClick", sender);
-            trigger = true;
+            Trigger = true;
         }
-        protected void OnTriggerUnclick(object sender)
+        protected void OnTriggerUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnTriggerUnclick", sender);
-            trigger = false;
+            Trigger = false;
             tool.OnTriggerUnclick();
         }
-        protected void OnGrip(object sender)
+        protected void OnGrip(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnGrip", sender);
-            grip = true;
+            Grip = true;
         }
-        protected void OnUngrip(object sender)
+        protected void OnUngrip(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnUngrip", sender);
-            grip = false;
+            Grip = false;
             tool.OnUngrip();
         }
-        protected void OnMenuClick(object sender)
+        protected void OnMenuClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnMenuClick", sender);
-            menu = true;
+            Menu = true;
         }
-        protected void OnMenuUnclick(object sender)
+        protected void OnMenuUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnMenuUnclick", sender);
-            menu = false;
+            Menu = false;
             tool.OnMenuUnclick();
         }
-        protected void OnPadClick(object sender)
+        protected void OnPadClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnPadClick", sender);
-            press = true;
+            Press = true;
         }
-        protected void OnPadUnclick(object sender)
+        protected void OnPadUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnPadUnclick", sender);
-            press = false;
+            Press = false;
             tool.OnPadUnclick(lastPadPos);
         }
-        protected void OnPadTouch(object sender)
+        protected void OnPadTouch(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnPadTouch", sender);
-            touch = true;
+            Touch = true;
         }
-        protected void OnPadUntouch(object sender)
+        protected void OnPadUntouch(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
             DebugMessage("OnPadUntouch", sender);
-            touch = false;
+            Touch = false;
             tool.OnPadUntouch(lastPadPos);
         }
         #endregion

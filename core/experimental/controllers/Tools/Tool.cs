@@ -1,22 +1,16 @@
 ﻿using UnityEngine;
+using WorldWizards.core.experimental.controllers;
 
 namespace worldWizards.core.experimental.controllers.Tools
 {
     public abstract class Tool : MonoBehaviour
     {
         protected const float DEADZONE_SIZE = 0.7f; // The distance from the center of the touchpad which is dead.
+        protected InputListener controller;
 
-        public bool listenForTrigger = false;
-        public bool listenForGrip = false;
-        public bool listenForMenu = false;
-        public bool listenForPress = false;
-        public bool listenForTouch = false;
-
-        protected Transform controllerTransform;
-
-        public void UpdateTransform(Transform t)
+        protected virtual void Awake()
         {
-            controllerTransform = t;
+            controller = GetComponentInParent<InputListener>();
         }
 
         // These methods are called when the button is released
