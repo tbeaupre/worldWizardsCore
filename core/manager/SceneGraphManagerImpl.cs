@@ -6,20 +6,21 @@ using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.level;
 using WorldWizards.core.file.entity;
 using Object = UnityEngine.Object;
 
-namespace WorldWizards.core.entity.level
+namespace WorldWizards.core.manager
 {
     /// <summary>
     ///     The Scene Graph is the data structure that holds all the World
     ///     Wizards Objects in the current level.
     /// </summary>
-    public class SceneGraph
+    public class SceneGraphManagerImpl : SceneGraphManager
     {
         private readonly SceneDictionary _sceneDictionary;
 
-        public SceneGraph()
+        public SceneGraphManagerImpl()
         {
             _sceneDictionary = new SceneDictionary();
         }
@@ -54,7 +55,11 @@ namespace WorldWizards.core.entity.level
 
         public bool Add(WWObject worldWizardsObject)
         {
-            return _sceneDictionary.Add(worldWizardsObject);
+            if (worldWizardsObject != null)
+            {
+                return _sceneDictionary.Add(worldWizardsObject);
+            }
+            return false;
         }
 
         /// <summary>

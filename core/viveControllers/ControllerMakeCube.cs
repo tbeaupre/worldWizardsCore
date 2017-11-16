@@ -2,13 +2,12 @@
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.viveControllers
 {
     public class ControllerMakeCube : MonoBehaviour
     {
-        private SceneGraphController sceneGraphController;
-
         private SteamVR_TrackedObject trackedObj;
 
         private SteamVR_Controller.Device Controller
@@ -19,11 +18,6 @@ namespace WorldWizards.core.viveControllers
         private void Awake()
         {
             trackedObj = GetComponent<SteamVR_TrackedObject>();
-        }
-
-        private void Start()
-        {
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
         }
 
         // Update is called once per frame
@@ -44,7 +38,7 @@ namespace WorldWizards.core.viveControllers
 
             var data = WWObjectFactory.CreateNew(cubePosition, "white");
             var obj = WWObjectFactory.Instantiate(data);
-            sceneGraphController.Add(obj);
+            ManagerRegistry.Instance.sceneGraphImpl.Add(obj);
         }
     }
 }
