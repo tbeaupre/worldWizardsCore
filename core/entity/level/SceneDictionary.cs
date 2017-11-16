@@ -20,6 +20,40 @@ namespace WorldWizards.core.entity.level
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
+
+        public List<WWObject> GetObjectsAbove(int height)
+        {
+            var result = new List<WWObject>();
+            foreach (var kvp in coordinates)
+            {
+                if (kvp.Key.y > height)
+                {
+                    foreach (var g in coordinates[kvp.Key])
+                    {
+                        result.Add(objects[g]);
+                    }
+                }
+            }
+            return result;
+        }
+        
+        public List<WWObject> GetObjectsAtAndBelow(int height)
+        {
+            var result = new List<WWObject>();
+            foreach (var kvp in coordinates)
+            {
+                if (kvp.Key.y <= height)
+                {
+                    foreach (var g in coordinates[kvp.Key])
+                    {
+                        result.Add(objects[g]);
+                    }
+                }
+            }
+            return result;
+        }
+        
+
         public List<WWObjectJSONBlob> GetMementoObjects()
         {
             var objectstoSave = new List<WWObjectJSONBlob>();
@@ -51,10 +85,10 @@ namespace WorldWizards.core.entity.level
                 foreach (var obj in objectsAtCoord)
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
                     {
-                        var walls = WWWallsHelper.getRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
+                        var walls = WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
                         existingWalls = existingWalls | walls;
                     }
-                var newWalls = WWWallsHelper.getRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
+                var newWalls = WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
                 var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }

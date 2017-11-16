@@ -42,7 +42,7 @@ namespace WorldWizards.core.entity.gameObject
 
         public WWWalls GetWallsWRotationApplied()
         {
-            return WWWallsHelper.getRotatedWWWalls(this.resourceMetaData, GetCoordinate().rotation);
+            return WWWallsHelper.GetRotatedWWWalls(this.resourceMetaData, GetCoordinate().rotation);
         }
 
         public void SetCoordinate(Coordinate coordinate)

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
-using WorldWizards.core.entity.common;
-using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.entity.level;
 
 namespace WorldWizards.core.experimental
 {
@@ -41,69 +39,10 @@ namespace WorldWizards.core.experimental
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
             
-            
             gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-
-        }
-
-        private int GetWallIndex()
-        {
-            for (int i = 0; i < possibleTiles.Count; i++)
-            {
-//                if (possibleTiles[i].Equals("ww_basic_assets_tile_wallbrick")){
-                if (possibleTiles[i].Equals("ww_basic_assets_tile_arch")){
-                    return i;
-                }
-            }
-            return 0;
-        }
-
-        
-        private void PlaceWallObject(IntVector3 coordIndex, int rotation)
-        {
-            var tileIndex = GetWallIndex();
-            var coordinate = new Coordinate(coordIndex, rotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
-            var go = WWObjectFactory.Instantiate(objData);
-            if (!sceneGraphController.Add(go))
-            {
-                Debug.Log("Could not place wall because of collision, deleting temp");
-                Destroy(go.gameObject);
-            }
         }
         
         
-        private void TryToFitWall(IntVector3 coordIndex, WWWalls wallOpening)
-        { 
-            var tileIndex = GetWallIndex();
-
-            WWWalls wallsToFit = 0;
-            // close off everything
-            foreach (WWWalls w in Enum.GetValues(typeof(WWWalls)))
-            {
-                wallsToFit = wallsToFit | w;
-            }
-            wallsToFit = wallsToFit & (~ wallOpening); // carve out walls we want to fit into
-            
-            // check to see if any of the 4 possible rotations would fit given resource's walls
-
-            var resourceTag = possibleTiles[tileIndex];
-            
-            var resource = WWResourceController.GetResource(resourceTag);
-            var resourceMetaData = resource.GetMetaData();
-            
-            for (int r = 0; r < 360; r += 90)
-            {
-                var newWalls = WWWallsHelper.getRotatedWWWalls(resourceMetaData, r);
-                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
-                if (!doesCollide)
-                {
-                    PlaceWallObject(coordIndex, r);
-                    break;
-                }
-            }
-        }
-
         private void BuildWallsInput()
         {
             if (Input.GetKeyDown(KeyCode.Mouse0) && Input.GetKey(KeyCode.LeftShift))
@@ -115,48 +54,12 @@ namespace WorldWizards.core.experimental
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
                     {
-                        if (!wwObject.Equals(curObject)) BuildWalls(wwObject);
+                        if (!wwObject.Equals(curObject))  BuilderAlgorithms.BuildPerimeterWalls( GetResourceTag(), wwObject, sceneGraphController);
                     }
                 }
             }
         }
 
-
-        private void BuildWalls(WWObject wwObject)
-        {
-            Debug.Log("Execute Build Walls");
-            var walls = sceneGraphController.SelectPerimeter(wwObject);
-            Debug.Log("Found " + walls.Count + " to build.");
-            foreach (var wall in walls)
-            {
-                Debug.Log(string.Format(" build a wall at inded : {0} and diretions {1}", wall.Key, wall.Value));
-                
-                if (Convert.ToBoolean(WWWalls.North & wall.Value))
-                {
-                    Debug.Log("North Wall detected");
-//                    PlaceWallObject(wall.Key, 0);
-                    TryToFitWall(wall.Key, WWWalls.North);
-                }
-                if (Convert.ToBoolean(WWWalls.East & wall.Value))
-                {
-                    Debug.Log("East Wall detected");   
-                    TryToFitWall(wall.Key, WWWalls.East);
-//                    PlaceWallObject(wall.Key, 90);
-                }
-                if (Convert.ToBoolean(WWWalls.South & wall.Value))
-                {
-                    Debug.Log("South Wall detected"); 
-                    TryToFitWall(wall.Key, WWWalls.South);
-//                    PlaceWallObject(wall.Key, 180);
-                }
-                if (Convert.ToBoolean(WWWalls.West & wall.Value))
-                {
-                    Debug.Log("West Wall detected");  
-                    TryToFitWall(wall.Key, WWWalls.West);
-//                    PlaceWallObject(wall.Key, 270);
-                }
-            }
-        }
 
         private void TogglePlaceState()
         {
@@ -164,6 +67,19 @@ namespace WorldWizards.core.experimental
             {
                 placeState = !placeState;
             }
+        }
+
+        private void MoveGrid()
+        {
+            var gridPosition = gridCollider.transform.position;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+            else if (Input.GetKeyDown(KeyCode.DownArrow))
+                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+            gridCollider.transform.position = gridPosition;
+
+            var c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
+            sceneGraphController.HideObjectsAbove(c.index.y);
         }
 
         private void Update()
@@ -178,12 +94,9 @@ namespace WorldWizards.core.experimental
             
             DeleteHitObject();
             // move the builder grid
-            var gridPosition = gridCollider.transform.position;
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            gridCollider.transform.position = gridPosition;
+          
+            
+            MoveGrid();
 
 
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -250,63 +163,35 @@ namespace WorldWizards.core.experimental
             }
         }
 
-//        private WWObject PlaceObject(Vector3 position)
-//        {
-//            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
-//
-//
-//            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-//            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
-//            var go = WWObjectFactory.Instantiate(objData);
-//
-//
-//            //			Debug.Log (curObject.objectData.metaData.GetType ());
-//            //			Debug.Log (curObject.objectData.GetType());
-//
-//            return go;
-//        }
-
+        private string GetResourceTag()
+        {
+            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+            return possibleTiles[tileIndex];
+        }
 
         private WWObject PlaceObject(Vector3 position)
         { 
-            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
             
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            var possibleConfigurations =
+                BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag(), sceneGraphController);
 
-            WWWalls wallsToFit = 0;
-            // close off everything
-            foreach (WWWalls w in Enum.GetValues(typeof(WWWalls)))
+            if (possibleConfigurations.Count == 0)
             {
-                wallsToFit = wallsToFit | w;
+                return null;
             }
-            wallsToFit = wallsToFit & sceneGraphController.GetWallsAtCoordinate(coordinate); // carve out walls we want to fit into
-            
-            // check to see if any of the 4 possible rotations would fit given resource's walls
 
-            var resourceTag = possibleTiles[tileIndex];
-            
-            var resource = WWResourceController.GetResource(resourceTag);
-            var resourceMetaData = resource.GetMetaData();
-            
-//            for (int r = 0; r < 360; r += 90)
-            int r = curRotation;
-            for (int i = 0; i < 4; i ++)
+            var theRot = possibleConfigurations[0];
+            if (possibleConfigurations.Contains(curRotation))
             {
-                r = (curRotation + (i * 90)) % 360;
-                var newWalls = WWWallsHelper.getRotatedWWWalls(resourceMetaData, r);
-                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
-                if (!doesCollide)
-                {
-                    var coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, r);
-                    var objData = WWObjectFactory.CreateNew(coordRotated, possibleTiles[tileIndex]);
-                    var go = WWObjectFactory.Instantiate(objData);
-                    return go;
-                }
+                theRot = curRotation;
             }
-            return null;
+            var coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            var objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
+            var go = WWObjectFactory.Instantiate(objData);
+            return go;
         }
         
-        
+          
         private void DeleteHitObject()
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
