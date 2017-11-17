@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace worldWizards.core.experimental.controllers.Desktop
+namespace worldWizards.core.input.Desktop
 {
     public struct ControlScheme
     {

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using WorldWizards.core.experimental.controllers;
 
-namespace worldWizards.core.experimental.controllers.Tools
+namespace worldWizards.core.input.Tools
 {
     public abstract class Tool : MonoBehaviour
     {

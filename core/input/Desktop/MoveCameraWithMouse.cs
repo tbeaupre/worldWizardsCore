@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace worldWizards.core.experimental.controllers.Desktop
+namespace worldWizards.core.input.Desktop
 {
     public class MoveCameraWithMouse : MonoBehaviour
     {

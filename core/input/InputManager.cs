@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
-using worldWizards.core.experimental.controllers.Desktop;
-using worldWizards.core.experimental.controllers.Tools;
-using worldWizards.core.experimental.controllers.VRControls;
+using worldWizards.core.input.Desktop;
+using worldWizards.core.input.Tools;
+using worldWizards.core.input.VRControls;
 
-namespace WorldWizards.core.experimental.controllers
+namespace worldWizards.core.input
 {
     public class InputManager : MonoBehaviour
     {
@@ -30,7 +30,6 @@ namespace WorldWizards.core.experimental.controllers
                 Debug.Log("InputManager::Awake(): Desktop Controls Enabled");
                 headCamera.gameObject.SetActive(false);
                 desktopCamera.gameObject.SetActive(true);
-                Debug.Log(headCamera.enabled);
                 
                 ControlScheme leftControlScheme = new ControlScheme(KeyCode.E, KeyCode.Q, KeyCode.Alpha2,
                     KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift);

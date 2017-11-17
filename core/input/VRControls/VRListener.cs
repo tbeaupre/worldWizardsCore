@@ -1,9 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using worldWizards.core.experimental.controllers.Tools;
-using WorldWizards.core.experimental.controllers;
+using worldWizards.core.input.Tools;
 
-namespace worldWizards.core.experimental.controllers.VRControls
+namespace worldWizards.core.input.VRControls
 {
     public class VRListener : InputListener
     {

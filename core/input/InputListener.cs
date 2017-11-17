@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using worldWizards.core.experimental.controllers.Tools;
+using worldWizards.core.input.Tools;
 
-namespace WorldWizards.core.experimental.controllers
+namespace worldWizards.core.input
 {
     public abstract class InputListener : MonoBehaviour
     {
