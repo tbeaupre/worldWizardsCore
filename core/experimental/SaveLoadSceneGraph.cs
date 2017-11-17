@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
@@ -28,14 +30,14 @@ namespace WorldWizards.core.experimental
             var imagePath = "Heightmaps/MazeHeightmap";
             var heightmap = Resources.Load<Texture2D>(imagePath);
 
-            var terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(heightmap);
+            List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(heightmap);
         }
 
         public void CreateTerrain()
         {
             var imagePath = "Heightmaps/TerrainHeightmap";
             var heightmap = Resources.Load<Texture2D>(imagePath);
-            var terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(heightmap);
+            List<Coordinate> terrainCoordinates = TerrainGenerator.CreateTerrainFromImage(heightmap);
         }
 
         public void DeleteObjects()

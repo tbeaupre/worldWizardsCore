@@ -7,10 +7,6 @@ namespace WorldWizards.core.file.entity
     [Serializable]
     public class CoordinateJSONBlob
     {
-        [JsonConstructor]
-        public CoordinateJSONBlob()
-        {
-        } 
         public int indexX;
         public int indexY;
         public int indexZ;
@@ -18,16 +14,21 @@ namespace WorldWizards.core.file.entity
         public float offsetY;
         public float offsetZ;
         public int rotation;
-        
+
+        [JsonConstructor]
+        public CoordinateJSONBlob()
+        {
+        }
+
         public CoordinateJSONBlob(Coordinate c)
         {
-            this.indexX = c.index.x;
-            this.indexY = c.index.y;
-            this.indexZ = c.index.z;
-            this.offsetX = c.offset.x;
-            this.offsetY = c.offset.y;
-            this.offsetZ = c.offset.z;
-            this.rotation = c.rotation;
-        }  
+            indexX = c.index.x;
+            indexY = c.index.y;
+            indexZ = c.index.z;
+            offsetX = c.offset.x;
+            offsetY = c.offset.y;
+            offsetZ = c.offset.z;
+            rotation = c.rotation;
+        }
     }
 }

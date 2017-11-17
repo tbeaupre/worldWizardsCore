@@ -39,8 +39,8 @@ namespace WorldWizards.core.manager
         /// </summary>
         public void ClearAll()
         {
-            var keys = _sceneDictionary.GetAllGuids();
-            foreach (var key in keys) Delete(key);
+            List<Guid> keys = _sceneDictionary.GetAllGuids();
+            foreach (Guid key in keys) Delete(key);
         }
 
         /// <summary>
@@ -62,6 +62,103 @@ namespace WorldWizards.core.manager
             return false;
         }
 
+        public void HideObjectsAbove(int height)
+        {
+            List<WWObject> objects = _sceneDictionary.GetObjectsAbove(height);
+            foreach (WWObject obj in objects)
+            {
+                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+                foreach (MeshRenderer mesh in meshRenders)
+                    mesh.enabled = false;
+                foreach (SkinnedMeshRenderer skin in skinnedRenders)
+                    skin.enabled = false;
+            }
+
+            List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
+            foreach (WWObject obj in objectsAtAndBelow)
+            {
+                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+
+                foreach (MeshRenderer mesh in meshRenders)
+                    mesh.enabled = true;
+                foreach (SkinnedMeshRenderer skin in skinnedRenders)
+                    skin.enabled = true;
+            }
+        }
+
+
+        public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
+        {
+            List<WWObject> objects = GetObjectsInCoordinateIndex(coordinate);
+            WWWalls walls = 0;
+            foreach (WWObject obj in objects)
+                walls = walls | obj.GetWallsWRotationApplied();
+            return walls;
+        }
+
+        public void Delete(Guid id)
+        {
+            if (_sceneDictionary.ContainsGuid(id))
+            {
+                WWObject rootObject = Get(id);
+
+                // remove child from parent if there is a parent
+                WWObjectData parent = rootObject.GetParent();
+                if (parent != null)
+                {
+                    WWObject parentObject = Get(parent.id);
+                    parentObject.RemoveChild(rootObject);
+                }
+
+                List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
+                // include the root
+                objectsToDelete.Add(rootObject.objectData);
+                foreach (WWObjectData objectToDelete in objectsToDelete)
+                {
+                    WWObject objectToDestroy = Remove(objectToDelete.id);
+                    Destroy(objectToDestroy);
+                }
+            }
+        }
+
+        public void Save()
+        {
+            List<WWObjectJSONBlob> objectsToSave = _sceneDictionary.GetMementoObjects();
+            string json = JsonConvert.SerializeObject(objectsToSave);
+            FileIO.SaveJSONToFile(json, FileIO.testPath);
+        }
+
+        public void Load()
+        {
+            string json = FileIO.LoadJsonFromFile(FileIO.testPath);
+
+            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectJSONBlob>>(json);
+            Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
+
+            foreach (WWObjectJSONBlob obj in objectsToRestore)
+            {
+                var objectData = new WWObjectData(obj);
+                WWObject go = WWObjectFactory.Instantiate(objectData);
+                Add(go);
+            }
+
+            // re-link children since all the objects have been instantiated in game world
+            foreach (WWObjectJSONBlob obj in objectsToRestore)
+            {
+                WWObject root = Get(obj.id);
+                var childrenToRestore = new List<WWObject>();
+                foreach (Guid childID in obj.children)
+                {
+                    WWObject childObject = Get(childID);
+                    childrenToRestore.Add(childObject);
+                }
+                root.AddChildren(childrenToRestore);
+            }
+        }
+
         /// <summary>
         ///     Remove an object from the scene graph.
         /// </summary>
@@ -80,117 +177,10 @@ namespace WorldWizards.core.manager
 			GameObject.Destroy (objectToDestroy.gameObject);
 			#endif
         }
-        
-        public void HideObjectsAbove(int height)
-        {
-            var objects = _sceneDictionary.GetObjectsAbove(height);
-            foreach (var obj in objects)
-            {
-                var meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                var skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (var mesh in meshRenders)
-                {
-                    mesh.enabled = false;
-                }
-                foreach (var skin in skinnedRenders)
-                {
-                    skin.enabled = false;
-                }
-            }
-            
-            var objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
-            foreach (var obj in objectsAtAndBelow)
-            {
-                var meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                var skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (var mesh in meshRenders)
-                {
-                    mesh.enabled = true;
-                }
-                foreach (var skin in skinnedRenders)
-                {
-                    skin.enabled = true;
-                }
-            }
-        }
-
-
-        public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
-        {
-            var objects = GetObjectsInCoordinateIndex(coordinate);
-            WWWalls walls = 0;
-            foreach (var obj in objects)
-            {
-                walls = walls | obj.GetWallsWRotationApplied();
-            }
-            return walls;
-        }
-
-        public void Delete(Guid id)
-        {
-            if (_sceneDictionary.ContainsGuid(id))
-            {
-                var rootObject = Get(id);
-
-                // remove child from parent if there is a parent
-                var parent = rootObject.GetParent();
-                if (parent != null)
-                {
-                    var parentObject = Get(parent.id);
-                    parentObject.RemoveChild(rootObject);
-                }
-
-                var objectsToDelete = rootObject.GetAllDescendents();
-                // include the root
-                objectsToDelete.Add(rootObject.objectData);
-                foreach (var objectToDelete in objectsToDelete)
-                {
-                    var objectToDestroy = Remove(objectToDelete.id);
-                    Destroy(objectToDestroy);
-                }
-            }
-        }
 
         public WWObject Get(Guid id)
         {
             return _sceneDictionary.Get(id);
-        }
-
-        public void Save()
-        {
-            var objectsToSave = _sceneDictionary.GetMementoObjects();
-            var json = JsonConvert.SerializeObject(objectsToSave);
-            FileIO.SaveJSONToFile(json, FileIO.testPath);
-        }
-
-        public void Load()
-        {
-            var json = FileIO.LoadJsonFromFile(FileIO.testPath);
-
-            var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectJSONBlob>>(json);
-            Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
-
-            foreach (var obj in objectsToRestore)
-            {
-                var objectData = new WWObjectData(obj);
-                var go = WWObjectFactory.Instantiate(objectData);
-                Add(go);
-            }
-
-            // re-link children since all the objects have been instantiated in game world
-            foreach (var obj in objectsToRestore)
-            {
-                var root = Get(obj.id);
-                var childrenToRestore = new List<WWObject>();
-                foreach (var childID in obj.children)
-                {
-                    var childObject = Get(childID);
-                    childrenToRestore.Add(childObject);
-                }
-                root.AddChildren(childrenToRestore);
-            }
         }
     }
 }

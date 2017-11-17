@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.file.entity;
 
@@ -50,21 +48,21 @@ namespace WorldWizards.core.entity.gameObject
 
         public void AddChildren(List<WWObject> children)
         {
-            foreach (var child in children) this.children.Add(child.objectData);
+            foreach (WWObject child in children) this.children.Add(child.objectData);
         }
 
-	    /// <summary>
-	    ///     Gets all descendents.
-	    /// </summary>
-	    /// <returns>The all descendents.</returns>
-	    public List<WWObjectData> GetAllDescendents()
+        /// <summary>
+        ///     Gets all descendents.
+        /// </summary>
+        /// <returns>The all descendents.</returns>
+        public List<WWObjectData> GetAllDescendents()
         {
             var descendents = new List<WWObjectData>();
-            foreach (var child in children)
+            foreach (WWObjectData child in children)
             {
                 descendents.Add(child);
-                var childsDescendents = child.GetAllDescendents();
-                foreach (var childsDescendent in childsDescendents) descendents.Add(childsDescendent);
+                List<WWObjectData> childsDescendents = child.GetAllDescendents();
+                foreach (WWObjectData childsDescendent in childsDescendents) descendents.Add(childsDescendent);
             }
             return descendents;
         }
@@ -86,7 +84,10 @@ namespace WorldWizards.core.entity.gameObject
 
         public void RemoveChild(WWObjectData child)
         {
-            if (children.Contains(child)) children.Remove(child);
+            if (children.Contains(child))
+            {
+                children.Remove(child);
+            }
         }
     }
 }

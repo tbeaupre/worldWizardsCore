@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.manager;
 
 namespace WorldWizards.core.viveControllers
 {
@@ -45,10 +43,16 @@ namespace WorldWizards.core.viveControllers
             }
 
             if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+            {
                 if (!isMenuActive)
+                {
                     ShowMainMenu();
+                }
                 else
+                {
                     OnOK();
+                }
+            }
         }
 
         private void ShowMainMenu()
