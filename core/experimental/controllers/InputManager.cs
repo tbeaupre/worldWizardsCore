@@ -8,6 +8,8 @@ namespace WorldWizards.core.experimental.controllers
     public class InputManager : MonoBehaviour
     {
         private bool vrEnabled;
+        public Camera headCamera;
+        public Camera desktopCamera;
         
         private void Awake()
         {
@@ -26,6 +28,9 @@ namespace WorldWizards.core.experimental.controllers
             else
             {
                 Debug.Log("InputManager::Awake(): Desktop Controls Enabled");
+                headCamera.gameObject.SetActive(false);
+                desktopCamera.gameObject.SetActive(true);
+                Debug.Log(headCamera.enabled);
                 
                 ControlScheme leftControlScheme = new ControlScheme(KeyCode.E, KeyCode.Q, KeyCode.Alpha2,
                     KeyCode.W, KeyCode.S, KeyCode.A, KeyCode.D, KeyCode.LeftShift);
