@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
@@ -108,7 +109,7 @@ namespace worldWizards.core.experimental.controllers.Tools
                 {
                     curObject.transform.position = new Vector3(
                         hitPoint.x - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
-                        hitPoint.y - CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
+                        hitPoint.y - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
                         hitPoint.z - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale);
                 }
             }
@@ -141,13 +142,13 @@ namespace worldWizards.core.experimental.controllers.Tools
             {
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
-                    curRotation += 90;
+                    curRotation -= 90;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
                 if (lastPadPos.x > DEADZONE_SIZE)
                 {
-                    curRotation -= 90;
+                    curRotation += 90;
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
@@ -171,6 +172,22 @@ namespace worldWizards.core.experimental.controllers.Tools
         public override void OnPadUntouch(Vector2 lastPadPos)
         {
             trackingSwipe = false;
+
+            if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2)
+            {
+                if (lastPadPos.y > DEADZONE_SIZE)
+                {
+                    curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
+                    Destroy(curObject.gameObject);
+                    curObject = PlaceObject(hitPoint);
+                }
+                if (lastPadPos.y < -DEADZONE_SIZE)
+                {
+                    curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
+                    Destroy(curObject.gameObject);
+                    curObject = PlaceObject(hitPoint);
+                }
+            }
         }
         
         public override void UpdateTouch(Vector2 padPos)
