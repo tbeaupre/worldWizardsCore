@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Newtonsoft.Json.Bson;
 using UnityEngine;
 using worldWizards.core.experimental.controllers.Tools;
 using WorldWizards.core.experimental.controllers;
@@ -16,6 +17,7 @@ namespace worldWizards.core.experimental.controllers.Desktop
         private readonly Vector2 rightDelta = new Vector2(1, 0);
 
         private bool pressMod;
+        private int pressNum;
         private Vector2 padPos = Vector2.zero;
 
         public void Init(ControlScheme controlScheme, bool canChange, Type toolType)
@@ -57,72 +59,75 @@ namespace worldWizards.core.experimental.controllers.Desktop
 
             pressMod = Input.GetKey(controls.pressModKey);
 
+            if (Input.GetKeyDown(controls.upKey))
+            {
+                padPos += upDelta;
+                PadPress();
+                pressNum++;
+            }
+            if (Input.GetKeyDown(controls.downKey))
+            {
+                padPos += downDelta;
+                PadPress();
+                pressNum++;
+            }
+            if (Input.GetKeyDown(controls.leftKey))
+            {
+                padPos += leftDelta;
+                PadPress();
+                pressNum++;
+            }
+            if (Input.GetKeyDown(controls.rightKey))
+            {
+                padPos += rightDelta;
+                PadPress();
+                pressNum++;
+            }
             if (Press || Touch)
             {
-                bool padRelease = false;
                 if (Input.GetKeyUp(controls.upKey))
                 {
                     padPos -= upDelta;
-                    padRelease = true;
+                    pressNum--;
                 }
                 if (Input.GetKeyUp(controls.downKey))
                 {
                     padPos -= downDelta;
-                    padRelease = true;
+                    pressNum--;
                 }
                 if (Input.GetKeyUp(controls.leftKey))
                 {
                     padPos -= leftDelta;
-                    padRelease = true;
+                    pressNum--;
                 }
                 if (Input.GetKeyUp(controls.rightKey))
                 {
                     padPos -= rightDelta;
-                    padRelease = true;
+                    pressNum--;
                 }
                 
-                if (padRelease && padPos == Vector2.zero)
+                if (pressNum == 0)
                 {
                     if (pressMod) OnPadUnclick(sender);
                     else OnPadUntouch(sender);
                 }
             }
-            else
-            {
-                bool padPress = false;
-                if (Input.GetKeyDown(controls.upKey))
-                {
-                    padPos += upDelta;
-                    padPress = true;
-                }
-                if (Input.GetKeyDown(controls.downKey))
-                {
-                    padPos += downDelta;
-                    padPress = true;
-                }
-                if (Input.GetKeyDown(controls.leftKey))
-                {
-                    padPos += leftDelta;
-                    padPress = true;
-                }
-                if (Input.GetKeyDown(controls.rightKey))
-                {
-                    padPos += rightDelta;
-                    padPress = true;
-                }
-                
-                if (padPress)
-                {
-                    if (pressMod) OnPadClick(sender);
-                    else OnPadTouch(sender);
-                }
-            }
             base.Update();
+        }
+
+        private void PadPress()
+        {
+            if (pressNum == 0)
+            {
+                object sender = "Desktop";
+                if (pressMod) OnPadClick(sender);
+                else OnPadTouch(sender);
+            }
         }
 
         public override Vector3 GetHeadOffset()
         {
-            return new Vector3(0, 7, 0);
+            return new Vector3(0, 4, 0);
         }
 
         public override Transform GetCameraRigTransform()
