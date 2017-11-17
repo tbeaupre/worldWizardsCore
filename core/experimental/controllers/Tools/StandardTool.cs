@@ -132,7 +132,8 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             if (Math.Abs(padPos.x) > DEADZONE_SIZE / 2)
             {
-                Vector3 strafeVector = padPos.x * gameObject.transform.right;
+                Vector3 strafeVector = padPos.x * controller.GetControllerDirection();
+                strafeVector = Quaternion.AngleAxis(90, Vector3.up) * strafeVector;
                 strafeVector.y = 0;
                 strafeVector = strafeVector.normalized * MOVE_OFFSET;
                 
@@ -140,7 +141,7 @@ namespace worldWizards.core.experimental.controllers.Tools
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
-                Vector3 forwardMoveVector = padPos.y * gameObject.transform.forward;
+                Vector3 forwardMoveVector = padPos.y * controller.GetControllerDirection();
                 forwardMoveVector.y = 0;
                 forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
             
