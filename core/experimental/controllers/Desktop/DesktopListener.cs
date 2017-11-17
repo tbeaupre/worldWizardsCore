@@ -122,19 +122,24 @@ namespace worldWizards.core.experimental.controllers.Desktop
 
         public override Vector3 GetHeadOffset()
         {
-            return Vector3.zero;
+            return new Vector3(0, 7, 0);
         }
 
-        public override Transform GetHeadTransform()
+        public override Transform GetCameraRigTransform()
         {
             return Camera.main.transform;
         }
 
-        public override Transform GetControllerTransform()
+        public override Vector3 GetControllerPoint()
         {
-            // TODO make this calculate vector from camera to mouse pos.
-            return Camera.main.transform;
+            return Camera.main.transform.position;
         }
+
+        public override Vector3 GetControllerDirection()
+        {
+            return Camera.main.ScreenPointToRay(Input.mousePosition).direction;
+        }
+        
         
         protected override Vector2 GetCurrentPadPosition()
         {

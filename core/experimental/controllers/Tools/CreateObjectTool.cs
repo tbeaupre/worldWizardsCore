@@ -54,8 +54,7 @@ namespace worldWizards.core.experimental.controllers.Tools
 
         public void Update()
         {
-            Transform controllerTrans = controller.GetControllerTransform();
-            Ray ray = new Ray(controllerTrans.position, controllerTrans.forward);
+            Ray ray = new Ray(controller.GetControllerPoint(), controller.GetControllerDirection());
             RaycastHit raycastHit;
             if (gridCollider.Raycast(ray, out raycastHit, 100))
             {
@@ -107,7 +106,10 @@ namespace worldWizards.core.experimental.controllers.Tools
                 }
                 else
                 {
-                    curObject.transform.position = hitPoint;
+                    curObject.transform.position = new Vector3(
+                        hitPoint.x - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
+                        hitPoint.y - CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
+                        hitPoint.z - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale);
                 }
             }
         }
@@ -118,9 +120,8 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             if (curObject == null)
             {
-                Transform controllerTrans = controller.GetControllerTransform();
                 RaycastHit raycastHit;
-                if (Physics.Raycast(controllerTrans.position, controllerTrans.forward, out raycastHit, 100))
+                if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out raycastHit, 100))
                 {
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)

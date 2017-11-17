@@ -8,14 +8,19 @@ namespace worldWizards.core.experimental.controllers.VRControls
     public class VRListener : InputListener
     {
         private SteamVR_TrackedController controller;
+        private SteamVR_ControllerManager cameraRig;
+        private Transform headTransform;
 
         public void Init(bool canChange, Type initToolType)
         {
             canChangeTools = canChange;
             tool = gameObject.AddComponent(initToolType) as Tool;
+            
+            cameraRig = FindObjectOfType<SteamVR_ControllerManager>();
+            headTransform = cameraRig.GetComponentInChildren<Camera>().transform;
         }
 
-        protected virtual void Awake()
+        protected void Awake()
         {
             controller = GetComponent<SteamVR_TrackedController>();
             
@@ -33,18 +38,22 @@ namespace worldWizards.core.experimental.controllers.VRControls
 
         public override Vector3 GetHeadOffset()
         {
-            // TODO Actually put this stuff in here.
-            return Vector3.forward;
+            return cameraRig.transform.position - headTransform.position;
         }
 
-        public override Transform GetHeadTransform()
+        public override Transform GetCameraRigTransform()
         {
-            throw new NotImplementedException();
+            return cameraRig.transform;
         }
 
-        public override Transform GetControllerTransform()
+        public override Vector3 GetControllerPoint()
         {
-            return controller.transform;
+            return controller.transform.position;
+        }
+
+        public override Vector3 GetControllerDirection()
+        {
+            return controller.transform.forward;
         }
 
         protected override Vector2 GetCurrentPadPosition()

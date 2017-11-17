@@ -43,9 +43,8 @@ namespace worldWizards.core.experimental.controllers.Tools
         public override void UpdateGrip()
         {
             RaycastHit hit;
-            Transform controllerTrans = GetComponentInParent<InputListener>().GetControllerTransform();
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(controllerTrans.position, controllerTrans.forward, out hit, 100))
+            if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -84,8 +83,7 @@ namespace worldWizards.core.experimental.controllers.Tools
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            Transform controllerTrans = GetComponentInParent<InputListener>().GetControllerTransform();
-            laser.transform.position = Vector3.Lerp(controllerTrans.position, hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(controller.GetControllerPoint(), hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -104,9 +102,7 @@ namespace worldWizards.core.experimental.controllers.Tools
             
             var difference = controller.GetHeadOffset();
 
-            difference.y = 0;
-
-            controller.GetHeadTransform().position = target + difference;
+            controller.GetCameraRigTransform().position = target + difference;
         }
         
         
@@ -122,11 +118,11 @@ namespace worldWizards.core.experimental.controllers.Tools
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                controller.GetHeadTransform().position += Vector3.down * MOVE_OFFSET;
+                controller.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                controller.GetHeadTransform().position += Vector3.up * MOVE_OFFSET;
+                controller.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
             }
         }
 
@@ -140,7 +136,7 @@ namespace worldWizards.core.experimental.controllers.Tools
                 strafeVector.y = 0;
                 strafeVector = strafeVector.normalized * MOVE_OFFSET;
                 
-                controller.GetHeadTransform().position += strafeVector;
+                controller.GetCameraRigTransform().position += strafeVector;
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
@@ -148,7 +144,7 @@ namespace worldWizards.core.experimental.controllers.Tools
                 forwardMoveVector.y = 0;
                 forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
             
-                controller.GetHeadTransform().position += forwardMoveVector;  
+                controller.GetCameraRigTransform().position += forwardMoveVector;  
             }
         }
     }

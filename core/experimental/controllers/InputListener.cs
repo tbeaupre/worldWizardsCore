@@ -6,7 +6,7 @@ namespace WorldWizards.core.experimental.controllers
 {
     public abstract class InputListener : MonoBehaviour
     {
-        private bool debug = true;
+        private bool debug = false;
         
         protected Tool tool;
         protected bool canChangeTools = true;
@@ -54,8 +54,9 @@ namespace WorldWizards.core.experimental.controllers
         }
         
         public abstract Vector3 GetHeadOffset();
-        public abstract Transform GetHeadTransform();
-        public abstract Transform GetControllerTransform();
+        public abstract Transform GetCameraRigTransform();
+        public abstract Vector3 GetControllerPoint();
+        public abstract Vector3 GetControllerDirection();
         protected abstract Vector2 GetCurrentPadPosition();
         
         #region Listener Functions
