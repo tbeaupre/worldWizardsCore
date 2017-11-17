@@ -177,13 +177,13 @@ namespace worldWizards.core.input.Tools
                 if (lastPadPos.y > DEADZONE_SIZE)
                 {
                     curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
-                    Destroy(curObject.gameObject);
+                    if (curObject != null) Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
                 if (lastPadPos.y < -DEADZONE_SIZE)
                 {
                     curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
-                    Destroy(curObject.gameObject);
+                    if (curObject != null) Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
                 }
             }

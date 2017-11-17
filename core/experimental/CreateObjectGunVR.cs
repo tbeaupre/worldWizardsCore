@@ -32,7 +32,6 @@ namespace WorldWizards.core.experimental
         {
             get { return SteamVR_Controller.Input((int) trackedObj.index); }
         }
-        private readonly SwipeGesture swipe = new SwipeGesture();
 
         private void Awake()
         {
@@ -134,7 +133,7 @@ namespace WorldWizards.core.experimental
 
         private void CycleObjectsSwipe(Vector3 position)
         {
-            var offset = (int)(possibleTiles.Count * swipe.GetSwipeRatio(Controller));
+            var offset = (int)(possibleTiles.Count * 0.3f);
             if (offset != 0)
             {
                 curTile = (curTile + offset) % possibleTiles.Count;

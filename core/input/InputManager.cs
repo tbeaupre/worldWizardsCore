@@ -17,6 +17,8 @@ namespace worldWizards.core.input
             if (vrEnabled)
             {
                 Debug.Log("InputManager::Awake(): VR Controls Enabled");
+                desktopCamera.gameObject.SetActive(false);
+                headCamera.gameObject.SetActive(true);
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
                 
                 VRListener leftListener = controllerManager.left.AddComponent<VRListener>();
