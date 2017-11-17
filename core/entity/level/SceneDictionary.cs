@@ -24,41 +24,33 @@ namespace WorldWizards.core.entity.level
         public List<WWObject> GetObjectsAbove(int height)
         {
             var result = new List<WWObject>();
-            foreach (var kvp in coordinates)
-            {
+            foreach (KeyValuePair<IntVector3, List<Guid>> kvp in coordinates)
                 if (kvp.Key.y > height)
                 {
-                    foreach (var g in coordinates[kvp.Key])
-                    {
+                    foreach (Guid g in coordinates[kvp.Key])
                         result.Add(objects[g]);
-                    }
                 }
-            }
             return result;
         }
-        
+
         public List<WWObject> GetObjectsAtAndBelow(int height)
         {
             var result = new List<WWObject>();
-            foreach (var kvp in coordinates)
-            {
+            foreach (KeyValuePair<IntVector3, List<Guid>> kvp in coordinates)
                 if (kvp.Key.y <= height)
                 {
-                    foreach (var g in coordinates[kvp.Key])
-                    {
+                    foreach (Guid g in coordinates[kvp.Key])
                         result.Add(objects[g]);
-                    }
                 }
-            }
             return result;
         }
-        
+
 
         public List<WWObjectJSONBlob> GetMementoObjects()
         {
             var objectstoSave = new List<WWObjectJSONBlob>();
             Debug.Log(GetCount());
-            foreach (var entry in objects)
+            foreach (KeyValuePair<Guid, WWObject> entry in objects)
             {
                 var blob = new WWObjectJSONBlob(entry.Value.objectData);
                 objectstoSave.Add(blob);
@@ -80,16 +72,18 @@ namespace WorldWizards.core.entity.level
         {
             if (coordinates.ContainsKey(wwObject.GetCoordinate().index))
             {
-                var objectsAtCoord = GetObjects(wwObject.GetCoordinate());
+                List<WWObject> objectsAtCoord = GetObjects(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
-                foreach (var obj in objectsAtCoord)
+                foreach (WWObject obj in objectsAtCoord)
                     if (obj.resourceMetaData.type.Equals(WWType.Tile))
                     {
-                        var walls = WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
+                        WWWalls walls =
+                            WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
                         existingWalls = existingWalls | walls;
                     }
-                var newWalls = WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
-                var doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
+                WWWalls newWalls =
+                    WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
+                bool doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }
             return false;
@@ -97,8 +91,8 @@ namespace WorldWizards.core.entity.level
 
         public bool Add(WWObject wwObject)
         {
-            var coord = wwObject.GetCoordinate();
-            var guid = wwObject.GetId();
+            Coordinate coord = wwObject.GetCoordinate();
+            Guid guid = wwObject.GetId();
 
             if (Collides(wwObject) && wwObject.resourceMetaData.type.Equals(WWType.Tile))
             {
@@ -136,9 +130,11 @@ namespace WorldWizards.core.entity.level
                 objects.Remove(id);
                 // now we have to remove the the id from the coordinate to List<Guid> Dictionary
 
-                foreach (var kvp in coordinates)
+                foreach (KeyValuePair<IntVector3, List<Guid>> kvp in coordinates)
                     if (kvp.Value.Contains(id))
+                    {
                         kvp.Value.Remove(id);
+                    }
             }
             return removedObject;
         }
@@ -147,7 +143,10 @@ namespace WorldWizards.core.entity.level
         {
             WWObject objectToGet;
             objects.TryGetValue(id, out objectToGet);
-            if (!objectToGet) Debug.LogError("SceneGraph : Failed to get Object with Guid " + id);
+            if (!objectToGet)
+            {
+                Debug.LogError("SceneGraph : Failed to get Object with Guid " + id);
+            }
             return objectToGet;
         }
 
@@ -155,21 +154,21 @@ namespace WorldWizards.core.entity.level
         {
             return GetObjects(coord.index);
         }
-        
+
         public List<WWObject> GetObjects(IntVector3 index)
         {
             var result = new List<WWObject>();
             if (coordinates.ContainsKey(index))
             {
-                var guids = coordinates[index];
-                foreach (var guid in guids)
+                List<Guid> guids = coordinates[index];
+                foreach (Guid guid in guids)
                     result.Add(objects[guid]);
             }
             return result;
         }
-        
-        public List<WWObject> GetPossibleTiles() {
 
+        public List<WWObject> GetPossibleTiles()
+        {
             return null;
         }
 
@@ -177,6 +176,5 @@ namespace WorldWizards.core.entity.level
         {
             return null;
         }
-
     }
 }

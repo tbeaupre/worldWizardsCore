@@ -15,11 +15,15 @@ namespace WorldWizards.core.controller.level
             }
             else
             {
-                var assetBundle = AssetBundle.LoadFromFile(path);
+                AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
                 if (assetBundle == null)
+                {
                     Debug.Log("Unable to load Asset Bundle");
+                }
                 else
+                {
                     bundles.Add(tag, assetBundle);
+                }
             }
         }
 

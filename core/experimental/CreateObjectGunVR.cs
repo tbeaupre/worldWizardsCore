@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
@@ -60,18 +61,18 @@ namespace WorldWizards.core.experimental
         {
             DeleteHitObject();
             // move the builder grid
-            var gridPosition = gridCollider.transform.position;
+            Vector3 gridPosition = gridCollider.transform.position;
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                var oldCamPosition = VRCameraRig.position;
+                Vector3 oldCamPosition = VRCameraRig.position;
                 oldCamPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 VRCameraRig.position = oldCamPosition;
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                var oldCamPosition = VRCameraRig.position;
+                Vector3 oldCamPosition = VRCameraRig.position;
                 oldCamPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 VRCameraRig.position = oldCamPosition;
             }
@@ -87,7 +88,7 @@ namespace WorldWizards.core.experimental
             //    if (gridCollider.Raycast (ray, out raycastHit, 1000f )) {
             if (Physics.Raycast(trackedObj.transform.position, transform.forward, out raycastHit, 100, teleportMask))
             {
-                var position = raycastHit.point;
+                Vector3 position = raycastHit.point;
                 // because the tile center is in the middle need to offset
                 position.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
@@ -96,12 +97,18 @@ namespace WorldWizards.core.experimental
                 RotateObjects(position);
                 coordDebugText.text = string.Format("x : {0}, z : {1}", position.x, position.z);
                 Debug.DrawRay(raycastHit.point, Camera.main.transform.position, Color.red, 0, false);
-                if (curObject == null) curObject = PlaceObject(position);
+                if (curObject == null)
+                {
+                    curObject = PlaceObject(position);
+                }
                 else
+                {
                     curObject.transform.position = new Vector3(raycastHit.point.x,
                         raycastHit.point.y + 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
                         raycastHit.point.z);
+                }
                 if (Controller.GetHairTriggerDown())
+                {
                     if (curObject != null)
                     {
                         Destroy(curObject.gameObject);
@@ -109,6 +116,7 @@ namespace WorldWizards.core.experimental
                         ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
                         curObject = null;
                     }
+                }
             }
         }
 
@@ -117,13 +125,19 @@ namespace WorldWizards.core.experimental
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 curRotation += 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 curRotation -= 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
         }
@@ -133,7 +147,7 @@ namespace WorldWizards.core.experimental
         {
             var delay = 0.15f;
             //if(Input.GetAxis("Mouse ScrollWheel") > 0){;
-            var position = Vector3.zero;
+            Vector3 position = Vector3.zero;
             yield return new WaitForSeconds(delay);
             if (Input.GetAxis("Horizontal") > 0)
             {
@@ -169,7 +183,10 @@ namespace WorldWizards.core.experimental
             if (Input.GetAxis("Horizontal") > 0.3f)
             {
                 curTile++;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
             //else if(Input.GetAxis("Mouse ScrollWheel") < 0)
@@ -177,17 +194,20 @@ namespace WorldWizards.core.experimental
             else if (Input.GetAxis("Horizontal") < -0.3f)
             {
                 curTile--;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
         }
 
         private WWObject PlaceObject(Vector3 position)
         {
-            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
-            var go = WWObjectFactory.Instantiate(objData);
+            int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
+            WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
 
@@ -196,12 +216,15 @@ namespace WorldWizards.core.experimental
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var hit = new RaycastHit();
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (!wwObject.Equals(curObject))  ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                    if (!wwObject.Equals(curObject))
+                    {
+                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                    }
                 }
             }
         }

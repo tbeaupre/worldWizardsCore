@@ -1,9 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using WorldWizards.core.entity.common;
-using WorldWizards.core.entity.coordinate;
-using UnityEngine.Assertions;
-
 
 namespace WorldWizards.core.entity.gameObject.resource
 {
@@ -28,7 +25,7 @@ namespace WorldWizards.core.entity.gameObject.resource
             bottom = false;
             type = WWType.Tile;
         }
-        
+
         public WWResourceMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom, WWType type)
         {
             this.north = north;
@@ -50,17 +47,29 @@ namespace WorldWizards.core.entity.gameObject.resource
             WWWalls result = 0;
 
             if (north)
+            {
                 result = result | WWWalls.North;
+            }
             if (east)
+            {
                 result = result | WWWalls.East;
+            }
             if (south)
+            {
                 result = result | WWWalls.South;
+            }
             if (west)
+            {
                 result = result | WWWalls.West;
+            }
             if (top)
+            {
                 result = result | WWWalls.Top;
+            }
             if (bottom)
+            {
                 result = result | WWWalls.Bottom;
+            }
 
             return result;
         }

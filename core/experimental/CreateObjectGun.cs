@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
-using WorldWizards.core.entity.level;
 using WorldWizards.core.entity.level.utils;
 using WorldWizards.core.manager;
 
@@ -29,12 +29,12 @@ namespace WorldWizards.core.experimental
         private void Awake()
         {
             // Need to make sure Manager registry is initialized first
-            var touch = ManagerRegistry.Instance;
+            ManagerRegistry touch = ManagerRegistry.Instance;
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
             ResourceLoader.LoadResources();
 
-            foreach (var s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
+            foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
@@ -47,7 +47,7 @@ namespace WorldWizards.core.experimental
         {
             if (Input.GetKeyDown(KeyCode.Mouse0) && Input.GetKey(KeyCode.LeftShift))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var hit = new RaycastHit();
                 if (Physics.Raycast(ray, out hit))
                 {
@@ -74,7 +74,7 @@ namespace WorldWizards.core.experimental
 
         private void MoveGrid()
         {
-            var gridPosition = gridCollider.transform.position;
+            Vector3 gridPosition = gridCollider.transform.position;
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
@@ -85,7 +85,7 @@ namespace WorldWizards.core.experimental
             }
             gridCollider.transform.position = gridPosition;
 
-            var c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
+            Coordinate c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
             ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.index.y);
         }
 
@@ -97,18 +97,18 @@ namespace WorldWizards.core.experimental
                 BuildWallsInput();
                 return;
             }
-            
+
             DeleteHitObject();
             // move the builder grid
 
             MoveGrid();
 
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
 
             if (gridCollider.Raycast(ray, out raycastHit, 1000f))
             {
-                var position = raycastHit.point;
+                Vector3 position = raycastHit.point;
                 // because the tile center is in the middle need to offset
                 position.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
@@ -133,7 +133,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        if ( ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                        if (ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
                         {
                             curObject = null;
                         }
@@ -188,13 +188,13 @@ namespace WorldWizards.core.experimental
 
         private string GetResourceTag()
         {
-            var tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+            int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
             return possibleTiles[tileIndex];
         }
 
         private WWObject PlaceObject(Vector3 position)
         {
-            var possibleConfigurations =
+            List<int> possibleConfigurations =
                 BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
 
             if (possibleConfigurations.Count == 0)
@@ -202,14 +202,14 @@ namespace WorldWizards.core.experimental
                 return null;
             }
 
-            var theRot = possibleConfigurations[0];
+            int theRot = possibleConfigurations[0];
             if (possibleConfigurations.Contains(curRotation))
             {
                 theRot = curRotation;
             }
-            var coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
-            var objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
-            var go = WWObjectFactory.Instantiate(objData);
+            Coordinate coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
+            WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
 
@@ -218,7 +218,7 @@ namespace WorldWizards.core.experimental
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var hit = new RaycastHit();
                 if (Physics.Raycast(ray, out hit))
                 {

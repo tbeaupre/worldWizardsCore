@@ -12,10 +12,10 @@ namespace WorldWizards.core.entity.coordinate
             SetOffset(offset);
             this.rotation = rotation;
         }
-        
+
         public Coordinate(CoordinateJSONBlob b) : this(
-            new IntVector3(b.indexX,b.indexY,b.indexZ),
-            new Vector3(b.offsetX,b.offsetY,b.offsetZ), b.rotation)
+            new IntVector3(b.indexX, b.indexY, b.indexZ),
+            new Vector3(b.offsetX, b.offsetY, b.offsetZ), b.rotation)
         {
         }
 
@@ -35,12 +35,11 @@ namespace WorldWizards.core.entity.coordinate
         public IntVector3 index { get; private set; }
         public Vector3 offset { get; private set; } // normalizedOffset [0,1]
 
+        public int rotation { get; private set; } // y rotation
+
         private void SetOffset(Vector3 offset)
         {
             this.offset = offset.normalized;
         }
-
-        public int rotation { get; private set; } // y rotation
-        
     }
 }

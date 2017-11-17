@@ -7,6 +7,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.resource;
 using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.manager;
 using Object = UnityEngine.Object;
@@ -17,9 +18,9 @@ namespace WorldWizards.core.entity.level.utils
     {
         public static void BuildPerimeterWalls(string resourceTag, WWObject wwObject)
         {
-            var curIndex = wwObject.GetCoordinate().index;
-            var walls = SelectPerimeter(curIndex);
-            foreach (var wall in walls)
+            IntVector3 curIndex = wwObject.GetCoordinate().index;
+            Dictionary<IntVector3, WWWalls> walls = SelectPerimeter(curIndex);
+            foreach (KeyValuePair<IntVector3, WWWalls> wall in walls)
             {
                 if (Convert.ToBoolean(WWWalls.North & wall.Value))
                 {
@@ -42,14 +43,16 @@ namespace WorldWizards.core.entity.level.utils
 
         private static void BuildWalls(IntVector3 coordIndex, WWWalls wallOpening, string resourceTag)
         {
-            var wallsToFit = ~ wallOpening |  ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(new Coordinate(coordIndex));
-            var resource = WWResourceController.GetResource(resourceTag);
-            var resourceMetaData = resource.GetMetaData();
+            WWWalls wallsToFit = ~ wallOpening |
+                                 ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(
+                                     new Coordinate(coordIndex));
+            WWResource resource = WWResourceController.GetResource(resourceTag);
+            WWResourceMetaData resourceMetaData = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                var newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
-                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
                     PlaceWallObject(coordIndex, r, resourceTag);
@@ -61,10 +64,10 @@ namespace WorldWizards.core.entity.level.utils
         private static void PlaceWallObject(IntVector3 coordIndex, int rotation, string resourceTag)
         {
             var coordinate = new Coordinate(coordIndex, rotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, resourceTag);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, resourceTag);
             // TODO refactor to only instantiate object if it can fit by looking at ResourceMetaData
             // but, currently this is only called when a fit is possible
-            var go = WWObjectFactory.Instantiate(objData);
+            WWObject go = WWObjectFactory.Instantiate(objData);
             if (!ManagerRegistry.Instance.sceneGraphManager.Add(go))
             {
                 Debug.Log("Could not place wall because of collision, deleting temp");
@@ -75,17 +78,17 @@ namespace WorldWizards.core.entity.level.utils
         public static List<int> GetPossibleRotations(Vector3 position, string resourceTag)
         {
             var result = new List<int>();
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position);
-            var wallsToFit =  ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
+            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position);
+            WWWalls wallsToFit = ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            
-            var resource = WWResourceController.GetResource(resourceTag);
-            var resourceMetaData = resource.GetMetaData();
+            WWResource resource = WWResourceController.GetResource(resourceTag);
+            WWResourceMetaData resourceMetaData = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                var newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
-                var doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
                     result.Add(r);
@@ -98,7 +101,7 @@ namespace WorldWizards.core.entity.level.utils
         {
             var wallsToPlace = new Dictionary<IntVector3, WWWalls>();
             var visited = new List<IntVector3>();
-            GetPerimeterWalls(wallsToPlace, visited, curIndex,  ManagerRegistry.Instance.sceneGraphManager);
+            GetPerimeterWalls(wallsToPlace, visited, curIndex, ManagerRegistry.Instance.sceneGraphManager);
             return wallsToPlace;
         }
 
@@ -114,25 +117,26 @@ namespace WorldWizards.core.entity.level.utils
 
             if (!visited.Contains(northIndex))
             {
-                var northObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(northIndex));
+                List<WWObject> northObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(northIndex));
                 GetPerimeterWallsHelper(northObjects, northIndex, WWWalls.North, wallsToPlace, visited, curIndex,
                     sceneGraphManager);
             }
             if (!visited.Contains(eastIndex))
             {
-                var eastObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(eastIndex));
+                List<WWObject> eastObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(eastIndex));
                 GetPerimeterWallsHelper(eastObjects, eastIndex, WWWalls.East, wallsToPlace, visited, curIndex,
                     sceneGraphManager);
             }
             if (!visited.Contains(southIndex))
             {
-                var southObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(southIndex));
+                List<WWObject> southObjects = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(southIndex));
                 GetPerimeterWallsHelper(southObjects, southIndex, WWWalls.South, wallsToPlace, visited, curIndex,
                     sceneGraphManager);
             }
             if (!visited.Contains(westIndex))
             {
-                var westObjectsList = sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(westIndex));
+                List<WWObject> westObjectsList =
+                    sceneGraphManager.GetObjectsInCoordinateIndex(new Coordinate(westIndex));
                 GetPerimeterWallsHelper(westObjectsList, westIndex, WWWalls.West, wallsToPlace, visited, curIndex,
                     sceneGraphManager);
             }

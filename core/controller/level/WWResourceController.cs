@@ -16,7 +16,11 @@ namespace WorldWizards.core.controller.level
         public static List<string> GetResourceKeysByAssetBundle(string assetBundleTag)
         {
             var filteredKeys = new List<string>();
-            foreach (var kvp in bundles) if (kvp.Value.assetBundleTag.Equals(assetBundleTag)) filteredKeys.Add(kvp.Key);
+            foreach (KeyValuePair<string, WWResource> kvp in bundles)
+                if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
+                {
+                    filteredKeys.Add(kvp.Key);
+                }
             return filteredKeys;
         }
 
