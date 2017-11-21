@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using Valve.VR;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
@@ -89,6 +91,17 @@ namespace WorldWizards.core.manager
             }
         }
 
+        public void ChangeScale(float scale)
+        {
+            List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
+            foreach (var obj in allObjects)
+            {
+                obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinateNoOffset(obj.GetCoordinate());
+                obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            }
+            var gridController = GameObject.FindObjectOfType<GridController>();
+            gridController.MoveGrid();
+        }
 
         public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
         {

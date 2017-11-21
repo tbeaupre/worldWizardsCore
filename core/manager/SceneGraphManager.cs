@@ -28,6 +28,7 @@ namespace WorldWizards.core.manager
         /// <param name="coordinate">The coordinate to space to get.</param>
         List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate);
 
+        void ChangeScale(float scale);
 
         void Delete(Guid id);
 

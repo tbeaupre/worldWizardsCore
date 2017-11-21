@@ -21,6 +21,11 @@ namespace WorldWizards.core.entity.level
         }
 
 
+        public List<WWObject> GetAllObjects()
+        {
+            return new List<WWObject>(objects.Values);
+        }
+
         public List<WWObject> GetObjectsAbove(int height)
         {
             var result = new List<WWObject>();
