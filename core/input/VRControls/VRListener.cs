@@ -37,7 +37,9 @@ namespace worldWizards.core.input.VRControls
 
         public override Vector3 GetHeadOffset()
         {
-            return cameraRig.transform.position - headTransform.position;
+            Vector3 offset = cameraRig.transform.position - headTransform.position;
+            offset.y = 0;
+            return offset;
         }
 
         public override Transform GetCameraRigTransform()
