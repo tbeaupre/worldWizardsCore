@@ -25,7 +25,7 @@ namespace WorldWizards.core.experimental
         // Use this for initialization
         private void Start()
         {
-            var angles = transform.eulerAngles;
+            Vector3 angles = transform.eulerAngles;
             x = angles.y;
             y = angles.x;
 
@@ -33,7 +33,9 @@ namespace WorldWizards.core.experimental
 
             // Make the rigid body not change rotation
             if (rigidbody != null)
+            {
                 rigidbody.freezeRotation = true;
+            }
         }
 
         private void LateUpdate()
@@ -45,15 +47,17 @@ namespace WorldWizards.core.experimental
 
                 y = ClampAngle(y, yMinLimit, yMaxLimit);
 
-                var rotation = Quaternion.Euler(y, x, 0);
+                Quaternion rotation = Quaternion.Euler(y, x, 0);
 
                 distance = Mathf.Clamp(distance - Input.GetAxis("Mouse ScrollWheel") * 5, distanceMin, distanceMax);
 
                 RaycastHit hit;
                 if (Physics.Linecast(target.position, transform.position, out hit))
+                {
                     distance -= hit.distance;
+                }
                 var negDistance = new Vector3(0.0f, 0.0f, -distance);
-                var position = rotation * negDistance + target.position;
+                Vector3 position = rotation * negDistance + target.position;
 
                 transform.rotation = rotation;
                 transform.position = position;
@@ -63,9 +67,13 @@ namespace WorldWizards.core.experimental
         public static float ClampAngle(float angle, float min, float max)
         {
             if (angle < -360F)
+            {
                 angle += 360F;
+            }
             if (angle > 360F)
+            {
                 angle -= 360F;
+            }
             return Mathf.Clamp(angle, min, max);
         }
     }

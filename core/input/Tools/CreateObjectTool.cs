@@ -5,14 +5,12 @@ using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace worldWizards.core.input.Tools
 {
     public class CreateObjectTool : Tool
     {
-        // Controllers
-        private SceneGraphController sceneGraphController;
-        
         // Prefabs
         public Collider gridCollider;
         
@@ -37,7 +35,6 @@ namespace worldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
             
             ResourceLoader.LoadResources(); // Should be removed at some point.
 
@@ -90,7 +87,7 @@ namespace worldWizards.core.input.Tools
                 {
                     Destroy(curObject.gameObject);
                     curObject = PlaceObject(hitPoint);
-                    sceneGraphController.Add(curObject);
+                    ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
                     curObject = null;
                 }
             }
@@ -126,7 +123,7 @@ namespace worldWizards.core.input.Tools
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
                     {
-                        sceneGraphController.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
                     }
                 }
             }

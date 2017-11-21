@@ -26,36 +26,52 @@ namespace WorldWizards.core.entity.gameObject.resource
             type = WWType.Tile;
         }
 
+        public WWResourceMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom, WWType type)
+        {
+            this.north = north;
+            this.east = east;
+            this.south = south;
+            this.west = west;
+            this.top = top;
+            this.bottom = bottom;
+            this.type = type;
+        }
+
         /// <summary>
         ///     Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted
         ///     to the enum bitflag for use.
         /// </summary>
         /// <returns>WWWalls equivalent to the serializable boolean values set in the inspector.</returns>
-        private WWWalls GetWallsEnum()
+        public WWWalls GetWallsEnum()
         {
             WWWalls result = 0;
 
             if (north)
+            {
                 result = result | WWWalls.North;
+            }
             if (east)
+            {
                 result = result | WWWalls.East;
+            }
             if (south)
+            {
                 result = result | WWWalls.South;
+            }
             if (west)
+            {
                 result = result | WWWalls.West;
+            }
             if (top)
+            {
                 result = result | WWWalls.Top;
+            }
             if (bottom)
+            {
                 result = result | WWWalls.Bottom;
+            }
 
             return result;
         }
-        //        }
-        //            type = this.type;
-        //            wallBarriers = GetWallsEnum();
-        //        {
-
-
-        //        public void GetData(ref WWWalls wallBarriers, ref WWType type)
     }
 }
