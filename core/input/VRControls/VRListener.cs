@@ -4,18 +4,22 @@ using worldWizards.core.input.Tools;
 
 namespace worldWizards.core.input.VRControls
 {
+    /**
+     * Holds information specific to VR Controllers and registers listeners for the buttons.
+     */
     public class VRListener : InputListener
     {
-        private SteamVR_TrackedController controller;
-        private SteamVR_ControllerManager cameraRig;
-        private Transform headTransform;
+        private SteamVR_TrackedController controller; // The VR Controller that is being listened to.
+        private Transform cameraRigTransform;         // Location of the player.
+        private Transform headTransform;              // Location of the player's head.
 
         public void Init(bool canChange, Type initToolType)
         {
             canChangeTools = canChange;
             tool = gameObject.AddComponent(initToolType) as Tool;
             
-            cameraRig = FindObjectOfType<SteamVR_ControllerManager>();
+            SteamVR_ControllerManager cameraRig = FindObjectOfType<SteamVR_ControllerManager>();
+            cameraRigTransform = cameraRig.transform;
             headTransform = cameraRig.GetComponentInChildren<Camera>().transform;
         }
 
@@ -23,6 +27,7 @@ namespace worldWizards.core.input.VRControls
         {
             controller = GetComponent<SteamVR_TrackedController>();
             
+            // Register InputListener's listener functions to the OnEventHandlers.
             controller.TriggerClicked += OnTriggerClick;
             controller.TriggerUnclicked += OnTriggerUnclick;
             controller.Gripped += OnGrip;
@@ -35,16 +40,21 @@ namespace worldWizards.core.input.VRControls
             controller.PadUntouched += OnPadUntouch;
         }
 
+        protected override Vector2 GetCurrentPadPosition()
+        {
+            return new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
+        }
+
         public override Vector3 GetHeadOffset()
         {
-            Vector3 offset = cameraRig.transform.position - headTransform.position;
-            offset.y = 0;
+            Vector3 offset = cameraRigTransform.position - headTransform.position;
+            offset.y = 0; // Without this, the player's head will be in the ground when teleporting.
             return offset;
         }
 
         public override Transform GetCameraRigTransform()
         {
-            return cameraRig.transform;
+            return cameraRigTransform;
         }
 
         public override Vector3 GetControllerPoint()
@@ -55,11 +65,6 @@ namespace worldWizards.core.input.VRControls
         public override Vector3 GetControllerDirection()
         {
             return controller.transform.forward;
-        }
-
-        protected override Vector2 GetCurrentPadPosition()
-        {
-            return new Vector2(controller.controllerState.rAxis0.x, controller.controllerState.rAxis0.y);
         }
     }
 }

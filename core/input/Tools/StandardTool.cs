@@ -6,7 +6,7 @@ namespace worldWizards.core.input.Tools
     public class StandardTool : Tool
     {
         private const float RETICLE_OFFSET = 0.001f; // The reticle offset from the floor
-        private const float MOVE_OFFSET = 0.1f; // The distance the player moves per frame.
+        private const float MOVE_OFFSET = 0.15f; // The distance the player moves per frame.
         
         // Prefabs
         public GameObject laserPrefab;
@@ -28,7 +28,7 @@ namespace worldWizards.core.input.Tools
         
         
         // Grip
-        public override void OnUngrip()
+        public override void OnUngrip() // Teleport to laser location.
         {
             // Hide laser and reticle when button is released.
             DeactivateLaser();
@@ -39,11 +39,11 @@ namespace worldWizards.core.input.Tools
             }
         }
 
-        public override void UpdateGrip()
+        public override void UpdateGrip() // Update laser position.
         {
             RaycastHit hit;
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out hit, 100))
+            if (Physics.Raycast(input.GetControllerPoint(), input.GetControllerDirection(), out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -82,7 +82,7 @@ namespace worldWizards.core.input.Tools
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(controller.GetControllerPoint(), hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(input.GetControllerPoint(), hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -99,9 +99,7 @@ namespace worldWizards.core.input.Tools
         {
             shouldTeleport = false;
             
-            var difference = controller.GetHeadOffset();
-
-            controller.GetCameraRigTransform().position = target + difference;
+            input.GetCameraRigTransform().position = target + input.GetHeadOffset();
         }
         
         
@@ -113,38 +111,40 @@ namespace worldWizards.core.input.Tools
 
         
         // Touchpad Press
-        public override void UpdatePress(Vector2 padPos)
+        public override void UpdatePress(Vector2 padPos) // Y movement.
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                controller.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                controller.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
             }
         }
 
         
         // Touchpad Touch
-        public override void UpdateTouch(Vector2 padPos)
+        public override void UpdateTouch(Vector2 padPos) // XZ movement.
         {
             if (Math.Abs(padPos.x) > DEADZONE_SIZE / 2)
             {
-                Vector3 strafeVector = padPos.x * controller.GetControllerDirection();
+                // Move perpendicular to the controller direction in the XZ plane.
+                Vector3 strafeVector = padPos.x * input.GetControllerDirection();
                 strafeVector = Quaternion.AngleAxis(90, Vector3.up) * strafeVector;
                 strafeVector.y = 0;
                 strafeVector = strafeVector.normalized * MOVE_OFFSET;
                 
-                controller.GetCameraRigTransform().position += strafeVector;
+                input.GetCameraRigTransform().position += strafeVector;
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
-                Vector3 forwardMoveVector = padPos.y * controller.GetControllerDirection();
+                // Move in the controller direction in the XZ plane.
+                Vector3 forwardMoveVector = padPos.y * input.GetControllerDirection();
                 forwardMoveVector.y = 0;
                 forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
             
-                controller.GetCameraRigTransform().position += forwardMoveVector;  
+                input.GetCameraRigTransform().position += forwardMoveVector;  
             }
         }
     }

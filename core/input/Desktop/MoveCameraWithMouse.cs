@@ -2,12 +2,15 @@
 
 namespace worldWizards.core.input.Desktop
 {
+    /**
+     * Script which rotates the camera when the user moves the mouse to the edge of the screen.
+     */
     public class MoveCameraWithMouse : MonoBehaviour
     {
-        float speed = 1.5f;
-        int boundary = 75;
-        int width;
-        int height;
+        private const float SPEED = 1.5f;
+        private const int BOUNDARY = 75;
+        private int width;
+        private int height;
  
         void Start ()
         {
@@ -18,29 +21,28 @@ namespace worldWizards.core.input.Desktop
         void Update ()
         {
             Vector2 mousePos = Input.mousePosition;
+            
+            // Clamps the mouse position to the boundary of the screen.
             if (mousePos.x < 0) mousePos.x = 0;
             if (mousePos.y < 0) mousePos.y = 0;
             if (mousePos.x > width) mousePos.x = width;
             if (mousePos.y > height) mousePos.y = height;
             
-            if (mousePos.x > width - boundary)
+            if (mousePos.x > width - BOUNDARY)
             {
-                transform.RotateAround(transform.position, Vector3.up, (mousePos.x - width + boundary) * Time.deltaTime * speed);
+                transform.RotateAround(transform.position, Vector3.up, (mousePos.x - width + BOUNDARY) * Time.deltaTime * SPEED);
             }
-		
-            if (mousePos.x < boundary)
+            if (mousePos.x < BOUNDARY)
             {
-                transform.RotateAround(transform.position, Vector3.up, (mousePos.x - boundary) * Time.deltaTime * speed);
+                transform.RotateAround(transform.position, Vector3.up, (mousePos.x - BOUNDARY) * Time.deltaTime * SPEED);
             }
-		
-            if (mousePos.y > height - boundary)
+            if (mousePos.y > height - BOUNDARY)
             {
-                transform.Rotate(new Vector3 (-(mousePos.y - height + boundary) * Time.deltaTime * speed, 0.0f, 0.0f));
+                transform.Rotate(new Vector3 (-(mousePos.y - height + BOUNDARY) * Time.deltaTime * SPEED, 0.0f, 0.0f));
             }
-
-            if (mousePos.y < boundary)
+            if (mousePos.y < BOUNDARY)
             {
-                transform.Rotate(new Vector3 (-(mousePos.y - boundary) * Time.deltaTime * speed, 0.0f, 0.0f));
+                transform.Rotate(new Vector3 (-(mousePos.y - BOUNDARY) * Time.deltaTime * SPEED, 0.0f, 0.0f));
             }
         }
     }

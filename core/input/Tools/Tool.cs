@@ -5,11 +5,11 @@ namespace worldWizards.core.input.Tools
     public abstract class Tool : MonoBehaviour
     {
         protected const float DEADZONE_SIZE = 0.7f; // The distance from the center of the touchpad which is dead.
-        protected InputListener controller;
+        protected InputListener input;
 
         protected virtual void Awake()
         {
-            controller = GetComponentInParent<InputListener>();
+            input = GetComponentInParent<InputListener>();
         }
 
         // These methods are called when the button is released
@@ -19,7 +19,7 @@ namespace worldWizards.core.input.Tools
         public virtual void OnPadUnclick(Vector2 lastPadPos) {}
         public virtual void OnPadUntouch(Vector2 lastPadPos) {}
         
-        // These methods are called if the button is held down
+        // These methods are called while the button is held down
         public virtual void UpdateTrigger() {}
         public virtual void UpdateGrip() {}
         public virtual void UpdateMenu() {}

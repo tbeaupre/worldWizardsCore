@@ -6,18 +6,18 @@ namespace worldWizards.core.input
 {
     public abstract class InputListener : MonoBehaviour
     {
-        private bool debug = false;
-        
-        protected Tool tool;
+        protected Tool tool; // The tool which is currently attached to this controller.
         protected bool canChangeTools = true;
         
-        protected bool Trigger { get; private set; }
-        protected bool Grip { get; private set; }
-        protected bool Menu { get; private set; }
-        protected bool Press { get; private set; }
-        protected bool Touch { get; private set; }
-        private Vector2 lastPadPos; // May be possible to remove.
+        protected bool Trigger { get; private set; } // True while the trigger is held down.
+        protected bool Grip { get; private set; }    // True while the grip is held down.
+        protected bool Menu { get; private set; }    // True while the menu button is held down.
+        protected bool Press { get; private set; }   // True while the touchpad is pressed.
+        protected bool Touch { get; private set; }   // True while the touchpad is touched.
         
+        private Vector2 lastPadPos; // Tracks the last place the pad was pressed/touched for use with unclick function
+        
+        // Checks the state of the different buttons and updates the tool if necessary.
         protected virtual void Update()
         {
             if (Trigger)
@@ -43,6 +43,9 @@ namespace worldWizards.core.input
                 tool.UpdateTouch(lastPadPos);
             }
         }
+        
+        // Gets the position of the user's finger on the touchpad (or keys on desktop).
+        protected abstract Vector2 GetCurrentPadPosition();
 
         public void ChangeTool(Type newToolType)
         {
@@ -53,76 +56,60 @@ namespace worldWizards.core.input
             }
         }
         
-        public abstract Vector3 GetHeadOffset();
-        public abstract Transform GetCameraRigTransform();
-        public abstract Vector3 GetControllerPoint();
-        public abstract Vector3 GetControllerDirection();
-        protected abstract Vector2 GetCurrentPadPosition();
+        // For retrieving data which is different in VR and desktop modes.
+        public abstract Vector3 GetHeadOffset();           // Location of the player's head relative to their body.
+        public abstract Transform GetCameraRigTransform(); // Location of the player's body in space.
+        public abstract Vector3 GetControllerPoint();      // Location of the controller in space.
+        public abstract Vector3 GetControllerDirection();  // Direction the controller is pointing to.
         
         #region Listener Functions
+        // For processing inputs. Handles flags for updates and calls unclick functions.
+        // MUST follow the format: void Foo(object sender, ClickedEventArgs e)
         protected void OnTriggerClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnTriggerClick", sender);
             Trigger = true;
         }
         protected void OnTriggerUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnTriggerUnclick", sender);
             Trigger = false;
             tool.OnTriggerUnclick();
         }
         protected void OnGrip(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnGrip", sender);
             Grip = true;
         }
         protected void OnUngrip(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnUngrip", sender);
             Grip = false;
             tool.OnUngrip();
         }
         protected void OnMenuClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnMenuClick", sender);
             Menu = true;
         }
         protected void OnMenuUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnMenuUnclick", sender);
             Menu = false;
             tool.OnMenuUnclick();
         }
         protected void OnPadClick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnPadClick", sender);
             Press = true;
         }
         protected void OnPadUnclick(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnPadUnclick", sender);
             Press = false;
             tool.OnPadUnclick(lastPadPos);
         }
         protected void OnPadTouch(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnPadTouch", sender);
             Touch = true;
         }
         protected void OnPadUntouch(object sender, ClickedEventArgs e = new ClickedEventArgs())
         {
-            DebugMessage("OnPadUntouch", sender);
             Touch = false;
             tool.OnPadUntouch(lastPadPos);
         }
         #endregion
-
-        private void DebugMessage(string functionName, object sender)
-        {
-            if (debug)
-            {
-                Debug.Log("ControllerListener::" + functionName + "(): " + sender);
-            }
-        }
     }
 }

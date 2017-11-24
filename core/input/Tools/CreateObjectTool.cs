@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
@@ -36,22 +37,20 @@ namespace worldWizards.core.input.Tools
         {
             base.Awake();
             
-            ResourceLoader.LoadResources(); // Should be removed at some point.
-
+            gridCollider = FindObjectOfType<MeshCollider>();
+            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            
             currentAssetBundle = "ww_basic_assets";
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
             Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
             
             curTileIndex = 0;
             curRotation = 0;
-            
-            gridCollider = FindObjectOfType<MeshCollider>();
-            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
         }
 
         public void Update()
         {
-            Ray ray = new Ray(controller.GetControllerPoint(), controller.GetControllerDirection());
+            Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
             if (gridCollider.Raycast(ray, out raycastHit, 100))
             {
@@ -69,37 +68,48 @@ namespace worldWizards.core.input.Tools
             }
         }
         
-        private WWObject PlaceObject(Vector3 position)
+        private void CreateObject(Vector3 position)
         {
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTileIndex]);
-            var gameObj = WWObjectFactory.Instantiate(objData);
-            return gameObj;
+            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTileIndex]);
+            WWObject gameObj = WWObjectFactory.Instantiate(objData);
+            curObject = gameObj;
+        }
+
+        private void ReplaceObject(Vector3 position)
+        {
+            if (curObject != null)
+            {
+                Destroy(curObject.gameObject);
+            }
+            CreateObject(position);
         }
 
         
         // Trigger
-        public override void OnTriggerUnclick()
+        public override void OnTriggerUnclick() // Add the object to the SceneGraph.
         {
             if (validTarget)
             {
                 if (curObject != null)
                 {
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
-                    ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
+                    ReplaceObject(hitPoint);
+                    if (!ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                    {
+                        Destroy(curObject); // If the object collided with another, destroy it.
+                    }
                     curObject = null;
                 }
             }
         }
 
-        public override void UpdateTrigger()
+        public override void UpdateTrigger() // Move the object to where the controller is pointed.
         {
             if (validTarget)
             {
                 if (curObject == null)
                 {
-                    curObject = PlaceObject(hitPoint);
+                    CreateObject(hitPoint);
                 }
                 else
                 {
@@ -113,12 +123,12 @@ namespace worldWizards.core.input.Tools
 
         
         // Grip
-        public override void OnUngrip()
+        public override void OnUngrip() // Delete object
         {
             if (curObject == null)
             {
                 RaycastHit raycastHit;
-                if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out raycastHit, 100))
+                if (Physics.Raycast(input.GetControllerPoint(), input.GetControllerDirection(), out raycastHit, 100))
                 {
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
@@ -139,28 +149,24 @@ namespace worldWizards.core.input.Tools
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
                     curRotation -= 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    ReplaceObject(hitPoint);
                 }
                 if (lastPadPos.x > DEADZONE_SIZE)
                 {
                     curRotation += 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    ReplaceObject(hitPoint);
                 }
             }
 
             // Move Grid
-            Vector3 gridPosition = gridCollider.transform.position;
             if (lastPadPos.y > DEADZONE_SIZE)
             {
-                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+                gridCollider.transform.position += new Vector3(0, CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale, 0);
             }
             if (lastPadPos.y < -DEADZONE_SIZE)
             {
-                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+                gridCollider.transform.position -= new Vector3(0, CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale, 0);
             }
-            gridCollider.transform.position = gridPosition;
         }
         
         
@@ -169,26 +175,25 @@ namespace worldWizards.core.input.Tools
         {
             trackingSwipe = false;
 
+            // Check for presses on the top or bottom of the pad.
             if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2)
             {
                 if (lastPadPos.y > DEADZONE_SIZE)
                 {
                     curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    ReplaceObject(hitPoint);
                 }
                 if (lastPadPos.y < -DEADZONE_SIZE)
                 {
                     curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    ReplaceObject(hitPoint);
                 }
             }
         }
         
-        public override void UpdateTouch(Vector2 padPos)
+        public override void UpdateTouch(Vector2 padPos) // Swipe to change objects.
         {
-            if (curObject != null)
+            if (curObject != null) // Only swipe if there is currently an object in 'hand'.
             {
                 if (!trackingSwipe)
                 {
@@ -201,8 +206,7 @@ namespace worldWizards.core.input.Tools
                 {
                     swipeStartPosition = padPos;
                     curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    ReplaceObject(hitPoint);
                 }
             }
         }

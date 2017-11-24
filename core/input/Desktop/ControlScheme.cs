@@ -2,6 +2,7 @@
 
 namespace worldWizards.core.input.Desktop
 {
+    // Associates keyboard keys with the buttons on a VR Controller.
     public struct ControlScheme
     {
         public readonly KeyCode triggerKey;

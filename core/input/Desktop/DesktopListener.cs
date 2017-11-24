@@ -4,18 +4,24 @@ using worldWizards.core.input.Tools;
 
 namespace worldWizards.core.input.Desktop
 {
+    /**
+     * Holds information specific to Desktop Controllers and handles key presses.
+     */
     public class DesktopListener : InputListener
     {
-        private ControlScheme controls;
+        private readonly Vector2 headDelta = new Vector3(0, 4, 0); // Arbitrary offset since there is no head in desktop mode.
         
+        // How the key presses affect the position of the press/touch on the touchpad.
         private readonly Vector2 upDelta = new Vector2(0, 1);
         private readonly Vector2 downDelta = new Vector2(0, -1);
         private readonly Vector2 leftDelta = new Vector2(-1, 0);
         private readonly Vector2 rightDelta = new Vector2(1, 0);
+        
+        private ControlScheme controls;
 
-        private bool pressMod;
-        private int pressNum;
-        private Vector2 padPos = Vector2.zero;
+        private bool pressMod;                 // The state of the touchpad touch/press modifier.
+        private int pressNum;                  // Keeps track of the number of touchpad keys currently pressed.
+        private Vector2 padPos = Vector2.zero; // The sum of the touchpad keys currently pressed.
 
         public void Init(ControlScheme controlScheme, bool canChange, Type toolType)
         {
@@ -26,7 +32,7 @@ namespace worldWizards.core.input.Desktop
 
         protected override void Update()
         {
-            object sender = "Desktop";
+            object sender = "Desktop"; // Because the InputListener's listeners require a sender.
             if (Trigger)
             {
                 if (Input.GetKeyUp(controls.triggerKey)) OnTriggerUnclick(sender);
@@ -112,6 +118,7 @@ namespace worldWizards.core.input.Desktop
             base.Update();
         }
 
+        // Triggers the OnPadClick/Touch functions if this is the first touchpad key pressed.
         private void PadPress()
         {
             if (pressNum == 0)
@@ -121,10 +128,15 @@ namespace worldWizards.core.input.Desktop
                 else OnPadTouch(sender);
             }
         }
+        
+        protected override Vector2 GetCurrentPadPosition()
+        {
+            return padPos;
+        }
 
         public override Vector3 GetHeadOffset()
         {
-            return new Vector3(0, 4, 0);
+            return headDelta;
         }
 
         public override Transform GetCameraRigTransform()
@@ -139,13 +151,8 @@ namespace worldWizards.core.input.Desktop
 
         public override Vector3 GetControllerDirection()
         {
+            // Controller points towards the mouse location.
             return Camera.main.ScreenPointToRay(Input.mousePosition).direction;
-        }
-        
-        
-        protected override Vector2 GetCurrentPadPosition()
-        {
-            return padPos;
         }
     }
 }
