@@ -1,4 +1,5 @@
-﻿using WorldWizards.core.entity.coordinate;
+﻿using UnityEngine;
+using WorldWizards.core.entity.coordinate;
 
 namespace WorldWizards.core.entity.gameObject
 {

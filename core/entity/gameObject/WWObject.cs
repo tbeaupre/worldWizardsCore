@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject.resource;
@@ -18,6 +20,8 @@ namespace WorldWizards.core.entity.gameObject
 
         public WWObjectData objectData { get; private set; }
 
+        public TileFader tileFader { get; private set; }
+
         public virtual void Init(Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
@@ -28,6 +32,7 @@ namespace WorldWizards.core.entity.gameObject
         {
             this.objectData = objectData;
             this.resourceMetaData = resourceMetaData;
+            this.tileFader = new TileFader(this.gameObject);
         }
 
         public Guid GetId()
@@ -37,6 +42,11 @@ namespace WorldWizards.core.entity.gameObject
 
         public Coordinate GetCoordinate()
         {
+            if (resourceMetaData.type == WWType.Tile)
+            {
+                // we only want the index without the offset for Tiles
+                return new Coordinate(objectData.coordinate.index, objectData.coordinate.rotation);
+            }
             return objectData.coordinate;
         }
 
@@ -45,9 +55,9 @@ namespace WorldWizards.core.entity.gameObject
             return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
         }
 
-        public void SetCoordinate(Coordinate coordinate)
-        {
-        }
+//        public void SetCoordinate(Coordinate coordinate)
+//        {
+//        }
 
         public WWObject GetOldestParent()
         {
@@ -111,7 +121,6 @@ namespace WorldWizards.core.entity.gameObject
             Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
             int yRotation = coordinate.rotation;
             Quaternion rotation = Quaternion.Euler(0, yRotation, 0);
-
             transform.position = position;
             transform.rotation = rotation;
         }

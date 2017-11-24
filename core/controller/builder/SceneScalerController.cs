@@ -10,8 +10,8 @@ namespace WorldWizards.core.controller.builder
         [SerializeField]
         public Slider _slider;
         
-        public static readonly float MIN_SCALE = 0.25f;
-        public static readonly float MAX_SCALE = 4f;
+        public static readonly float MIN_SCALE = 0.1f;
+        public static readonly float MAX_SCALE = 2f;
 
         public void Awake()
         {

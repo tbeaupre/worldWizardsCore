@@ -69,25 +69,27 @@ namespace WorldWizards.core.manager
             List<WWObject> objects = _sceneDictionary.GetObjectsAbove(height);
             foreach (WWObject obj in objects)
             {
-                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (MeshRenderer mesh in meshRenders)
-                    mesh.enabled = false;
-                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-                    skin.enabled = false;
+                obj.tileFader.Off();
+//                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+//                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+//
+//                foreach (MeshRenderer mesh in meshRenders)
+//                    mesh.enabled = false;
+//                foreach (SkinnedMeshRenderer skin in skinnedRenders)
+//                    skin.enabled = false;
             }
 
             List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
             {
-                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (MeshRenderer mesh in meshRenders)
-                    mesh.enabled = true;
-                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-                    skin.enabled = true;
+//                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
+//                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+//
+//                foreach (MeshRenderer mesh in meshRenders)
+//                    mesh.enabled = true;
+//                foreach (SkinnedMeshRenderer skin in skinnedRenders)
+//                    skin.enabled = true;
+                obj.tileFader.On();
             }
         }
 
@@ -96,7 +98,7 @@ namespace WorldWizards.core.manager
             List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
             foreach (var obj in allObjects)
             {
-                obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinateNoOffset(obj.GetCoordinate());
+                obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(obj.GetCoordinate());
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }
             var gridController = GameObject.FindObjectOfType<GridController>();

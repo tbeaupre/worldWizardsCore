@@ -40,12 +40,6 @@ namespace WorldWizards.core.controller.builder
             }
         }
 
-//        private void SetHeight(int height)
-//        {
-//            this.height = height;
-//            MoveGrid();
-//        }
-
         public void MoveGrid()
         {
             float yPos = height * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
@@ -62,13 +56,13 @@ namespace WorldWizards.core.controller.builder
 
         public void StepUp()
         {
-            this.height += 1;
+            height += 1;
             MoveGrid();
         }
 
         public void StepDown()
         {
-            this.height -= 1;
+            height -= 1;
             MoveGrid();
         }
 

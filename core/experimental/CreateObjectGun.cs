@@ -31,15 +31,11 @@ namespace WorldWizards.core.experimental
         {
             // Need to make sure Manager registry is initialized first
             groundPlane = new Plane(Vector3.up, Vector3.up);
-
             ResourceLoader.LoadResources();
-
             foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
-
+            
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
-
-//            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
         }
 
 
@@ -71,24 +67,6 @@ namespace WorldWizards.core.experimental
                 placeState = !placeState;
             }
         }
-
-//        private void MoveGrid()
-//        {
-//            Vector3 gridPosition = gridCollider.transform.position;
-//            if (Input.GetKeyDown(KeyCode.UpArrow))
-//            {
-//                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-//            }
-//            else if (Input.GetKeyDown(KeyCode.DownArrow))
-//            {
-//                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-//            }
-//            gridCollider.transform.position = gridPosition;
-//
-//            Coordinate c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
-//            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.index.y);
-//        }
-
         
         private void Update()
         {
@@ -100,9 +78,6 @@ namespace WorldWizards.core.experimental
             }
 
             DeleteHitObject();
-            // move the builder grid
-
-//            MoveGrid();
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
