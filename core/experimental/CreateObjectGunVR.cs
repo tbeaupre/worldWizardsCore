@@ -36,7 +36,6 @@ namespace WorldWizards.core.experimental
 
         private void Awake()
         {
-            Debug.Log((int) (-1.1f / 10f));
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
             ResourceLoader.LoadResources();
@@ -49,12 +48,6 @@ namespace WorldWizards.core.experimental
             gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
             VRCameraRig = FindObjectOfType<SteamVR_ControllerManager>().transform;
-        }
-
-
-        private void Start()
-        {
-            StartCoroutine(cycleShit());
         }
 
         private void Update()
@@ -93,9 +86,11 @@ namespace WorldWizards.core.experimental
                 position.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.z += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                //CycleObjectsScrollWheel (position);
-                RotateObjects(position);
                 coordDebugText.text = string.Format("x : {0}, z : {1}", position.x, position.z);
+                
+                CycleObjectsSwipe (position);
+                RotateObjects(position);
+                
                 Debug.DrawRay(raycastHit.point, Camera.main.transform.position, Color.red, 0, false);
                 if (curObject == null)
                 {
@@ -142,62 +137,13 @@ namespace WorldWizards.core.experimental
             }
         }
 
-
-        private IEnumerator cycleShit()
+        private void CycleObjectsSwipe(Vector3 position)
         {
-            var delay = 0.15f;
-            //if(Input.GetAxis("Mouse ScrollWheel") > 0){;
-            Vector3 position = Vector3.zero;
-            yield return new WaitForSeconds(delay);
-            if (Input.GetAxis("Horizontal") > 0)
+            var offset = (int)(possibleTiles.Count * 0.3f);
+            if (offset != 0)
             {
-                curTile++;
-                if (curObject != null)
-                {
-                    position = curObject.transform.position;
-                    Destroy(curObject.gameObject);
-                }
-                curObject = PlaceObject(position);
-            }
-            //else if(Input.GetAxis("Mouse ScrollWheel") < 0)
-            //{
-            else if (Input.GetAxis("Horizontal") < 0)
-            {
-                curTile--;
-                if (curObject != null)
-                {
-                    position = curObject.transform.position;
-                    Destroy(curObject.gameObject);
-                }
-                curObject = PlaceObject(position);
-            }
-
-            StartCoroutine(cycleShit());
-        }
-
-
-        private void CycleObjectsScrollWheel(Vector3 position)
-        {
-            Debug.Log(Input.GetAxis("Horizontal"));
-            //if(Input.GetAxis("Mouse ScrollWheel") > 0){
-            if (Input.GetAxis("Horizontal") > 0.3f)
-            {
-                curTile++;
-                if (curObject != null)
-                {
-                    Destroy(curObject.gameObject);
-                }
-                curObject = PlaceObject(position);
-            }
-            //else if(Input.GetAxis("Mouse ScrollWheel") < 0)
-            //{
-            else if (Input.GetAxis("Horizontal") < -0.3f)
-            {
-                curTile--;
-                if (curObject != null)
-                {
-                    Destroy(curObject.gameObject);
-                }
+                curTile = (curTile + offset) % possibleTiles.Count;
+                if (curObject != null) Destroy(curObject.gameObject);
                 curObject = PlaceObject(position);
             }
         }
@@ -210,7 +156,6 @@ namespace WorldWizards.core.experimental
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
-
 
         private void DeleteHitObject()
         {

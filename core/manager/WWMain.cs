@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WorldWizards.core.controller.level;
 
 namespace WorldWizards.core.manager
 {
@@ -12,6 +13,7 @@ namespace WorldWizards.core.manager
         {
             // setup the manager registry
             var setupManagerRegistry = ManagerRegistry.Instance;
+            ResourceLoader.LoadResources();
         }
     }
 }

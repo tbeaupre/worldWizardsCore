@@ -7,13 +7,13 @@ namespace WorldWizards.core.entity.gameObject.resource
     [Serializable]
     public class WWResourceMetaData : MonoBehaviour
     {
-        public bool bottom;
-        public bool east;
         public bool north;
+        public bool east;
         public bool south;
-        public bool top;
-        public WWType type;
         public bool west;
+        public bool top;
+        public bool bottom;
+        public WWType type;
 
         public WWResourceMetaData()
         {
