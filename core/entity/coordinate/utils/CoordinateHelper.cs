@@ -9,7 +9,7 @@ namespace WorldWizards.core.entity.coordinate.utils
     /// </summary>
     public static class CoordinateHelper
     {
-        public static float baseTileLength = 10; // the base size of what a tile should be
+        public static float baseTileLength = 10f; // the base size of what a tile should be
         public static float tileLengthScale = 1f; // how much to scale up the base size
 
         /// <summary>
@@ -26,10 +26,6 @@ namespace WorldWizards.core.entity.coordinate.utils
             return new Coordinate(new IntVector3(coordinate / GetTileScale()));
         }
 
-        //		public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation){
-        //			return new Coordinate(new IntVector3(coordinate / GetTileScale()), rotation);
-        //		}
-
         public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation)
         {
             Vector3 full = coordinate / GetTileScale();
@@ -38,8 +34,6 @@ namespace WorldWizards.core.entity.coordinate.utils
             // Convert the coordinate origin to be in the center of tile. Origin is in the middle of the Tile Cube.
             fraction -= new Vector3(0.5f, 0.5f, 0.5f); // convert to center
             fraction *= 2f; // convert to center
-
-            //			Debug.Log (string.Format("The fraction vector {0}", fraction));
 
             var offset = new Vector3(fraction.x, -1, fraction.z);
             return new Coordinate(new IntVector3(full), offset, rotation);

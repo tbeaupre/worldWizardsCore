@@ -51,18 +51,20 @@ namespace WorldWizards.core.controller.builder
             
             // set the scale too
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            playerReferenceScale.transform.position = new Vector3(0,yPos,0);
+            playerReferenceScale.transform.position = new Vector3(0,
+                yPos - (0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale),
+                0);
         }
 
         public void StepUp()
         {
-            height += 1;
+            height++;
             MoveGrid();
         }
 
         public void StepDown()
         {
-            height -= 1;
+            height--;
             MoveGrid();
         }
 

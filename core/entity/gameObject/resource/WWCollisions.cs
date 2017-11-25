@@ -1,7 +1,9 @@
-﻿using WorldWizards.core.entity.common;
+﻿using System;
+using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource
 {
+    [Serializable]
     public class WWCollisions
     {
         public bool bottom;

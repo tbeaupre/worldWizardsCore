@@ -20,36 +20,36 @@ namespace WorldWizards.core.entity.gameObject.utils
 
             if (yRotation == 0 || yRotation == 360)
             {
-                north = metaData.north;
-                east = metaData.east;
-                south = metaData.south;
-                west = metaData.west;
+                north = metaData.wwCollisions.north;
+                east = metaData.wwCollisions.east;
+                south = metaData.wwCollisions.south;
+                west = metaData.wwCollisions.west;
             }
             else if (yRotation == 90)
             {
-                north = metaData.west;
-                east = metaData.north;
-                south = metaData.east;
-                west = metaData.south;
+                north = metaData.wwCollisions.west;
+                east = metaData.wwCollisions.north;
+                south = metaData.wwCollisions.east;
+                west = metaData.wwCollisions.south;
             }
             else if (yRotation == 180)
             {
-                north = metaData.south;
-                east = metaData.west;
-                south = metaData.north;
-                west = metaData.east;
+                north = metaData.wwCollisions.south;
+                east = metaData.wwCollisions.west;
+                south = metaData.wwCollisions.north;
+                west = metaData.wwCollisions.east;
             }
             else // (yRotation == 270)
             {
-                north = metaData.east;
-                east = metaData.south;
-                south = metaData.west;
-                west = metaData.north;
+                north = metaData.wwCollisions.east;
+                east = metaData.wwCollisions.south;
+                south = metaData.wwCollisions.west;
+                west = metaData.wwCollisions.north;
             }
 
-            bool top = metaData.top;
-            bool bottom = metaData.bottom;
-            var rotatedMetaData = new WWResourceMetaData(north, east, south, west, top, bottom, metaData.type);
+            bool top = metaData.wwCollisions.top;
+            bool bottom = metaData.wwCollisions.bottom;
+            var rotatedMetaData = new WWCollisions(north, east, south, west, top, bottom);
             WWWalls walls = rotatedMetaData.GetWallsEnum();
 
             return walls;
