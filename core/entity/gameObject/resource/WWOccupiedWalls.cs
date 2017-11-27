@@ -1,10 +1,9 @@
 ﻿using System;
-using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource
 {
     [Serializable]
-    public class WWCollisions
+    public class WWOccupiedWalls
     {
         public bool bottom;
         public bool east;
@@ -13,7 +12,7 @@ namespace WorldWizards.core.entity.gameObject.resource
         public bool top;
         public bool west;
         
-        public WWCollisions()
+        public WWOccupiedWalls()
         {
             north = false;
             east = false;
@@ -23,7 +22,7 @@ namespace WorldWizards.core.entity.gameObject.resource
             bottom = false;
         }
 
-        public WWCollisions(bool north, bool east, bool south, bool west, bool top, bool bottom)
+        public WWOccupiedWalls(bool north, bool east, bool south, bool west, bool top, bool bottom)
         {
             this.north = north;
             this.east = east;

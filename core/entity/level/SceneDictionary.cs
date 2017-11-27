@@ -80,7 +80,7 @@ namespace WorldWizards.core.entity.level
                 List<WWObject> objectsAtCoord = GetObjects(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
                 foreach (WWObject obj in objectsAtCoord)
-                    if (obj.resourceMetaData.type.Equals(WWType.Tile))
+                    if (obj.resourceMetaData.wwObjectMetaData.type.Equals(WWType.Tile))
                     {
                         WWWalls walls =
                             WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
@@ -99,7 +99,7 @@ namespace WorldWizards.core.entity.level
             Coordinate coord = wwObject.GetCoordinate();
             Guid guid = wwObject.GetId();
 
-            if (Collides(wwObject) && wwObject.resourceMetaData.type.Equals(WWType.Tile))
+            if (Collides(wwObject) && wwObject.resourceMetaData.wwObjectMetaData.type.Equals(WWType.Tile))
             {
                 Debug.Log("Tile collides with existing tiles. Preventing placement of new tile.");
                 return false;

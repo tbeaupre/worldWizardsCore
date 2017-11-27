@@ -10,7 +10,8 @@ namespace WorldWizards.core.entity.common
     {
         Tile,
         Prop,
-        Interactable
+        Interactable,
+        Door
     }
 
     /// <summary>
@@ -28,6 +29,8 @@ namespace WorldWizards.core.entity.common
                     return typeof(Prop);
                 case WWType.Tile:
                     return typeof(Tile);
+                case WWType.Door:
+                    return typeof(Door);
                 default:
                     return typeof(Tile);
             }

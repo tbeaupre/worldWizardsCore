@@ -7,10 +7,5 @@ namespace WorldWizards.core.entity.gameObject
     {
         private InteractionType interactionType;
 
-
-        public override void SetPosition(Coordinate coordinate)
-        {
-            base.SetPosition(coordinate);
-        }
     }
 }

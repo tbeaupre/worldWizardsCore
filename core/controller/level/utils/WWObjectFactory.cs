@@ -70,7 +70,7 @@ namespace WorldWizards.core.controller.level.utils
         public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
         {
             // Make the GameObject into a Tile, Prop, etc.
-            Type type = WWTypeHelper.ConvertToSysType(metaData.type);
+            Type type = WWTypeHelper.ConvertToSysType(metaData.wwObjectMetaData.type);
             var wwObject = gameObject.AddComponent(type) as WWObject;
 
             // Scale the object to the current tile scale.

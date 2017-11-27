@@ -42,7 +42,7 @@ namespace WorldWizards.core.entity.gameObject
 
         public Coordinate GetCoordinate()
         {
-            if (resourceMetaData.type == WWType.Tile)
+            if (resourceMetaData.wwObjectMetaData.type == WWType.Tile)
             {
                 // we only want the index without the offset for Tiles
                 return new Coordinate(objectData.coordinate.index, objectData.coordinate.rotation);
@@ -54,10 +54,6 @@ namespace WorldWizards.core.entity.gameObject
         {
             return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
         }
-
-//        public void SetCoordinate(Coordinate coordinate)
-//        {
-//        }
 
         public WWObject GetOldestParent()
         {

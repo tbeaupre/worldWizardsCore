@@ -20,36 +20,36 @@ namespace WorldWizards.core.entity.gameObject.utils
 
             if (yRotation == 0 || yRotation == 360)
             {
-                north = metaData.wwCollisions.north;
-                east = metaData.wwCollisions.east;
-                south = metaData.wwCollisions.south;
-                west = metaData.wwCollisions.west;
+                north = metaData.wwTileMetaData.wwOccupiedWalls.north;
+                east = metaData.wwTileMetaData.wwOccupiedWalls.east;
+                south = metaData.wwTileMetaData.wwOccupiedWalls.south;
+                west = metaData.wwTileMetaData.wwOccupiedWalls.west;
             }
             else if (yRotation == 90)
             {
-                north = metaData.wwCollisions.west;
-                east = metaData.wwCollisions.north;
-                south = metaData.wwCollisions.east;
-                west = metaData.wwCollisions.south;
+                north = metaData.wwTileMetaData.wwOccupiedWalls.west;
+                east = metaData.wwTileMetaData.wwOccupiedWalls.north;
+                south = metaData.wwTileMetaData.wwOccupiedWalls.east;
+                west = metaData.wwTileMetaData.wwOccupiedWalls.south;
             }
             else if (yRotation == 180)
             {
-                north = metaData.wwCollisions.south;
-                east = metaData.wwCollisions.west;
-                south = metaData.wwCollisions.north;
-                west = metaData.wwCollisions.east;
+                north = metaData.wwTileMetaData.wwOccupiedWalls.south;
+                east = metaData.wwTileMetaData.wwOccupiedWalls.west;
+                south = metaData.wwTileMetaData.wwOccupiedWalls.north;
+                west = metaData.wwTileMetaData.wwOccupiedWalls.east;
             }
             else // (yRotation == 270)
             {
-                north = metaData.wwCollisions.east;
-                east = metaData.wwCollisions.south;
-                south = metaData.wwCollisions.west;
-                west = metaData.wwCollisions.north;
+                north = metaData.wwTileMetaData.wwOccupiedWalls.east;
+                east = metaData.wwTileMetaData.wwOccupiedWalls.south;
+                south = metaData.wwTileMetaData.wwOccupiedWalls.west;
+                west = metaData.wwTileMetaData.wwOccupiedWalls.north;
             }
 
-            bool top = metaData.wwCollisions.top;
-            bool bottom = metaData.wwCollisions.bottom;
-            var rotatedMetaData = new WWCollisions(north, east, south, west, top, bottom);
+            bool top = metaData.wwTileMetaData.wwOccupiedWalls.top;
+            bool bottom = metaData.wwTileMetaData.wwOccupiedWalls.bottom;
+            var rotatedMetaData = new WWOccupiedWalls(north, east, south, west, top, bottom);
             WWWalls walls = rotatedMetaData.GetWallsEnum();
 
             return walls;

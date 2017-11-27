@@ -1,9 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.Assertions.Comparers;
-using UnityEngine.UI;
 using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource
@@ -11,19 +8,10 @@ namespace WorldWizards.core.entity.gameObject.resource
     [Serializable]
     public class WWResourceMetaData : MonoBehaviour
     {
-        public WWType type;
-        public WWCollisions wwCollisions;
-
-        public int baseTileSize = 10;
-        
-        [HideInInspector]
-        public DoorHolder northDoorHolder;
-        [HideInInspector]
-        public DoorHolder southDoorHolder;
-        [HideInInspector]
-        public DoorHolder eastDoorHolder;
-        [HideInInspector]
-        public DoorHolder westDoorHolder;
+        public WWObjectMetaData wwObjectMetaData;
+//        public WWType type;
+        public WWTileMetaData wwTileMetaData;
+        public WWDoor door;
     }
     
     
@@ -33,75 +21,194 @@ namespace WorldWizards.core.entity.gameObject.resource
     [CustomEditor(typeof(WWResourceMetaData))]
     public class WWResourceMetaDataEditor : Editor
     {
-        private readonly string NORTH = "North";
-        private readonly string EAST = "East";
-        private readonly string SOUTH = "South";
-        private readonly string WEST = "West";
+        private static readonly string NORTH = "North";
+        private static readonly string EAST = "East";
+        private static readonly string SOUTH = "South";
+        private static readonly string WEST = "West";
+        private static readonly string TOP = "Top";
+        private static readonly string BOTTOM = "Bottom";
         
-        private GameObject pivot;
-        private GameObject x1;
-        private GameObject x2;
-        private GameObject y;
+        private static GameObject pivot;
+        private static GameObject x1;
+        private static GameObject x2;
+        private static GameObject y;
+        private static GameObject facingDirection;
         
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector ();
-            WWResourceMetaData wwResourceMetaDataScript = target as WWResourceMetaData;
-
-            paintDoor( wwResourceMetaDataScript.northDoorHolder, NORTH, wwResourceMetaDataScript.baseTileSize);
-            paintDoor(wwResourceMetaDataScript.eastDoorHolder, EAST,wwResourceMetaDataScript.baseTileSize);
-            paintDoor( wwResourceMetaDataScript.southDoorHolder, SOUTH, wwResourceMetaDataScript.baseTileSize);
-            paintDoor(wwResourceMetaDataScript.westDoorHolder, WEST, wwResourceMetaDataScript.baseTileSize);
+            WWResourceMetaData script = target as WWResourceMetaData;
+            script.wwObjectMetaData.type = (WWType)EditorGUILayout.EnumPopup("Asset Type", script.wwObjectMetaData.type);
+           
+            if (script.wwObjectMetaData.type == WWType.Tile)
+            {
+                DisplayCollisionsProperties(script);
+                DisplayDoorHolderProperties(script.wwTileMetaData.northWwDoorHolder, NORTH, script.wwObjectMetaData.baseTileSize);
+                DisplayDoorHolderProperties(script.wwTileMetaData.eastWwDoorHolder, EAST, script.wwObjectMetaData.baseTileSize);
+                DisplayDoorHolderProperties(script.wwTileMetaData.southWwDoorHolder, SOUTH, script.wwObjectMetaData.baseTileSize);
+                DisplayDoorHolderProperties(script.wwTileMetaData.westWwDoorHolder, WEST, script.wwObjectMetaData.baseTileSize);
+            }
+            else if (script.wwObjectMetaData.type == WWType.Door)
+            {
+               DisplayDoorProperties(script.door, script.wwObjectMetaData.baseTileSize);
+            }
         }
 
-        private void paintDoor(DoorHolder doorHolder, String direction, int baseTileSize)
+        private void DisplayCollisionsProperties(WWResourceMetaData script )
         {
-            doorHolder.hasDoorHolder = GUILayout.Toggle(
-                doorHolder.hasDoorHolder, string.Format(" Has {0} Door Holder", direction));
-            if (doorHolder.hasDoorHolder)
+            GUILayout.Label("Collisions");
+            DisplayWWCollisions(script);
+        }
+
+        private void DisplayWWCollisions(WWResourceMetaData script)
+        {
+            EditorGUILayout.BeginHorizontal();
+            script.wwTileMetaData.wwOccupiedWalls.north = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.north, "North");
+            script.wwTileMetaData.wwOccupiedWalls.east = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.east, "East");
+            script.wwTileMetaData.wwOccupiedWalls.south = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.south, "South");
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            script.wwTileMetaData.wwOccupiedWalls.west = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.west, "West");
+            script.wwTileMetaData.wwOccupiedWalls.top = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.top, "Top");
+            script.wwTileMetaData.wwOccupiedWalls.bottom = GUILayout.Toggle(
+                script.wwTileMetaData.wwOccupiedWalls.bottom, "Bottom");
+            EditorGUILayout.EndHorizontal();            
+        }
+
+        private void DisplayDoorProperties(WWDoor door, int baseTileSize)
+        {
+            door.pivot = EditorGUILayout.Vector3Field("Door Pivot", door.pivot);
+            door.facingDirection = EditorGUILayout.Vector3Field("Door Facing Direction", door.facingDirection);
+            EditorGUILayout.BeginHorizontal();
+            door.width = EditorGUILayout.FloatField("Door width", door.width);
+            door.height = EditorGUILayout.FloatField("Door Height", door.height);
+            EditorGUILayout.EndHorizontal();            
+            
+            door.openAnimation = EditorGUILayout.ObjectField("Open Animation",
+                door.openAnimation, typeof(Animation), false) as Animation;
+            door.closeAnimation = EditorGUILayout.ObjectField("Close Animation",
+                door.closeAnimation, typeof(Animation), false) as Animation;
+            if (GUILayout.Button("Create Helpers"))
             {
-                doorHolder.pivot = EditorGUILayout.Vector3Field(
-                    string.Format("{0} Door Pivot", direction), doorHolder.pivot);
-                doorHolder.width = EditorGUILayout.FloatField(
-                    string.Format("{0} Door Width", direction), doorHolder.width);
-                doorHolder.height = EditorGUILayout.FloatField(
-                    string.Format("{0} Door Height", direction), doorHolder.height);
+                CreateDoorHelpers();
+            }
+            if (GUILayout.Button("Get Door Dimensions and Pivot"))
+            {
+                GetDoorDimensions(door, baseTileSize);
+            }
+        }
+
+        private void DisplayDoorHolderProperties(WWDoorHolder wwDoorHolder, String direction, int baseTileSize)
+        {
+            wwDoorHolder.hasDoorHolder = GUILayout.Toggle(
+                wwDoorHolder.hasDoorHolder, string.Format(" Has {0} Door Holder", direction));
+            if (wwDoorHolder.hasDoorHolder)
+            {
+                wwDoorHolder.pivot = EditorGUILayout.Vector3Field(
+                    string.Format("{0} Door Pivot", direction), wwDoorHolder.pivot);
+                wwDoorHolder.width = EditorGUILayout.FloatField(
+                    string.Format("{0} Door Width", direction), wwDoorHolder.width);
+                wwDoorHolder.height = EditorGUILayout.FloatField(
+                    string.Format("{0} Door Height", direction), wwDoorHolder.height);
                 if (GUILayout.Button("Create Helpers"))
                 {
-                    CreateHelpers(direction);
+                    CreateDoorHolderHelpers(direction);
                 }
                 if (GUILayout.Button(direction +  "Get Door Dimensions and Pivot"))
                 {
-                    GetDoorDimensions(doorHolder, direction, baseTileSize);
+                    GetDoorHolderDimensions(wwDoorHolder, direction, baseTileSize);
                 }
             }
         }
 
-        private void CreateHelpers(string direction)
+         private void CreateDoorHelpers()
+         {
+            WWResourceMetaData wwResourceMetaDataScript = target as WWResourceMetaData;
+            Vector3 spawnPos = wwResourceMetaDataScript.transform.position;
+            Vector3 widthOffset = Vector3.zero;
+            var extents = CalculateLocalBounds(wwResourceMetaDataScript.gameObject);   
+            spawnPos.y -= wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
+          
+            if (extents.z > extents.x)
+            {
+             spawnPos.x += wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
+             widthOffset = Vector3.forward;
+            }
+            else
+            {
+             spawnPos.z += wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
+             widthOffset = Vector3.right;
+            }
+
+             if (pivot != null)
+            {
+               DestroyImmediate(pivot);
+            }
+            if (x1 != null)    
+            {
+                DestroyImmediate(x1);
+            }
+            if (x2 != null)
+            {
+               DestroyImmediate(x2);
+            }
+            if (y != null)
+            {
+                DestroyImmediate(y);
+            }
+            if (facingDirection != null)
+            {
+                DestroyImmediate(facingDirection);
+            }
+            
+            pivot = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            pivot.name = "pivot";
+            pivot.transform.position = spawnPos;
+            x1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            x1.name = "x1";
+            x1.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.wwObjectMetaData.baseTileSize);
+            x2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            x2.name = "x2";
+            x2.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * -1);
+            y = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            y.name = "y";
+            y.transform.position = new Vector3(spawnPos.x,
+                spawnPos.y +wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.75f,
+                spawnPos.z);
+            facingDirection = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            facingDirection.name = "facing direction";
+            facingDirection.transform.position = spawnPos + Vector3.forward;
+        }
+        
+        private void CreateDoorHolderHelpers(string direction)
         {
             WWResourceMetaData wwResourceMetaDataScript = target as WWResourceMetaData;
             Vector3 spawnPos = wwResourceMetaDataScript.transform.position;
             Vector3 widthOffset = Vector3.zero;
             
-            spawnPos.y -= wwResourceMetaDataScript.baseTileSize * 0.5f;
+            spawnPos.y -= wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
             if (direction.Equals(NORTH))
             {
-                spawnPos.z += wwResourceMetaDataScript.baseTileSize * 0.5f;
+                spawnPos.z += wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.right;
             }
             else if (direction.Equals(EAST))
             {
-                spawnPos.x +=  wwResourceMetaDataScript.baseTileSize * 0.5f;
+                spawnPos.x +=  wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.fwd;
             }
             else if (direction.Equals(SOUTH))
             {
-                spawnPos.z -=  wwResourceMetaDataScript.baseTileSize * 0.5f;
+                spawnPos.z -=  wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.right;
             }
             else if (direction.Equals(WEST))
             {
-                spawnPos.x -=  wwResourceMetaDataScript.baseTileSize * 0.5f;
+                spawnPos.x -=  wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.fwd;
             }
             if (pivot != null)
@@ -125,33 +232,71 @@ namespace WorldWizards.core.entity.gameObject.resource
             pivot.transform.position = spawnPos;
             x1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             x1.name = "x1";
-            x1.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.baseTileSize);
+            x1.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.wwObjectMetaData.baseTileSize);
             x2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             x2.name = "x2";
-            x2.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.baseTileSize * -1);
+            x2.transform.position = spawnPos + (widthOffset * 0.3f * wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * -1);
             y = GameObject.CreatePrimitive(PrimitiveType.Cube);
             y.name = "y";
             y.transform.position = new Vector3(spawnPos.x,
-                spawnPos.y +wwResourceMetaDataScript.baseTileSize * 0.75f,
+                spawnPos.y +wwResourceMetaDataScript.wwObjectMetaData.baseTileSize * 0.75f,
                 spawnPos.z);
         }
 
-        private void GetDoorDimensions(DoorHolder doorHolder, string direction, int baseTileSize)
+        private void GetDoorHolderDimensions(WWDoorHolder wwDoorHolder, string direction, int baseTileSize)
         {
             // return if any of the helpers are null
             if (x1 == null || x2 == null || y == null || pivot == null)
             {
+                Debug.Log("helpers are null, exiting early.");
                 return;
             }
             var width = Vector3.Distance(x1.transform.position, x2.transform.position) / baseTileSize;
             var height = Math.Abs(y.transform.position.y - x1.transform.position.y) / baseTileSize;
-            doorHolder.width = width ;
-            doorHolder.height = height;
-            doorHolder.pivot = pivot.transform.position / baseTileSize;
+            wwDoorHolder.width = width ;
+            wwDoorHolder.height = height;
+            wwDoorHolder.pivot = pivot.transform.position / baseTileSize;
             DestroyImmediate(pivot);
             DestroyImmediate(x1);
             DestroyImmediate(x2);
             DestroyImmediate(y);
         }
+        
+        private void GetDoorDimensions(WWDoor door, int baseTileSize)
+        {
+            // return if any of the helpers are null
+            if (x1 == null || x2 == null || y == null || pivot == null || facingDirection == null)
+            {
+                Debug.Log("helpers are null, exiting early.");
+                return;
+            }
+            var width = Vector3.Distance(x1.transform.position, x2.transform.position) / baseTileSize;
+            var height = Math.Abs(y.transform.position.y - x1.transform.position.y) / baseTileSize;
+            door.width = width ;
+            door.height = height;
+            door.pivot = pivot.transform.position / baseTileSize;
+            door.facingDirection = (facingDirection.transform.position - pivot.transform.position).normalized;
+            DestroyImmediate(pivot);
+            DestroyImmediate(x1);
+            DestroyImmediate(x2);
+            DestroyImmediate(y);
+            DestroyImmediate(facingDirection);
+        }
+
+        private Vector3 CalculateLocalBounds(GameObject gameObject)
+        {
+            Bounds bounds = new Bounds(gameObject.transform.position, Vector3.zero);
+ 
+            foreach(Renderer renderer in gameObject.GetComponentsInChildren<Renderer>())
+            {
+                bounds.Encapsulate(renderer.bounds);
+            }
+ 
+            Vector3 localCenter = bounds.center - gameObject.transform.position;
+            bounds.center = localCenter;
+            
+            return new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
+        }
+        
     }
 }
