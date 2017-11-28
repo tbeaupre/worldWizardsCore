@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 
@@ -27,6 +28,8 @@ namespace WorldWizards.core.manager
         /// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
         /// <param name="coordinate">The coordinate to space to get.</param>
         List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate);
+
+        bool AddDoor(Door door, Tile holder, Vector3 hitPoint);
 
         void ChangeScale(float scale);
 

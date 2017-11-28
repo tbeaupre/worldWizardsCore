@@ -8,6 +8,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     {
         public WWObjectMetaData wwObjectMetaData;
         public WWTileMetaData wwTileMetaData;
-        public WWDoor door;
+        public WWDoorMetaData doorMetaData;
     }
 }

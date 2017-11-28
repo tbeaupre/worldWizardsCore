@@ -8,8 +8,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
     /// <summary>
     ///     This class is a UI helper that makes it easier for artists to setup assets in the Unity Inspector.
     /// </summary>
-    // This if UNITY_EDITOR is probably not necassary, just here to prevent issues with asset bundle building.
-    #if UNITY_EDITOR
     [CustomEditor(typeof(WWResourceMetaData))]
     public class WWResourceMetaDataEditor : UnityEditor.Editor
     {
@@ -36,18 +34,18 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             if (script.wwObjectMetaData.type == WWType.Tile)
             {
                 DisplayCollisionsProperties(script);
-                DisplayDoorHolderProperties(script.wwTileMetaData.northWwDoorHolder, NORTH,
+                DisplayDoorHolderProperties(script.wwTileMetaData.northWwDoorHolderMetaData, NORTH,
                     script.wwObjectMetaData.baseTileSize);
-                DisplayDoorHolderProperties(script.wwTileMetaData.eastWwDoorHolder, EAST,
+                DisplayDoorHolderProperties(script.wwTileMetaData.eastWwDoorHolderMetaData, EAST,
                     script.wwObjectMetaData.baseTileSize);
-                DisplayDoorHolderProperties(script.wwTileMetaData.southWwDoorHolder, SOUTH,
+                DisplayDoorHolderProperties(script.wwTileMetaData.southWwDoorHolderMetaData, SOUTH,
                     script.wwObjectMetaData.baseTileSize);
-                DisplayDoorHolderProperties(script.wwTileMetaData.westWwDoorHolder, WEST,
+                DisplayDoorHolderProperties(script.wwTileMetaData.westWwDoorHolderMetaData, WEST,
                     script.wwObjectMetaData.baseTileSize);
             }
             else if (script.wwObjectMetaData.type == WWType.Door)
             {
-                DisplayDoorProperties(script.door, script.wwObjectMetaData.baseTileSize);
+                DisplayDoorProperties(script.doorMetaData, script.wwObjectMetaData.baseTileSize);
             }
         }
 
@@ -72,46 +70,45 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             EditorGUILayout.EndHorizontal();
         }
 
-        private void DisplayDoorProperties(WWDoor door, int baseTileSize)
+        private void DisplayDoorProperties(WWDoorMetaData doorMetaData, int baseTileSize)
         {
-//            door.pivotOffset = EditorGUILayout.Vector3Field("Door Pivot Offset", door.pivotOffset);
-            door.facingDirection = EditorGUILayout.Vector3Field("Door Facing Direction", door.facingDirection);
-            door.width = EditorGUILayout.FloatField("Door width", door.width);
-            door.height = EditorGUILayout.FloatField("Door Height", door.height);
+            doorMetaData.facingDirection = EditorGUILayout.Vector3Field("Door Facing Direction", doorMetaData.facingDirection);
+            doorMetaData.width = EditorGUILayout.FloatField("Door width", doorMetaData.width);
+            doorMetaData.height = EditorGUILayout.FloatField("Door Height", doorMetaData.height);
 
-            door.openAnimation = EditorGUILayout.ObjectField("Open Animation",
-                door.openAnimation, typeof(Animation), false) as Animation;
-            door.closeAnimation = EditorGUILayout.ObjectField("Close Animation",
-                door.closeAnimation, typeof(Animation), false) as Animation;
+            doorMetaData.openAnimation = EditorGUILayout.ObjectField("Open Animation",
+                doorMetaData.openAnimation, typeof(Animation), false) as Animation;
+            doorMetaData.closeAnimation = EditorGUILayout.ObjectField("Close Animation",
+                doorMetaData.closeAnimation, typeof(Animation), false) as Animation;
             if (GUILayout.Button("Create Helpers"))
             {
                 CreateDoorHelpers();
             }
             if (GUILayout.Button("Get Door Dimensions and Pivot"))
             {
-                GetDoorDimensions(door, baseTileSize);
+                GetDoorDimensions(doorMetaData, baseTileSize);
             }
         }
 
-        private void DisplayDoorHolderProperties(WWDoorHolder wwDoorHolder, string direction, int baseTileSize)
+        private void DisplayDoorHolderProperties(WWDoorHolderMetaData wwDoorHolderMetaData, string direction, int baseTileSize)
         {
-            wwDoorHolder.hasDoorHolder = GUILayout.Toggle(
-                wwDoorHolder.hasDoorHolder, string.Format(" Has {0} Door Holder", direction));
-            if (wwDoorHolder.hasDoorHolder)
+            wwDoorHolderMetaData.hasDoorHolder = GUILayout.Toggle(
+                wwDoorHolderMetaData.hasDoorHolder, string.Format(" Has {0} Door Holder", direction));
+            if (wwDoorHolderMetaData.hasDoorHolder)
             {
-                wwDoorHolder.pivot = EditorGUILayout.Vector3Field(
-                    string.Format("{0} Door Pivot", direction), wwDoorHolder.pivot);
-                wwDoorHolder.width = EditorGUILayout.FloatField(
-                    string.Format("{0} Door Width", direction), wwDoorHolder.width);
-                wwDoorHolder.height = EditorGUILayout.FloatField(
-                    string.Format("{0} Door Height", direction), wwDoorHolder.height);
+                wwDoorHolderMetaData.pivot = EditorGUILayout.Vector3Field(
+                    string.Format("{0} Door Pivot", direction), wwDoorHolderMetaData.pivot);
+                wwDoorHolderMetaData.width = EditorGUILayout.FloatField(
+                    string.Format("{0} Door Width", direction), wwDoorHolderMetaData.width);
+                wwDoorHolderMetaData.height = EditorGUILayout.FloatField(
+                    string.Format("{0} Door Height", direction), wwDoorHolderMetaData.height);
                 if (GUILayout.Button("Create Helpers"))
                 {
                     CreateDoorHolderHelpers(direction);
                 }
                 if (GUILayout.Button(direction + "Get Door Dimensions and Pivot"))
                 {
-                    GetDoorHolderDimensions(wwDoorHolder, direction, baseTileSize);
+                    GetDoorHolderDimensions(wwDoorHolderMetaData, direction, baseTileSize);
                 }
             }
         }
@@ -122,16 +119,13 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             Vector3 spawnPos = script.transform.position;
             Vector3 widthOffset = Vector3.zero;
             Vector3 extents = CalculateLocalBounds(script.gameObject);
-//            spawnPos.y -= script.wwObjectMetaData.baseTileSize * 0.5f;
 
             if (extents.z > extents.x)
             {
-//                spawnPos.x += script.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.forward;
             }
             else
             {
-//                spawnPos.z += script.wwObjectMetaData.baseTileSize * 0.5f;
                 widthOffset = Vector3.right;
             }
             DestroyHelpers();
@@ -235,7 +229,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
                 spawnPos.z);
         }
 
-        private void GetDoorHolderDimensions(WWDoorHolder wwDoorHolder, string direction, int baseTileSize)
+        private void GetDoorHolderDimensions(WWDoorHolderMetaData wwDoorHolderMetaData, string direction, int baseTileSize)
         {
             if (DoorHolderHelpersAreNull())
             {
@@ -243,13 +237,13 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
             float width = Vector3.Distance(x1.transform.position, x2.transform.position) / baseTileSize;
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y) / baseTileSize;
-            wwDoorHolder.width = width;
-            wwDoorHolder.height = height;
-            wwDoorHolder.pivot = pivot.transform.position / baseTileSize;
+            wwDoorHolderMetaData.width = width;
+            wwDoorHolderMetaData.height = height;
+            wwDoorHolderMetaData.pivot = pivot.transform.position / baseTileSize;
             DestroyHelpers();
         }
 
-        private void GetDoorDimensions(WWDoor door, int baseTileSize)
+        private void GetDoorDimensions(WWDoorMetaData doorMetaData, int baseTileSize)
         {
             if (DoorHelpersAreNull())
             {
@@ -257,9 +251,9 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
             float width = Vector3.Distance(x1.transform.position, x2.transform.position);
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y);
-            door.width = width;
-            door.height = height;
-            door.facingDirection = (facingDirection.transform.position - pivot.transform.position).normalized;
+            doorMetaData.width = width;
+            doorMetaData.height = height;
+            doorMetaData.facingDirection = (facingDirection.transform.position - pivot.transform.position).normalized;
             DestroyHelpers();
         }
 
@@ -283,5 +277,4 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             return new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z);
         }
     }
-    #endif
 }

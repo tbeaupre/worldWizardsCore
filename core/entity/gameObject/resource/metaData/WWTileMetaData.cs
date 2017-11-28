@@ -6,9 +6,9 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     public class WWTileMetaData
     {
         public WWWallMetaData wwWallMetaData;
-        public WWDoorHolder northWwDoorHolder;
-        public WWDoorHolder southWwDoorHolder;
-        public WWDoorHolder eastWwDoorHolder;
-        public WWDoorHolder westWwDoorHolder;
+        public WWDoorHolderMetaData northWwDoorHolderMetaData;
+        public WWDoorHolderMetaData southWwDoorHolderMetaData;
+        public WWDoorHolderMetaData eastWwDoorHolderMetaData;
+        public WWDoorHolderMetaData westWwDoorHolderMetaData;
     }
 }

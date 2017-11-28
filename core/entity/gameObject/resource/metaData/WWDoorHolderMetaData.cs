@@ -4,7 +4,7 @@ using UnityEngine;
 namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
-    public class WWDoorHolder
+    public class WWDoorHolderMetaData
     {
         public bool hasDoorHolder;
         public Vector3 pivot;

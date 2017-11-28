@@ -8,6 +8,7 @@ using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.level;
 using WorldWizards.core.file.entity;
 using Object = UnityEngine.Object;
@@ -71,25 +72,11 @@ namespace WorldWizards.core.manager
             foreach (WWObject obj in objects)
             {
                 obj.tileFader.Off();
-//                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-//                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-//
-//                foreach (MeshRenderer mesh in meshRenders)
-//                    mesh.enabled = false;
-//                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-//                    skin.enabled = false;
             }
 
             List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
             {
-//                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-//                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-//
-//                foreach (MeshRenderer mesh in meshRenders)
-//                    mesh.enabled = true;
-//                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-//                    skin.enabled = true;
                 obj.tileFader.On();
             }
         }
@@ -200,11 +187,35 @@ namespace WorldWizards.core.manager
         }
 
 
-        public void AddDoor(Door door, Tile holder)
+        public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
         {
-            
-            
-        }
+            Vector3 doorPivot = door.GetPivot();
+            Vector3 doorFacingDirection = door.GetFacingDirection();
+            float doorWidth = door.GetWidth();
+            float doorHeight = door.GetHeight();
 
+            List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
+
+            if (doorHolders.Count > 0)
+            {
+                // TODO, use the DoorHolder that is closest to the hitPoint
+                var doorHolder = doorHolders[0];
+                float holderWidth = doorHolder.width;
+                float holderHeight = doorHolder.height;
+
+                float doorRatio = doorWidth / doorHeight;
+                float holderRatio = holderWidth / holderHeight;
+
+                if (Math.Abs(holderRatio - doorRatio) < 0.2f)
+                {
+                    Debug.Log("The door to holder ratios are similiar enough to place.");
+                    door.transform.position = doorHolder.pivot;
+                }
+            }      
+            return false;
+        }
+        
+        
+        
     }
 }

@@ -5,7 +5,7 @@ using WorldWizards.core.entity.common;
 namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
-    public class WWDoor
+    public class WWDoorMetaData
     {
 //        public Vector3 pivotOffset;
         public Vector3 facingDirection;

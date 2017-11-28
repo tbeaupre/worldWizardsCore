@@ -59,6 +59,18 @@ namespace WorldWizards.core.experimental
             }
         }
 
+        private void TryPlaceDoor()
+        {
+            
+            
+            
+            
+            
+            
+        }
+
+
+
 
         private void TogglePlaceState()
         {
@@ -188,7 +200,6 @@ namespace WorldWizards.core.experimental
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
-
 
         private void DeleteHitObject()
         {
