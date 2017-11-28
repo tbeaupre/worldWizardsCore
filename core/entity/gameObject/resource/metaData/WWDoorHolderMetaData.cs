@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace WorldWizards.core.entity.gameObject.resource
+namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
     public class WWDoorHolder

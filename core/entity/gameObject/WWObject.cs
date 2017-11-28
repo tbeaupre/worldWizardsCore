@@ -6,6 +6,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject

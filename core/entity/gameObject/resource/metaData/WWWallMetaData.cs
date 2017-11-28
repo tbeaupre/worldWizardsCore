@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace WorldWizards.core.entity.gameObject.resource
+namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
-    public class WWOccupiedWalls
+    public class WWWallMetaData
     {
         public bool bottom;
         public bool east;
@@ -12,7 +12,7 @@ namespace WorldWizards.core.entity.gameObject.resource
         public bool top;
         public bool west;
         
-        public WWOccupiedWalls()
+        public WWWallMetaData()
         {
             north = false;
             east = false;
@@ -22,7 +22,7 @@ namespace WorldWizards.core.entity.gameObject.resource
             bottom = false;
         }
 
-        public WWOccupiedWalls(bool north, bool east, bool south, bool west, bool top, bool bottom)
+        public WWWallMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom)
         {
             this.north = north;
             this.east = east;

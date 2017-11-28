@@ -63,6 +63,7 @@ namespace WorldWizards.core.manager
             }
             return false;
         }
+        
 
         public void HideObjectsAbove(int height)
         {
@@ -197,5 +198,13 @@ namespace WorldWizards.core.manager
         {
             return _sceneDictionary.Get(id);
         }
+
+
+        public void AddDoor(Door door, Tile holder)
+        {
+            
+            
+        }
+
     }
 }

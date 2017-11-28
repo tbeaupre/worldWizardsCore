@@ -6,6 +6,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.controller.level.utils
