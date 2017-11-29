@@ -11,8 +11,6 @@ namespace WorldWizards.core.entity.gameObject
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
             this.id = id;
-            //			this.type = type;
-            //            this.metaData = metaData;
             this.coordinate = coordinate;
             this.parent = parent;
             this.children = children;
@@ -22,8 +20,6 @@ namespace WorldWizards.core.entity.gameObject
         public WWObjectData(WWObjectJSONBlob b)
         {
             id = b.id;
-            //			this.type = m.type;
-            //			this.metaData = m.metaData;
             coordinate = new Coordinate(b.coordinate);
             resourceTag = b.resourceTag;
 
@@ -34,14 +30,10 @@ namespace WorldWizards.core.entity.gameObject
 
         public Guid id { get; private set; }
 
-        //		public WWType type { get; }
-        //		public MetaData metaData { get;}
+        public Coordinate coordinate { get; set; }
 
-        public Coordinate coordinate { get; private set; }
-
-        public WWObjectData parent { get; set; }
+        public WWObjectData parent { get; private set; }
         public List<WWObjectData> children { get; private set; }
-
 
         public string resourceTag { get; private set; }
 

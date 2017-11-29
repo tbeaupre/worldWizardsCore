@@ -9,7 +9,7 @@ namespace WorldWizards.core.entity.coordinate
         public Coordinate(IntVector3 index, Vector3 offset, int rotation)
         {
             this.index = index;
-            SetOffset(offset);
+            this.offset = offset;
             this.rotation = rotation;
         }
 
@@ -33,13 +33,13 @@ namespace WorldWizards.core.entity.coordinate
         }
 
         public IntVector3 index { get; private set; }
-        public Vector3 offset { get; private set; } // normalizedOffset [0,1]
+        public Vector3 offset { get; set; } // (-1,1)
 
-        public int rotation { get; private set; } // y rotation
+        public int rotation { get; set; } // y rotation
 
-        private void SetOffset(Vector3 offset)
+        public void SnapToGrid()
         {
-            this.offset = offset.normalized;
+            offset = Vector3.zero;
         }
     }
 }
