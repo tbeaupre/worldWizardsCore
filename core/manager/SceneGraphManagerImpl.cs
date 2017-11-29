@@ -101,6 +101,16 @@ namespace WorldWizards.core.manager
 
         public void Delete(Guid id)
         {
+            Remove(id, true);
+        }
+
+        public void Remove(Guid id)
+        {
+            Remove(id, false);
+        }
+
+        private void Remove(Guid id, bool delete)
+        {
             if (_sceneDictionary.ContainsGuid(id))
             {
                 WWObject rootObject = Get(id);
@@ -112,14 +122,18 @@ namespace WorldWizards.core.manager
                     WWObject parentObject = Get(parent.id);
                     parentObject.RemoveChild(rootObject);
                 }
-
-                List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
+                
+                List<WWObjectData> objectDescendents = rootObject.GetAllDescendents();
                 // include the root
-                objectsToDelete.Add(rootObject.objectData);
-                foreach (WWObjectData objectToDelete in objectsToDelete)
+                objectDescendents.Add(rootObject.objectData);
+
+                foreach (WWObjectData objectToDelete in objectDescendents)
                 {
-                    WWObject objectToDestroy = Remove(objectToDelete.id);
-                    Destroy(objectToDestroy);
+                    WWObject objectToDestroy = RemoveObject(objectToDelete.id);
+                    if (delete)
+                    {
+                        Destroy(objectToDestroy);
+                    }
                 }
             }
         }
@@ -164,7 +178,7 @@ namespace WorldWizards.core.manager
         /// </summary>
         /// <param name="id"></param>
         /// <returns>returns removed object, which may be null.</returns>
-        private WWObject Remove(Guid id)
+        private WWObject RemoveObject(Guid id)
         {
             return _sceneDictionary.Remove(id);
         }

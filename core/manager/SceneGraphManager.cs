@@ -31,6 +31,8 @@ namespace WorldWizards.core.manager
 
         void Delete(Guid id);
 
+        void Remove(Guid id);
+
         void Load();
 
         void Save();
