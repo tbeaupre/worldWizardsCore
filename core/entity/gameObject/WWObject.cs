@@ -106,14 +106,24 @@ namespace WorldWizards.core.entity.gameObject
             return objectData.GetAllDescendents();
         }
 
-        public virtual void SetPosition(Coordinate coordinate)
+        public void SetRotation(int yRotation)
         {
-            Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
-            int yRotation = coordinate.rotation;
-            Quaternion rotation = Quaternion.Euler(0, yRotation, 0);
-
-            transform.position = position;
-            transform.rotation = rotation;
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
+            objectData.coordinate.rotation = yRotation;
         }
+
+        public virtual void SetPosition(Vector3 position, bool snapToGrid)
+        {
+            transform.position = position + GetPositionOffset();
+            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.rotation);
+        }
+
+        public void SetPosition(Coordinate coordinate)
+        {
+            SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate), false);
+            SetRotation(coordinate.rotation);
+        }
+
+        protected abstract Vector3 GetPositionOffset();
     }
 }

@@ -32,8 +32,6 @@ namespace WorldWizards.core.experimental
             ManagerRegistry touch = ManagerRegistry.Instance;
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
-            ResourceLoader.LoadResources();
-
             foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
@@ -85,7 +83,7 @@ namespace WorldWizards.core.experimental
             }
             gridCollider.transform.position = gridPosition;
 
-            Coordinate c = CoordinateHelper.convertUnityCoordinateToWWCoordinate(gridCollider.transform.position);
+            Coordinate c = CoordinateHelper.UnityCoordToWWCoord(gridCollider.transform.position);
             ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.index.y);
         }
 
@@ -207,7 +205,7 @@ namespace WorldWizards.core.experimental
             {
                 theRot = curRotation;
             }
-            Coordinate coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;

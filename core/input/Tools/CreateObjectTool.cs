@@ -13,11 +13,11 @@ namespace worldWizards.core.input.Tools
     public class CreateObjectTool : Tool
     {
         // Prefabs
-        public Collider gridCollider;
+        private static Collider gridCollider;
         
         // Resources
-        private string currentAssetBundle;
-        private List<string> possibleTiles;
+        private static string currentAssetBundle;
+        private static List<string> possibleTiles;
         
         // Object Properties
         private WWObject curObject;
@@ -36,14 +36,20 @@ namespace worldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
-            
-            gridCollider = FindObjectOfType<MeshCollider>();
-            gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            
-            currentAssetBundle = "ww_basic_assets";
-            possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
-            Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
-            
+
+            if (gridCollider == null)
+            {
+                gridCollider = FindObjectOfType<MeshCollider>();
+                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            }
+
+            if (currentAssetBundle == null)
+            {
+                currentAssetBundle = "ww_basic_assets";
+                possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
+                Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
+            }
+
             curTileIndex = 0;
             curRotation = 0;
         }
@@ -56,11 +62,6 @@ namespace worldWizards.core.input.Tools
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
-                
-                // because the tile center is in the middle need to offset
-                hitPoint.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                hitPoint.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                hitPoint.z += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
             }
             else
             {
@@ -70,10 +71,9 @@ namespace worldWizards.core.input.Tools
         
         private void CreateObject(Vector3 position)
         {
-            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
             WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTileIndex]);
-            WWObject gameObj = WWObjectFactory.Instantiate(objData);
-            curObject = gameObj;
+            curObject = WWObjectFactory.Instantiate(objData);
         }
 
         private void ReplaceObject(Vector3 position)
@@ -93,10 +93,10 @@ namespace worldWizards.core.input.Tools
             {
                 if (curObject != null)
                 {
-                    ReplaceObject(hitPoint);
+                    curObject.SetPosition(hitPoint, true);
                     if (!ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
                     {
-                        Destroy(curObject); // If the object collided with another, destroy it.
+                        Destroy(curObject.gameObject); // If the object collided with another, destroy it.
                     }
                     curObject = null;
                 }
@@ -113,10 +113,7 @@ namespace worldWizards.core.input.Tools
                 }
                 else
                 {
-                    curObject.transform.position = new Vector3(
-                        hitPoint.x - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
-                        hitPoint.y - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
-                        hitPoint.z - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale);
+                    curObject.SetPosition(hitPoint, false);
                 }
             }
         }
@@ -149,23 +146,23 @@ namespace worldWizards.core.input.Tools
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
                     curRotation -= 90;
-                    ReplaceObject(hitPoint);
+                    curObject.SetRotation(curRotation);
                 }
                 if (lastPadPos.x > DEADZONE_SIZE)
                 {
                     curRotation += 90;
-                    ReplaceObject(hitPoint);
+                    curObject.SetRotation(curRotation);
                 }
             }
 
             // Move Grid
             if (lastPadPos.y > DEADZONE_SIZE)
             {
-                gridCollider.transform.position += new Vector3(0, CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale, 0);
+                gridCollider.transform.position += new Vector3(0, CoordinateHelper.GetTileScale(), 0);
             }
             if (lastPadPos.y < -DEADZONE_SIZE)
             {
-                gridCollider.transform.position -= new Vector3(0, CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale, 0);
+                gridCollider.transform.position -= new Vector3(0, CoordinateHelper.GetTileScale(), 0);
             }
         }
         

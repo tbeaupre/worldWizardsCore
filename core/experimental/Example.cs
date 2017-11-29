@@ -17,9 +17,6 @@ namespace WorldWizards.core.experimental
 
         private void Start()
         {
-            // load all asset bundles located at Project/AssetBundles
-            ResourceLoader.LoadResources();
-
             // create a coordinate to place the tile 
             var coordinate = new Coordinate(0, 0, 0);
             // create the data needed to instantiate this tile
