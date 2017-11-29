@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -12,8 +12,12 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
+    enum State {
+        Normal, DoorAttach, PerimeterWalls
+    }
     public class CreateObjectGun : MonoBehaviour
     {
+        private State state = State.Normal;
         public Text coordDebugText;
 
         private WWObject curObject;
@@ -25,6 +29,7 @@ namespace WorldWizards.core.experimental
         public Transform markerObject;
 
         private bool placeState = true;
+        private bool placeDoorState = false;
         private List<string> possibleTiles;
 
         private void Awake()
@@ -59,41 +64,72 @@ namespace WorldWizards.core.experimental
             }
         }
 
-        private void TryPlaceDoor()
+
+        private void TryPlaceDoor(Vector3 hitPoint)
         {
+            Debug.Log("TryPlaceDoor called.");
+            var coord = CoordinateHelper.convertUnityCoordinateToWWCoordinate(hitPoint);
+            var objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
+            Debug.Log("objects count " + objects.Count);
             
-            
-            
-            
-            
-            
+            foreach (var obj in objects)
+            {
+                Debug.Log(" object type " + obj.resourceMetaData.wwObjectMetaData.type);
+                if (obj.resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+                {
+                    Debug.Log("A tile was in the coordinate");
+                    if (curObject.resourceMetaData.wwObjectMetaData.type == WWType.Door)
+                    {
+                        Debug.Log("The current Object is a door");
+                        if (ManagerRegistry.Instance.sceneGraphManager.AddDoor((Door) curObject, (Tile) obj, hitPoint))
+                        {
+                            curObject = null;
+                        }
+                    }
+                }
+            }
         }
 
-
-
-
-        private void TogglePlaceState()
+        private void CheckForStateChange()
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                placeState = !placeState;
-            }
+            EnterNormalState();
+            EnterDoorAttachState();
+            EnterPerimeterState();
+        }
+
+        private void EnterNormalState()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+                state = State.Normal;
+        }
+        
+        private void EnterDoorAttachState()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+                state = State.DoorAttach;
+        }
+        
+        private void EnterPerimeterState()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha3))
+                state = State.PerimeterWalls;
         }
         
         private void Update()
         {
-            TogglePlaceState();
-            if (!placeState)
+            CheckForStateChange();
+            RotateObjects();
+
+
+            if (state == State.PerimeterWalls)
             {
                 BuildWallsInput();
                 return;
             }
-
             DeleteHitObject();
 
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit raycastHit;
-
             if (gridCollider.Raycast(ray, out raycastHit, 1000f))
             {
                 Vector3 position = raycastHit.point;
@@ -102,7 +138,6 @@ namespace WorldWizards.core.experimental
                 position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.z += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 CycleObjectsScrollWheel(position);
-                RotateObjects(position);
                 coordDebugText.text = string.Format("x : {0}, z : {1}", position.x, position.z);
                 Debug.DrawRay(raycastHit.point, Camera.main.transform.position, Color.red, 0, false);
                 if (curObject == null)
@@ -121,34 +156,44 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        if (ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                        
+                        if (state == State.DoorAttach)
                         {
-                            curObject = null;
+                            TryPlaceDoor(position);
+                        }
+                        else if (state == State.Normal)
+                        {
+                            if (ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                            {
+                                curObject = null;
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void RotateObjects(Vector3 position)
+//        private void RotateObjects(Vector3 position)
+        private void RotateObjects()
         {
+            
+            if (curObject == null)
+                return;
+            
+            var curPos = curObject.transform.position;
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
+                Debug.Log("Rotate left");
                 curRotation += 90;
-                if (curObject != null)
-                {
-                    Destroy(curObject.gameObject);
-                }
-                curObject = PlaceObject(position);
+                Destroy(curObject.gameObject);
+                curObject = PlaceObject(curPos);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
+                Debug.Log("Rotate right");
                 curRotation -= 90;
-                if (curObject != null)
-                {
-                    Destroy(curObject.gameObject);
-                }
-                curObject = PlaceObject(position);
+                Destroy(curObject.gameObject);
+                curObject = PlaceObject(curPos);
             }
         }
 
@@ -180,6 +225,32 @@ namespace WorldWizards.core.experimental
             return possibleTiles[tileIndex];
         }
 
+        private WWObject ForceRotateObject(Vector3 position)
+        {
+            List<int> possibleConfigurations =
+                BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
+
+            if (possibleConfigurations.Count == 0)
+            {
+                return null;
+            }
+
+            int theRot = possibleConfigurations[0];
+            foreach (var i in possibleConfigurations)
+            {
+                Debug.Log(" a possible config is " + i);
+            }
+            Debug.Log(curRotation + " " + curRotation % 360);
+            if (possibleConfigurations.Contains(curRotation % 360))
+            {
+                theRot = curRotation;
+            }
+            Coordinate coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
+            WWObject go = WWObjectFactory.Instantiate(objData);
+            return go;
+        }
+
         private WWObject PlaceObject(Vector3 position)
         {
             List<int> possibleConfigurations =
@@ -191,7 +262,12 @@ namespace WorldWizards.core.experimental
             }
 
             int theRot = possibleConfigurations[0];
-            if (possibleConfigurations.Contains(curRotation))
+            foreach (var i in possibleConfigurations)
+            {
+                Debug.Log(" a possible config is " + i);
+            }
+            Debug.Log(curRotation + " " + curRotation % 360);
+            if (possibleConfigurations.Contains(curRotation % 360))
             {
                 theRot = curRotation;
             }

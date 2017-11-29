@@ -72,7 +72,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
 
         private void DisplayDoorProperties(WWDoorMetaData doorMetaData, int baseTileSize)
         {
-            doorMetaData.facingDirection = EditorGUILayout.Vector3Field("Door Facing Direction", doorMetaData.facingDirection);
+            doorMetaData.facingDirection =
+                EditorGUILayout.Vector3Field("Door Facing Direction", doorMetaData.facingDirection);
             doorMetaData.width = EditorGUILayout.FloatField("Door width", doorMetaData.width);
             doorMetaData.height = EditorGUILayout.FloatField("Door Height", doorMetaData.height);
 
@@ -90,7 +91,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
         }
 
-        private void DisplayDoorHolderProperties(WWDoorHolderMetaData wwDoorHolderMetaData, string direction, int baseTileSize)
+        private void DisplayDoorHolderProperties(WWDoorHolderMetaData wwDoorHolderMetaData, string direction,
+            int baseTileSize)
         {
             wwDoorHolderMetaData.hasDoorHolder = GUILayout.Toggle(
                 wwDoorHolderMetaData.hasDoorHolder, string.Format(" Has {0} Door Holder", direction));
@@ -229,7 +231,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
                 spawnPos.z);
         }
 
-        private void GetDoorHolderDimensions(WWDoorHolderMetaData wwDoorHolderMetaData, string direction, int baseTileSize)
+        private void GetDoorHolderDimensions(WWDoorHolderMetaData wwDoorHolderMetaData, string direction,
+            int baseTileSize)
         {
             if (DoorHolderHelpersAreNull())
             {
@@ -261,7 +264,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
         {
             return x1 == null || x2 == null || y == null || pivot == null;
         }
-        
+
         private bool DoorHelpersAreNull()
         {
             return x1 == null || x2 == null || y == null || facingDirection == null;

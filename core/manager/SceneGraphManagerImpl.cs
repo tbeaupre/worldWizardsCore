@@ -189,6 +189,7 @@ namespace WorldWizards.core.manager
 
         public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
         {
+            Debug.Log("AddDoor to SceneGraph called");
             Vector3 doorPivot = door.GetPivot();
             Vector3 doorFacingDirection = door.GetFacingDirection();
             float doorWidth = door.GetWidth();
@@ -198,20 +199,28 @@ namespace WorldWizards.core.manager
 
             if (doorHolders.Count > 0)
             {
+                Debug.Log("Door holder count > 0");
                 // TODO, use the DoorHolder that is closest to the hitPoint
                 var doorHolder = doorHolders[0];
                 float holderWidth = doorHolder.width;
                 float holderHeight = doorHolder.height;
-
+                
                 float doorRatio = doorWidth / doorHeight;
                 float holderRatio = holderWidth / holderHeight;
-
-                if (Math.Abs(holderRatio - doorRatio) < 0.2f)
+                
+                var diff = Math.Abs(holderRatio - doorRatio);
+                Debug.Log("diff " + diff);
+                if (diff < 0.2f)
                 {
-                    Debug.Log("The door to holder ratios are similiar enough to place.");
-                    door.transform.position = doorHolder.pivot;
+                    // TODO scale up to match door to holder if necessary
+                    // TODO handle the rotation
+                    Debug.Log("Door pivot" + doorHolder.pivot * 2f);
+                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot * 2f, 0);
+                    var uspace = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coord);
+                    door.transform.position = uspace;
+                    return true;
                 }
-            }      
+            }
             return false;
         }
         
