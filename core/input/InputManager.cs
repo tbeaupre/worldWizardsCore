@@ -66,9 +66,13 @@ namespace worldWizards.core.input
         // This is just for debugging the new EditObject Tool.
         public  void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(EditObjectTool));
+                right.ChangeTool(typeof(EditObjectTool));
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                right.ChangeTool(typeof(CreateObjectTool));
             }
         }
     }
