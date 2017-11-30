@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using WorldWizards.core.entity.coordinate;
 
 namespace WorldWizards.core.entity.gameObject
 {
@@ -7,22 +6,22 @@ namespace WorldWizards.core.entity.gameObject
     {
         public Vector3 GetPivot()
         {
-            return this.transform.position;
+            return transform.position;
         }
 
         public Vector3 GetFacingDirection()
         {
-            return this.resourceMetaData.doorMetaData.facingDirection;
+            return resourceMetaData.doorMetaData.facingDirection;
         }
-        
+
         public float GetWidth()
         {
-            return this.resourceMetaData.doorMetaData.width;
+            return resourceMetaData.doorMetaData.width;
         }
-        
+
         public float GetHeight()
         {
-            return this.resourceMetaData.doorMetaData.height;
+            return resourceMetaData.doorMetaData.height;
         }
     }
 }

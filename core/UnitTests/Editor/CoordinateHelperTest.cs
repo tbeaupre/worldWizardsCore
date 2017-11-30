@@ -3,7 +3,7 @@ using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 
-namespace worldWizards.core.unitTests
+namespace WorldWizards.core.UnitTests.Editor
 {
     [TestFixture]
     /// <summary>

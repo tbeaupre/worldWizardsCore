@@ -58,7 +58,7 @@ namespace WorldWizards.core.controller.level.utils
             // Give the new WWObject the data used to create it.
             wwObject.Init(objectData, resourceMetaData);
             wwObject.SetPosition(objectData.coordinate);
-            
+
             return wwObject;
         }
 

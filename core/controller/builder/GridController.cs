@@ -7,27 +7,26 @@ namespace WorldWizards.core.controller.builder
 {
     public class GridController : MonoBehaviour
     {
-        [SerializeField]
-        private GameObject grid;
-        [SerializeField] 
-        private GameObject playerReferenceScale;
+        [SerializeField] private GameObject grid;
+
         private int height;
 
-        void Awake()
+        [SerializeField] private GameObject playerReferenceScale;
+
+        private void Awake()
         {
             grid.transform.position = Vector3.zero;
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
             playerReferenceScale.transform.position = Vector3.zero;
             playerReferenceScale.transform.localScale = Vector3.one;
-
         }
 
-        void Update()
+        private void Update()
         {
-            GetInput();   
+            GetInput();
         }
-        
+
         private void GetInput()
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -48,11 +47,11 @@ namespace WorldWizards.core.controller.builder
             grid.transform.position = gridPosition;
             Coordinate c = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(grid.transform.position);
             ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.index.y);
-            
+
             // set the scale too
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             playerReferenceScale.transform.position = new Vector3(0,
-                yPos - (0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale),
+                yPos - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
                 0);
         }
 
@@ -67,7 +66,5 @@ namespace WorldWizards.core.controller.builder
             height--;
             MoveGrid();
         }
-
-
     }
 }

@@ -20,7 +20,7 @@ namespace WorldWizards.core.entity.coordinate.utils
         {
             return baseTileLength * tileLengthScale;
         }
-        
+
         public static Coordinate ConvertUnityCoordinateToWWCoordinate(Vector3 coordinate)
         {
             return ConvertUnityCoordinateToWWCoordinate(coordinate, 0);

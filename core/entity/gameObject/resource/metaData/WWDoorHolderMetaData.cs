@@ -7,8 +7,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     public class WWDoorHolderMetaData
     {
         public bool hasDoorHolder;
+        public float height;
         public Vector3 pivot;
         public float width;
-        public float height;
     }
 }

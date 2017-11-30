@@ -7,11 +7,10 @@ namespace WorldWizards.core.controller.builder
 {
     public class SceneScalerController : MonoBehaviour
     {
-        [SerializeField]
-        public Slider _slider;
-        
         public static readonly float MIN_SCALE = 0.1f;
         public static readonly float MAX_SCALE = 2f;
+
+        [SerializeField] public Slider _slider;
 
         public void Awake()
         {
@@ -21,7 +20,7 @@ namespace WorldWizards.core.controller.builder
 
         public void OnSliderChange()
         {
-            var newScale = _slider.value;
+            float newScale = _slider.value;
             CoordinateHelper.tileLengthScale = newScale;
             ManagerRegistry.Instance.sceneGraphManager.ChangeScale(newScale);
         }

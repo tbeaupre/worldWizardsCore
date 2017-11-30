@@ -5,7 +5,7 @@ using WorldWizards.core.entity.gameObject.resource.metaData;
 namespace WorldWizards.core.entity.gameObject
 {
     public class Tile : WWObject
-    {   
+    {
         public override void SetPosition(Coordinate coordinate)
         {
             var coordinateNoOffset = new Coordinate(coordinate.index, coordinate.rotation);
@@ -14,7 +14,7 @@ namespace WorldWizards.core.entity.gameObject
 
         public List<WWDoorHolderMetaData> GetDoorHolders()
         {
-            List<WWDoorHolderMetaData> result = new List<WWDoorHolderMetaData>();
+            var result = new List<WWDoorHolderMetaData>();
             if (resourceMetaData.wwTileMetaData.northWwDoorHolderMetaData.hasDoorHolder)
             {
                 result.Add(resourceMetaData.wwTileMetaData.northWwDoorHolderMetaData);
@@ -33,6 +33,5 @@ namespace WorldWizards.core.entity.gameObject
             }
             return result;
         }
-        
     }
 }

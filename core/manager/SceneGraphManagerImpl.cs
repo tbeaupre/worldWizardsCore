@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
-using Valve.VR;
 using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
@@ -64,32 +63,28 @@ namespace WorldWizards.core.manager
             }
             return false;
         }
-        
+
 
         public void HideObjectsAbove(int height)
         {
             List<WWObject> objects = _sceneDictionary.GetObjectsAbove(height);
             foreach (WWObject obj in objects)
-            {
                 obj.tileFader.Off();
-            }
 
             List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
-            {
                 obj.tileFader.On();
-            }
         }
 
         public void ChangeScale(float scale)
         {
             List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
-            foreach (var obj in allObjects)
+            foreach (WWObject obj in allObjects)
             {
                 obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(obj.GetCoordinate());
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }
-            var gridController = GameObject.FindObjectOfType<GridController>();
+            var gridController = Object.FindObjectOfType<GridController>();
             gridController.MoveGrid();
         }
 
@@ -162,6 +157,40 @@ namespace WorldWizards.core.manager
             }
         }
 
+        public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
+        {
+            //            Vector3 doorPivot = door.GetPivot();
+            //            Vector3 doorFacingDirection = door.GetFacingDirection();
+            float doorWidth = door.GetWidth();
+            float doorHeight = door.GetHeight();
+            List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
+            // TODO, use the DoorHolder that is closest to the hitPoint
+            if (doorHolders.Count > 0)
+            {
+                WWDoorHolderMetaData doorHolder = doorHolders[0];
+                float holderWidth = doorHolder.width;
+                float holderHeight = doorHolder.height;
+
+                float doorRatio = doorWidth / doorHeight;
+                float holderRatio = holderWidth / holderHeight;
+
+                float diff = Math.Abs(holderRatio - doorRatio);
+                Debug.Log("diff " + diff);
+                if (diff < 0.2f)
+                {
+                    // TODO scale up to match door to holder if necessary
+                    // TODO handle the rotation
+                    // TODO handle collision for existing doors
+                    Debug.Log("Door pivot" + doorHolder.pivot * 2f);
+                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot, 0);
+                    door.SetPosition(coord);
+                    _sceneDictionary.Add(door);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         ///     Remove an object from the scene graph.
         /// </summary>
@@ -184,40 +213,6 @@ namespace WorldWizards.core.manager
         public WWObject Get(Guid id)
         {
             return _sceneDictionary.Get(id);
-        }
-
-        public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
-        {
-//            Vector3 doorPivot = door.GetPivot();
-//            Vector3 doorFacingDirection = door.GetFacingDirection();
-            float doorWidth = door.GetWidth();
-            float doorHeight = door.GetHeight();
-            List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
-            // TODO, use the DoorHolder that is closest to the hitPoint
-            if (doorHolders.Count > 0)
-            {
-                var doorHolder = doorHolders[0];
-                float holderWidth = doorHolder.width;
-                float holderHeight = doorHolder.height;
-                
-                float doorRatio = doorWidth / doorHeight;
-                float holderRatio = holderWidth / holderHeight;
-                
-                var diff = Math.Abs(holderRatio - doorRatio);
-                Debug.Log("diff " + diff);
-                if (diff < 0.2f)
-                {
-                    // TODO scale up to match door to holder if necessary
-                    // TODO handle the rotation
-                    // TODO handle collision for existing doors
-                    Debug.Log("Door pivot" + doorHolder.pivot * 2f);
-                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot, 0);
-                    door.SetPosition(coord);
-                    _sceneDictionary.Add(door);
-                    return true;
-                }
-            }
-            return false;
         }
     }
 }

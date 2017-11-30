@@ -11,7 +11,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
         public bool south;
         public bool top;
         public bool west;
-        
+
         public WWWallMetaData()
         {
             north = false;
@@ -31,7 +31,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
             this.top = top;
             this.bottom = bottom;
         }
-        
+
         /// <summary>
         ///     Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted
         ///     to the enum bitflag for use.
@@ -68,6 +68,5 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
 
             return result;
         }
-
     }
 }

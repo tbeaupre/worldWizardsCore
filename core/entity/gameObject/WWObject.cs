@@ -5,7 +5,6 @@ using WorldWizards.core.controller.builder;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
-using WorldWizards.core.entity.gameObject.resource;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.gameObject.utils;
 
@@ -33,7 +32,7 @@ namespace WorldWizards.core.entity.gameObject
         {
             this.objectData = objectData;
             this.resourceMetaData = resourceMetaData;
-            this.tileFader = new TileFader(this.gameObject);
+            tileFader = new TileFader(gameObject);
         }
 
         public Guid GetId()

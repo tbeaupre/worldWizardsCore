@@ -12,12 +12,15 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
-    enum State {
-        Normal, DoorAttach, PerimeterWalls
+    internal enum State
+    {
+        Normal,
+        DoorAttach,
+        PerimeterWalls
     }
+
     public class CreateObjectGun : MonoBehaviour
     {
-        private State state = State.Normal;
         public Text coordDebugText;
 
         private WWObject curObject;
@@ -27,10 +30,11 @@ namespace WorldWizards.core.experimental
 
         public Plane groundPlane;
         public Transform markerObject;
+        private bool placeDoorState = false;
 
         private bool placeState = true;
-        private bool placeDoorState = false;
         private List<string> possibleTiles;
+        private State state = State.Normal;
 
         private void Awake()
         {
@@ -38,7 +42,7 @@ namespace WorldWizards.core.experimental
             groundPlane = new Plane(Vector3.up, Vector3.up);
             ResourceLoader.LoadResources();
             foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
-            
+
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
         }
@@ -68,11 +72,11 @@ namespace WorldWizards.core.experimental
         private void TryPlaceDoor(Vector3 hitPoint)
         {
             Debug.Log("TryPlaceDoor called.");
-            var coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint);
-            var objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
+            Coordinate coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint);
+            List<WWObject> objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
-            
-            foreach (var obj in objects)
+
+            foreach (WWObject obj in objects)
             {
                 Debug.Log(" object type " + obj.resourceMetaData.wwObjectMetaData.type);
                 if (obj.resourceMetaData.wwObjectMetaData.type == WWType.Tile)
@@ -100,21 +104,27 @@ namespace WorldWizards.core.experimental
         private void EnterNormalState()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
                 state = State.Normal;
+            }
         }
-        
+
         private void EnterDoorAttachState()
         {
             if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
                 state = State.DoorAttach;
+            }
         }
-        
+
         private void EnterPerimeterState()
         {
             if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
                 state = State.PerimeterWalls;
+            }
         }
-        
+
         private void Update()
         {
             CheckForStateChange();
@@ -156,7 +166,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        
+
                         if (state == State.DoorAttach)
                         {
                             TryPlaceDoor(position);
@@ -176,9 +186,11 @@ namespace WorldWizards.core.experimental
         private void RotateObjects()
         {
             if (curObject == null)
+            {
                 return;
-            
-            var curPos = curObject.transform.position;
+            }
+
+            Vector3 curPos = curObject.transform.position;
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 Debug.Log("Rotate left");
@@ -227,7 +239,7 @@ namespace WorldWizards.core.experimental
 
         private WWObject ForceRotateAndPlaceObject(Vector3 position)
         {
-            var theRot = curRotation;
+            int theRot = curRotation;
             Coordinate coordRotated = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
@@ -238,7 +250,7 @@ namespace WorldWizards.core.experimental
         {
             List<int> possibleConfigurations =
                 BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
-            
+
             if (possibleConfigurations.Count == 0)
             {
                 return null;

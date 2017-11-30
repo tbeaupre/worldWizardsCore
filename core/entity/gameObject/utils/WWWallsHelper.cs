@@ -1,5 +1,4 @@
 ﻿using UnityEngine.Assertions;
-using WorldWizards.core.entity.gameObject.resource;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject.utils
