@@ -79,7 +79,7 @@ namespace WorldWizards.core.entity.level.utils
         public static List<int> GetPossibleRotations(Vector3 position, string resourceTag)
         {
             var result = new List<int>();
-            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position);
+            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position);
             WWWalls wallsToFit = ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            

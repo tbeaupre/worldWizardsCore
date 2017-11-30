@@ -20,13 +20,13 @@ namespace WorldWizards.core.entity.coordinate.utils
         {
             return baseTileLength * tileLengthScale;
         }
-
-        public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate)
+        
+        public static Coordinate ConvertUnityCoordinateToWWCoordinate(Vector3 coordinate)
         {
-            return new Coordinate(new IntVector3(coordinate / GetTileScale()));
+            return ConvertUnityCoordinateToWWCoordinate(coordinate, 0);
         }
 
-        public static Coordinate convertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation)
+        public static Coordinate ConvertUnityCoordinateToWWCoordinate(Vector3 coordinate, int rotation)
         {
             Vector3 full = coordinate / GetTileScale();
             Vector3 fraction = full - new Vector3(Mathf.Floor(full.x), Mathf.Floor(full.y), Mathf.Floor(full.z));

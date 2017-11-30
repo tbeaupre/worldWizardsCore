@@ -242,7 +242,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y) / baseTileSize;
             wwDoorHolderMetaData.width = width;
             wwDoorHolderMetaData.height = height;
-            wwDoorHolderMetaData.pivot = pivot.transform.position / baseTileSize;
+            wwDoorHolderMetaData.pivot = pivot.transform.position / baseTileSize * 2f;
             DestroyHelpers();
         }
 
@@ -256,7 +256,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y);
             doorMetaData.width = width;
             doorMetaData.height = height;
-            doorMetaData.facingDirection = (facingDirection.transform.position - pivot.transform.position).normalized;
+            var script = target as WWResourceMetaData;
+            doorMetaData.facingDirection = (facingDirection.transform.position - script.transform.position).normalized;
             DestroyHelpers();
         }
 

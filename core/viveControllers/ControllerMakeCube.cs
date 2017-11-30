@@ -34,7 +34,7 @@ namespace WorldWizards.core.viveControllers
 
         private void CreateCube(Vector3 controllerPos)
         {
-            Coordinate cubePosition = CoordinateHelper.convertUnityCoordinateToWWCoordinate(controllerPos);
+            Coordinate cubePosition = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(controllerPos);
             Debug.Log("Cube Position: " + cubePosition.index.x + ", " + cubePosition.index.y + ", " +
                       cubePosition.index.z);
 

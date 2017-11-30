@@ -68,7 +68,7 @@ namespace WorldWizards.core.experimental
         private void TryPlaceDoor(Vector3 hitPoint)
         {
             Debug.Log("TryPlaceDoor called.");
-            var coord = CoordinateHelper.convertUnityCoordinateToWWCoordinate(hitPoint);
+            var coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint);
             var objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
             
@@ -173,10 +173,8 @@ namespace WorldWizards.core.experimental
             }
         }
 
-//        private void RotateObjects(Vector3 position)
         private void RotateObjects()
         {
-            
             if (curObject == null)
                 return;
             
@@ -185,15 +183,17 @@ namespace WorldWizards.core.experimental
             {
                 Debug.Log("Rotate left");
                 curRotation += 90;
+                curRotation = curRotation % 360 + (curRotation < 0 ? 360 : 0);
                 Destroy(curObject.gameObject);
-                curObject = PlaceObject(curPos);
+                curObject = ForceRotateAndPlaceObject(curPos);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 Debug.Log("Rotate right");
                 curRotation -= 90;
+                curRotation = curRotation % 360 + (curRotation < 0 ? 360 : 0);
                 Destroy(curObject.gameObject);
-                curObject = PlaceObject(curPos);
+                curObject = ForceRotateAndPlaceObject(curPos);
             }
         }
 
@@ -225,27 +225,10 @@ namespace WorldWizards.core.experimental
             return possibleTiles[tileIndex];
         }
 
-        private WWObject ForceRotateObject(Vector3 position)
+        private WWObject ForceRotateAndPlaceObject(Vector3 position)
         {
-            List<int> possibleConfigurations =
-                BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
-
-            if (possibleConfigurations.Count == 0)
-            {
-                return null;
-            }
-
-            int theRot = possibleConfigurations[0];
-            foreach (var i in possibleConfigurations)
-            {
-                Debug.Log(" a possible config is " + i);
-            }
-            Debug.Log(curRotation + " " + curRotation % 360);
-            if (possibleConfigurations.Contains(curRotation % 360))
-            {
-                theRot = curRotation;
-            }
-            Coordinate coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            var theRot = curRotation;
+            Coordinate coordRotated = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
@@ -255,23 +238,17 @@ namespace WorldWizards.core.experimental
         {
             List<int> possibleConfigurations =
                 BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
-
+            
             if (possibleConfigurations.Count == 0)
             {
                 return null;
             }
-
             int theRot = possibleConfigurations[0];
-            foreach (var i in possibleConfigurations)
-            {
-                Debug.Log(" a possible config is " + i);
-            }
-            Debug.Log(curRotation + " " + curRotation % 360);
-            if (possibleConfigurations.Contains(curRotation % 360))
+            if (possibleConfigurations.Contains(curRotation))
             {
                 theRot = curRotation;
             }
-            Coordinate coordRotated = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, theRot);
+            Coordinate coordRotated = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;

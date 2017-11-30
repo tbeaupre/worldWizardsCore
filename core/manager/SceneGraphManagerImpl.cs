@@ -186,21 +186,16 @@ namespace WorldWizards.core.manager
             return _sceneDictionary.Get(id);
         }
 
-
         public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
         {
-            Debug.Log("AddDoor to SceneGraph called");
-            Vector3 doorPivot = door.GetPivot();
-            Vector3 doorFacingDirection = door.GetFacingDirection();
+//            Vector3 doorPivot = door.GetPivot();
+//            Vector3 doorFacingDirection = door.GetFacingDirection();
             float doorWidth = door.GetWidth();
             float doorHeight = door.GetHeight();
-
             List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
-
+            // TODO, use the DoorHolder that is closest to the hitPoint
             if (doorHolders.Count > 0)
             {
-                Debug.Log("Door holder count > 0");
-                // TODO, use the DoorHolder that is closest to the hitPoint
                 var doorHolder = doorHolders[0];
                 float holderWidth = doorHolder.width;
                 float holderHeight = doorHolder.height;
@@ -214,17 +209,15 @@ namespace WorldWizards.core.manager
                 {
                     // TODO scale up to match door to holder if necessary
                     // TODO handle the rotation
+                    // TODO handle collision for existing doors
                     Debug.Log("Door pivot" + doorHolder.pivot * 2f);
-                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot * 2f, 0);
-                    var uspace = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coord);
-                    door.transform.position = uspace;
+                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot, 0);
+                    door.SetPosition(coord);
+                    _sceneDictionary.Add(door);
                     return true;
                 }
             }
             return false;
         }
-        
-        
-        
     }
 }

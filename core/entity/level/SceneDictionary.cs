@@ -20,7 +20,6 @@ namespace WorldWizards.core.entity.level
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
-
         public List<WWObject> GetAllObjects()
         {
             return new List<WWObject>(objects.Values);
