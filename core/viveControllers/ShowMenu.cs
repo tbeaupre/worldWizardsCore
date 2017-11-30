@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
 
 namespace WorldWizards.core.viveControllers
 {
@@ -12,7 +11,6 @@ namespace WorldWizards.core.viveControllers
         private bool isMenuActive;
         private GameObject menu;
         private Transform menuTransform;
-        private SceneGraphController sceneGraphController;
 
         private SteamVR_TrackedObject trackedObj;
 
@@ -30,8 +28,6 @@ namespace WorldWizards.core.viveControllers
 
         private void Start()
         {
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
-
             isMenuActive = false;
             menu.SetActive(false);
         }
@@ -47,10 +43,16 @@ namespace WorldWizards.core.viveControllers
             }
 
             if (Controller.GetPressDown(SteamVR_Controller.ButtonMask.ApplicationMenu))
+            {
                 if (!isMenuActive)
+                {
                     ShowMainMenu();
+                }
                 else
+                {
                     OnOK();
+                }
+            }
         }
 
         private void ShowMainMenu()

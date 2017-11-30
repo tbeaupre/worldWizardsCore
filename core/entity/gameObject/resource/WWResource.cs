@@ -27,14 +27,18 @@ namespace WorldWizards.core.entity.gameObject.resource
         public GameObject GetPrefab()
         {
             if (!loaded)
+            {
                 Load();
+            }
             return prefab;
         }
 
         public WWResourceMetaData GetMetaData()
         {
             if (!loaded)
+            {
                 Load();
+            }
             return metaData;
         }
 
@@ -43,7 +47,9 @@ namespace WorldWizards.core.entity.gameObject.resource
             LoadPrefab();
 
             if (prefab != null)
+            {
                 LoadMetaData();
+            }
 
             loaded = true;
         }
@@ -52,9 +58,11 @@ namespace WorldWizards.core.entity.gameObject.resource
         {
             if (assetBundleTag != null)
             {
-                var assetBundle = WWAssetBundleController.GetAssetBundle(assetBundleTag);
+                AssetBundle assetBundle = WWAssetBundleController.GetAssetBundle(assetBundleTag);
                 if (assetBundle != null)
+                {
                     prefab = assetBundle.LoadAsset(path) as GameObject;
+                }
             }
             else
             {
@@ -65,7 +73,9 @@ namespace WorldWizards.core.entity.gameObject.resource
         private void LoadMetaData()
         {
             if (prefab != null)
+            {
                 metaData = prefab.GetComponent<WWResourceMetaData>();
+            }
         }
     }
 }

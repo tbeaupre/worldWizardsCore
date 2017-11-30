@@ -1,20 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
-namespace WorldWizards.core.experimental.controllers
+namespace worldWizards.core.input.Tools
 {
     public class StandardTool : Tool
     {
         private const float RETICLE_OFFSET = 0.001f; // The reticle offset from the floor
-        private const float MOVE_OFFSET = 0.1f; // The distance the player moves per frame.
+        private const float MOVE_OFFSET = 0.15f; // The distance the player moves per frame.
         
         // Prefabs
         public GameObject laserPrefab;
         public GameObject reticlePrefab; // Teleport reticle prefab
-        
-        // VR Headset Transform Information
-        private Transform cameraRigTransform; // Tranform of [Camera Rig]
-        private Transform headTransform; // Player's head transform
         
         // Prefab Instances
         private GameObject laser; // Stores reference to an instance of a laser
@@ -22,32 +18,17 @@ namespace WorldWizards.core.experimental.controllers
 
         private bool shouldTeleport; // True when valid teleport location is found
         private Vector3 hitPoint; // Hit point of the laser raycast
-        
-        public override void Init(SteamVR_TrackedController newController)
-        {
-            base.Init(newController);
-            
-            listenForTrigger = true;
-            listenForGrip = true;
-            listenForMenu = true;
-            listenForPress = true;
-            listenForTouch = true;
-            
-            SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
-            cameraRigTransform = controllerManager.transform;
-            headTransform = controllerManager.GetComponentInChildren<Camera>().transform;
-        }
 
+        
         // Trigger
         public override void OnTriggerUnclick()
         {
             // Selection Logic.
-            base.OnTriggerUnclick();
         }
         
         
         // Grip
-        public override void OnUngrip()
+        public override void OnUngrip() // Teleport to laser location.
         {
             // Hide laser and reticle when button is released.
             DeactivateLaser();
@@ -56,14 +37,13 @@ namespace WorldWizards.core.experimental.controllers
             {
                 Teleport(hitPoint);
             }
-            base.OnUngrip();
         }
 
-        protected override void UpdateGrip()
+        public override void UpdateGrip() // Update laser position.
         {
             RaycastHit hit;
             // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(controller.transform.position, transform.forward, out hit, 100))
+            if (Physics.Raycast(input.GetControllerPoint(), input.GetControllerDirection(), out hit, 100))
             {
                 // Found valid teleport location
                 DrawLaser(hit);
@@ -102,7 +82,7 @@ namespace WorldWizards.core.experimental.controllers
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(controller.transform.position, hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(input.GetControllerPoint(), hit.point, .5f);
 
             // Point laser at position where raycast hit
             laser.transform.LookAt(hit.point);
@@ -119,11 +99,7 @@ namespace WorldWizards.core.experimental.controllers
         {
             shouldTeleport = false;
             
-            var difference = cameraRigTransform.position - headTransform.position;
-
-            difference.y = 0;
-
-            cameraRigTransform.position = target + difference;
+            input.GetCameraRigTransform().position = target + input.GetHeadOffset();
         }
         
         
@@ -131,42 +107,44 @@ namespace WorldWizards.core.experimental.controllers
         public override void OnMenuUnclick()
         {
             // Menu Logic.
-            base.OnMenuUnclick();
         }
 
         
         // Touchpad Press
-        protected override void UpdatePress(Vector2 padPos)
+        public override void UpdatePress(Vector2 padPos) // Y movement.
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.down * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                cameraRigTransform.position += Vector3.up * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
             }
         }
 
         
         // Touchpad Touch
-        protected override void UpdateTouch(Vector2 padPos)
+        public override void UpdateTouch(Vector2 padPos) // XZ movement.
         {
             if (Math.Abs(padPos.x) > DEADZONE_SIZE / 2)
             {
-                Vector3 strafeVector = padPos.x * gameObject.transform.right;
+                // Move perpendicular to the controller direction in the XZ plane.
+                Vector3 strafeVector = padPos.x * input.GetControllerDirection();
+                strafeVector = Quaternion.AngleAxis(90, Vector3.up) * strafeVector;
                 strafeVector.y = 0;
                 strafeVector = strafeVector.normalized * MOVE_OFFSET;
                 
-                cameraRigTransform.position += strafeVector;
+                input.GetCameraRigTransform().position += strafeVector;
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
-                Vector3 forwardMoveVector = padPos.y * gameObject.transform.forward;
+                // Move in the controller direction in the XZ plane.
+                Vector3 forwardMoveVector = padPos.y * input.GetControllerDirection();
                 forwardMoveVector.y = 0;
                 forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
             
-                cameraRigTransform.position += forwardMoveVector;  
+                input.GetCameraRigTransform().position += forwardMoveVector;  
             }
         }
     }

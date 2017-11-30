@@ -53,7 +53,8 @@ namespace WorldWizards.core.viveControllers
             laserTransform.LookAt(hitPoint);
 
             // Scale laser so it fits between the two positions
-            laserTransform.localScale = new Vector3(laserTransform.localScale.x, laserTransform.localScale.y, hit.distance);
+            laserTransform.localScale =
+                new Vector3(laserTransform.localScale.x, laserTransform.localScale.y, hit.distance);
         }
 
         // Update is called once per frame
@@ -90,7 +91,9 @@ namespace WorldWizards.core.viveControllers
 
             // Check if player is trying to teleport and teleport them if they are pointing to valid location
             if (Controller.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad) && shouldTeleport)
+            {
                 Teleport();
+            }
         }
 
         private void Teleport()
@@ -98,7 +101,7 @@ namespace WorldWizards.core.viveControllers
             shouldTeleport = false;
             reticle.SetActive(false);
 
-            var difference = cameraRigTransform.position - headTransform.position;
+            Vector3 difference = cameraRigTransform.position - headTransform.position;
 
             difference.y = 0;
 

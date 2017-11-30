@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.viveControllers
 {
     public class ControllerMakeCube : MonoBehaviour
     {
-        private SceneGraphController sceneGraphController;
-
         private SteamVR_TrackedObject trackedObj;
 
         private SteamVR_Controller.Device Controller
@@ -19,11 +19,6 @@ namespace WorldWizards.core.viveControllers
         private void Awake()
         {
             trackedObj = GetComponent<SteamVR_TrackedObject>();
-        }
-
-        private void Start()
-        {
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
         }
 
         // Update is called once per frame
@@ -39,12 +34,13 @@ namespace WorldWizards.core.viveControllers
 
         private void CreateCube(Vector3 controllerPos)
         {
-            var cubePosition = CoordinateHelper.convertUnityCoordinateToWWCoordinate(controllerPos);
-            Debug.Log("Cube Position: " + cubePosition.index.x + ", " + cubePosition.index.y + ", " + cubePosition.index.z);
+            Coordinate cubePosition = CoordinateHelper.UnityCoordToWWCoord(controllerPos);
+            Debug.Log("Cube Position: " + cubePosition.index.x + ", " + cubePosition.index.y + ", " +
+                      cubePosition.index.z);
 
-            var data = WWObjectFactory.CreateNew(cubePosition, "white");
-            var obj = WWObjectFactory.Instantiate(data);
-            sceneGraphController.Add(obj);
+            WWObjectData data = WWObjectFactory.CreateNew(cubePosition, "white");
+            WWObject obj = WWObjectFactory.Instantiate(data);
+            ManagerRegistry.Instance.sceneGraphManager.Add(obj);
         }
     }
 }

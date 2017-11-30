@@ -10,11 +10,11 @@ using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.controller.level.utils
 {
-	/// <summary>
-	///     The WorldWizard Object Factory is responsible for instantiating gameobjects into the
-	///     unity environment.
-	/// </summary>
-	public static class WWObjectFactory
+    /// <summary>
+    ///     The WorldWizard Object Factory is responsible for instantiating gameobjects into the
+    ///     unity environment.
+    /// </summary>
+    public static class WWObjectFactory
     {
         public static WWObjectData CreateNew(Coordinate coordinate, string resourceTag)
         {
@@ -28,12 +28,12 @@ namespace WorldWizards.core.controller.level.utils
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
-            var spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
+            Vector3 spawnPos = CoordinateHelper.WWCoordToUnityCoord(objectData.coordinate);
 
             // Load resource and check to see if it is valid.
-            var resource = WWResourceController.GetResource(objectData.resourceTag);
+            WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
             GameObject gameObject;
-            var resourceMetaData = resource.GetMetaData();
+            WWResourceMetaData resourceMetaData = resource.GetMetaData();
             if (resource.GetPrefab() == null)
             {
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -53,7 +53,7 @@ namespace WorldWizards.core.controller.level.utils
             }
 
             // Use ResourceMetaData to construct the object.
-            var wwObject = ConstructWWObject(gameObject, resourceMetaData);
+            WWObject wwObject = ConstructWWObject(gameObject, resourceMetaData);
 
             // Give the new WWObject the data used to create it.
             wwObject.Init(objectData, resourceMetaData);
@@ -64,16 +64,16 @@ namespace WorldWizards.core.controller.level.utils
             return wwObject;
         }
 
-	    /// <summary>
-	    ///     Handles the aspects of WWObject Instantiation that rely on the resource metadata.
-	    /// </summary>
-	    /// <param name="gameObject">The base GameObject which contains only resource, location, and rotation data</param>
-	    /// <param name="metaData">The metadata which will be used to construct the WWObject</param>
-	    /// <returns></returns>
-	    public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
+        /// <summary>
+        ///     Handles the aspects of WWObject Instantiation that rely on the resource metadata.
+        /// </summary>
+        /// <param name="gameObject">The base GameObject which contains only resource, location, and rotation data</param>
+        /// <param name="metaData">The metadata which will be used to construct the WWObject</param>
+        /// <returns></returns>
+        public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
         {
             // Make the GameObject into a Tile, Prop, etc.
-            var type = WWTypeHelper.ConvertToSysType(metaData.type);
+            Type type = WWTypeHelper.ConvertToSysType(metaData.type);
             var wwObject = gameObject.AddComponent(type) as WWObject;
 
             // Add Collision Boxes to Object.
@@ -86,7 +86,7 @@ namespace WorldWizards.core.controller.level.utils
             Object.DestroyImmediate(wwObject.GetComponent<WWResourceMetaData>());
 #else
 			GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
-			#endif
+#endif
 
             wwObject.gameObject.SetActive(true);
 

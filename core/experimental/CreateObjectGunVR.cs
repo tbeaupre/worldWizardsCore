@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
 {
@@ -21,7 +23,6 @@ namespace WorldWizards.core.experimental
         public Plane groundPlane;
         public Transform markerObject;
         private List<string> possibleTiles;
-        private SceneGraphController sceneGraphController;
         public LayerMask teleportMask;
 
         private SteamVR_TrackedObject trackedObj;
@@ -32,14 +33,10 @@ namespace WorldWizards.core.experimental
         {
             get { return SteamVR_Controller.Input((int) trackedObj.index); }
         }
-        private readonly SwipeGesture swipe = new SwipeGesture();
 
         private void Awake()
         {
             groundPlane = new Plane(Vector3.up, Vector3.up);
-
-            sceneGraphController = FindObjectOfType<SceneGraphController>();
-            ResourceLoader.LoadResources();
 
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
             Debug.Log(possibleTiles.Count);
@@ -55,18 +52,18 @@ namespace WorldWizards.core.experimental
         {
             DeleteHitObject();
             // move the builder grid
-            var gridPosition = gridCollider.transform.position;
+            Vector3 gridPosition = gridCollider.transform.position;
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                var oldCamPosition = VRCameraRig.position;
+                Vector3 oldCamPosition = VRCameraRig.position;
                 oldCamPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 VRCameraRig.position = oldCamPosition;
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
                 gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-                var oldCamPosition = VRCameraRig.position;
+                Vector3 oldCamPosition = VRCameraRig.position;
                 oldCamPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 VRCameraRig.position = oldCamPosition;
             }
@@ -82,7 +79,7 @@ namespace WorldWizards.core.experimental
             //    if (gridCollider.Raycast (ray, out raycastHit, 1000f )) {
             if (Physics.Raycast(trackedObj.transform.position, transform.forward, out raycastHit, 100, teleportMask))
             {
-                var position = raycastHit.point;
+                Vector3 position = raycastHit.point;
                 // because the tile center is in the middle need to offset
                 position.x += .5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
                 position.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
@@ -109,7 +106,7 @@ namespace WorldWizards.core.experimental
                     {
                         Destroy(curObject.gameObject);
                         curObject = PlaceObject(position);
-                        sceneGraphController.Add(curObject);
+                        ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
                         curObject = null;
                     }
                 }
@@ -121,20 +118,26 @@ namespace WorldWizards.core.experimental
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 curRotation += 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
                 curRotation -= 90;
-                if (curObject != null) Destroy(curObject.gameObject);
+                if (curObject != null)
+                {
+                    Destroy(curObject.gameObject);
+                }
                 curObject = PlaceObject(position);
             }
         }
 
         private void CycleObjectsSwipe(Vector3 position)
         {
-            var offset = (int)(possibleTiles.Count * swipe.GetSwipeRatio(Controller));
+            var offset = (int)(possibleTiles.Count * 0.3f);
             if (offset != 0)
             {
                 curTile = (curTile + offset) % possibleTiles.Count;
@@ -145,9 +148,10 @@ namespace WorldWizards.core.experimental
 
         private WWObject PlaceObject(Vector3 position)
         {
-            var coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
-            var objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTile]);
-            var go = WWObjectFactory.Instantiate(objData);
+            int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
+            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
+            WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
 
@@ -155,12 +159,15 @@ namespace WorldWizards.core.experimental
         {
             if (Input.GetKeyDown(KeyCode.Mouse1))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 var hit = new RaycastHit();
                 if (Physics.Raycast(ray, out hit))
                 {
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (!wwObject.Equals(curObject)) sceneGraphController.Delete(wwObject.GetId());
+                    if (!wwObject.Equals(curObject))
+                    {
+                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                    }
                 }
             }
         }

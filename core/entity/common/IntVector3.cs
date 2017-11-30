@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace WorldWizards.core.entity.common
 {
@@ -19,14 +18,10 @@ namespace WorldWizards.core.entity.common
             z = (int) Mathf.Floor(vector.z);
         }
 
-        [JsonConstructor]
-        public IntVector3()
-        {
-        }
 
-        public int x { get; set; }
-        public int y { get; set; }
-        public int z { get; set; }
+        public int x { get; private set; }
+        public int y { get; private set; }
+        public int z { get; private set; }
 
         public override string ToString()
         {
@@ -37,14 +32,16 @@ namespace WorldWizards.core.entity.common
         {
             // Check for null values and compare run-time types.
             if (obj == null || GetType() != obj.GetType())
+            {
                 return false;
+            }
 
             var other = (IntVector3) obj;
             return x == other.x && y == other.y && z == other.z;
         }
 
         /// <summary>
-        /// from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
+        ///     from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

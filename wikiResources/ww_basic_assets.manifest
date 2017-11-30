@@ -1,0 +1,58 @@
+ManifestFileVersion: 0
+CRC: 564783321
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e6b7224c557174ba75cfa45d9b3c4c33
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b32e37b01645f8b2b20c2e2534b0a3ea
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: bc9b9a758546744938167d3a5ff86ecf, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/3DTiles/Materials/FloorBrickLight.mat
+- Assets/3DTiles/Materials/Floor.mat
+- Assets/PrefabsForAssetBundle/Tile_RoofCorner.prefab
+- Assets/PrefabsForAssetBundle/Prop_PineTree.prefab
+- Assets/3DTiles/Materials/Grass.mat
+- Assets/3DTiles/Materials/Roof.mat
+- Assets/PrefabsForAssetBundle/Tile_GrassCorner.prefab
+- Assets/3DTiles/Materials/TreeTrunk.mat
+- Assets/3DTiles/Materials/PineLeaves.mat
+- Assets/PrefabsForAssetBundle/Tile_RoofSide.prefab
+- Assets/3DTiles/Materials/Wood.mat
+- Assets/PrefabsForAssetBundle/Tile_Arch.prefab
+- Assets/3DTiles/Materials/WallBrick.mat
+- Assets/PrefabsForAssetBundle/Prop_Rock.prefab
+- Assets/PrefabsForAssetBundle/Tile_Grass.prefab
+- Assets/PrefabsForAssetBundle/Tile_RoofTop.prefab
+- Assets/3DTiles/Materials/lambert1.mat
+- Assets/PrefabsForAssetBundle/Tile_FloorBrick.prefab
+- Assets/3DTiles/Materials/Rock.mat
+- Assets/3DTiles/Materials/FloorBrickDark.mat
+- Assets/PrefabsForAssetBundle/Tile_Staircase.prefab
+- Assets/3DTiles/Materials/FloorGrout.mat
+- Assets/PrefabsForAssetBundle/Tile_WallWindow.prefab
+- Assets/PrefabsForAssetBundle/Tile_WallBrick.prefab
+- Assets/3DTiles/Materials/Wall.mat
+Dependencies: []

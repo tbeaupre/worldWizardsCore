@@ -4,14 +4,15 @@ using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject
 {
-	/// <summary>
-	///     The WorldWizardsObject is base class for all World Wizards objects.
-	///     WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
-	/// </summary>
-	public abstract class WWObject : MonoBehaviour
+    /// <summary>
+    ///     The WorldWizardsObject is base class for all World Wizards objects.
+    ///     WorldWizardsObject extends MonoBehavior so it has to be attached to a GameObject.
+    /// </summary>
+    public abstract class WWObject : MonoBehaviour
     {
         public WWResourceMetaData resourceMetaData { get; private set; }
 
@@ -39,6 +40,11 @@ namespace WorldWizards.core.entity.gameObject
             return objectData.coordinate;
         }
 
+        public WWWalls GetWallsWRotationApplied()
+        {
+            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
+        }
+
         public void SetCoordinate(Coordinate coordinate)
         {
         }
@@ -48,10 +54,10 @@ namespace WorldWizards.core.entity.gameObject
             return null;
         }
 
-	    /// <summary>
-	    ///     Promote this World Wizard Object to not have a parent.
-	    /// </summary>
-	    public void Unparent()
+        /// <summary>
+        ///     Promote this World Wizard Object to not have a parent.
+        /// </summary>
+        public void Unparent()
         {
             objectData.Unparent();
         }
@@ -72,14 +78,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public void RemoveChildren(List<WWObject> children)
         {
-            foreach (var child in children)
-                if (objectData.children.Contains(child.objectData)) objectData.RemoveChild(child.objectData);
+            foreach (WWObject child in children)
+                if (objectData.children.Contains(child.objectData))
+                {
+                    objectData.RemoveChild(child.objectData);
+                }
         }
 
         public void AddChildren(List<WWObject> children)
         {
             objectData.AddChildren(children);
-            foreach (var child in children) child.Parent(this);
+            foreach (WWObject child in children) child.Parent(this);
         }
 
         public List<WWObject> GetChildren()
@@ -97,14 +106,24 @@ namespace WorldWizards.core.entity.gameObject
             return objectData.GetAllDescendents();
         }
 
-        public virtual void SetPosition(Coordinate coordinate)
+        public void SetRotation(int yRotation)
         {
-            var position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
-            var yRotation = coordinate.rotation;
-            var rotation = Quaternion.Euler(0, yRotation, 0);
-
-            transform.position = position;
-            transform.rotation = rotation;
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
+            objectData.coordinate.rotation = yRotation;
         }
+
+        public virtual void SetPosition(Vector3 position, bool snapToGrid)
+        {
+            transform.position = position + GetPositionOffset();
+            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.rotation);
+        }
+
+        public void SetPosition(Coordinate coordinate)
+        {
+            SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate), false);
+            SetRotation(coordinate.rotation);
+        }
+
+        protected abstract Vector3 GetPositionOffset();
     }
 }
