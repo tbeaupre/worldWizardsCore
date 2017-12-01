@@ -181,14 +181,26 @@ namespace WorldWizards.core.manager
                     // TODO scale up to match door to holder if necessary
                     // TODO handle the rotation
                     // TODO handle collision for existing doors
-                    Debug.Log("Door pivot" + doorHolder.pivot * 2f);
-                    var coord = new Coordinate(holder.GetCoordinate().index, doorHolder.pivot, 0);
+
+                    var holderRot = holder.GetCoordinate().rotation;
+                    var config = new WWDoorHolderConfiguration(holder);
+                    
+                    var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
+                        Vector3.zero, 
+                        new Vector3(0, holderRot, 0));
+                    
+                    var coord = new Coordinate(holder.GetCoordinate().index, rotatedOffset, holderRot); //doorHolder.pivot
                     door.SetPosition(coord);
                     _sceneDictionary.Add(door);
                     return true;
                 }
             }
             return false;
+        }
+        
+        
+        private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
+            return Quaternion.Euler(angles) * (point - pivot) + pivot;
         }
 
         /// <summary>
