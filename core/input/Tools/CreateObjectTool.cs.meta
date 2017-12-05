@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 68dfe3780a734f4893fe53652cf61ef1
+timeCreated: 1510174314
+licenseType: Pro
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - gridCollider: {fileID: 64346251408215956, guid: 3c90cc5b555bb4df9adcb6e905c4ecd6,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,16 +1,18 @@
 ﻿using System;
+using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
     public class WWWallMetaData
     {
-        public bool bottom;
-        public bool east;
         public bool north;
+        public bool east;
         public bool south;
-        public bool top;
         public bool west;
+        public bool top;
+        public bool bottom;
+        public WWType type;
 
         public WWWallMetaData()
         {

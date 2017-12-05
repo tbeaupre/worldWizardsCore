@@ -105,12 +105,12 @@ namespace WorldWizards.core.entity.level
             }
             if (coordinates.ContainsKey(coord.index))
             {
-                Debug.Log("Updating Guid list.");
+                //Debug.Log("Updating Guid list.");
                 coordinates[coord.index].Add(guid);
             }
             else
             {
-                Debug.Log("Creating new Guid list.");
+                //Debug.Log("Creating new Guid list.");
                 var guidList = new List<Guid>();
                 guidList.Add(guid);
                 coordinates.Add(coord.index, guidList);

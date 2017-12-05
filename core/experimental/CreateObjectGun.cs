@@ -72,7 +72,7 @@ namespace WorldWizards.core.experimental
         private void TryPlaceDoor(Vector3 hitPoint)
         {
             Debug.Log("TryPlaceDoor called.");
-            Coordinate coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint);
+            Coordinate coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint, 0);
             List<WWObject> objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
 
