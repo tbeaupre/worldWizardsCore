@@ -40,8 +40,8 @@ namespace WorldWizards.core.experimental
         {
             // Need to make sure Manager registry is initialized first
             groundPlane = new Plane(Vector3.up, Vector3.up);
-            ResourceLoader.LoadResources();
-            foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
+//            ResourceLoader.LoadResources();
+//            foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);

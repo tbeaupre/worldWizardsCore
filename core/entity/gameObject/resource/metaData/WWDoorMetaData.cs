@@ -9,9 +9,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     {
         public Animation closeAnimation;
 
-        //        public Vector3 pivotOffset;
         public Vector3 facingDirection;
-
         public float height;
         public InteractionType interactionType;
         public Animation openAnimation;

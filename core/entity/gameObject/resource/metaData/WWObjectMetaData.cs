@@ -8,7 +8,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     public class WWObjectMetaData
     {
         [Range(1, 10000)] public int baseTileSize = 10;
-
         public WWType type = WWType.Tile;
     }
 }

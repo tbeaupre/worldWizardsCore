@@ -159,12 +159,11 @@ namespace WorldWizards.core.manager
 
         public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
         {
-            //            Vector3 doorPivot = door.GetPivot();
-            //            Vector3 doorFacingDirection = door.GetFacingDirection();
             float doorWidth = door.GetWidth();
             float doorHeight = door.GetHeight();
             List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
             // TODO, use the DoorHolder that is closest to the hitPoint
+            // TODO handle the posibility that a Tile has mutliple Door Holders
             if (doorHolders.Count > 0)
             {
                 WWDoorHolderMetaData doorHolder = doorHolders[0];
@@ -175,21 +174,20 @@ namespace WorldWizards.core.manager
                 float holderRatio = holderWidth / holderHeight;
 
                 float diff = Math.Abs(holderRatio - doorRatio);
-                Debug.Log("diff " + diff);
-                if (diff < 0.2f)
+                var threshold = 0.2f;
+                if (diff < threshold)
                 {
                     // TODO scale up to match door to holder if necessary
                     // TODO handle the rotation
                     // TODO handle collision for existing doors
 
-                    var holderRot = holder.GetCoordinate().rotation;
-                    var config = new WWDoorHolderConfiguration(holder);
-                    
+                    var holderRot = holder.GetCoordinate().rotation;                    
+//                    var config = new WWDoorHolderConfiguration(holder);
                     var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
                         Vector3.zero, 
                         new Vector3(0, holderRot, 0));
                     
-                    var coord = new Coordinate(holder.GetCoordinate().index, rotatedOffset, holderRot); //doorHolder.pivot
+                    var coord = new Coordinate(holder.GetCoordinate().index, rotatedOffset, holderRot);
                     door.SetPosition(coord);
                     _sceneDictionary.Add(door);
                     return true;
@@ -198,8 +196,7 @@ namespace WorldWizards.core.manager
             return false;
         }
         
-        
-        private Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
+        private static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
             return Quaternion.Euler(angles) * (point - pivot) + pivot;
         }
 

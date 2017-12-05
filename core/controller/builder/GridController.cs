@@ -11,12 +11,14 @@ namespace WorldWizards.core.controller.builder
 
         private int height;
 
-        [SerializeField] private GameObject playerReferenceScale;
+        private GameObject playerReferenceScale;
 
         private void Awake()
         {
             grid.transform.position = Vector3.zero;
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+
+            playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
 
             playerReferenceScale.transform.position = Vector3.zero;
             playerReferenceScale.transform.localScale = Vector3.one;

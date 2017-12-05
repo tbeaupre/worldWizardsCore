@@ -114,12 +114,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public virtual void SetPosition(Coordinate coordinate)
         {
-            objectData.coordinate = coordinate;
+            SetCoordinate(coordinate);
             Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
             int yRotation = coordinate.rotation;
             Quaternion rotation = Quaternion.Euler(0, yRotation, 0);
             transform.position = position;
             transform.rotation = rotation;
+        }
+
+        public void SetCoordinate(Coordinate coordinate)
+        {
+            objectData.coordinate = coordinate;
         }
     }
 }
