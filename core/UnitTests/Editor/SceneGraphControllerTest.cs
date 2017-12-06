@@ -7,7 +7,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
-namespace worldWizards.core.unitTests
+namespace WorldWizards.core.UnitTests.Editor
 {
     [TestFixture]
     /// <summary>

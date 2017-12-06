@@ -39,7 +39,10 @@ namespace WorldWizards.core.entity.coordinate
 
         private void SetOffset(Vector3 offset)
         {
-            this.offset = offset.normalized;
+            offset.x = Mathf.Clamp(offset.x, -1, 1f);
+            offset.y = Mathf.Clamp(offset.y, -1, 1f);
+            offset.z = Mathf.Clamp(offset.z, -1, 1f);
+            this.offset = offset;
         }
     }
 }

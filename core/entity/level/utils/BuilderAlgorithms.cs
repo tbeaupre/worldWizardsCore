@@ -8,6 +8,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.manager;
 using Object = UnityEngine.Object;
@@ -78,7 +79,7 @@ namespace WorldWizards.core.entity.level.utils
         public static List<int> GetPossibleRotations(Vector3 position, string resourceTag)
         {
             var result = new List<int>();
-            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position);
+            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, 0);
             WWWalls wallsToFit = ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            

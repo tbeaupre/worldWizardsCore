@@ -11,6 +11,7 @@
 
         public SceneGraphManager sceneGraphManager { get; private set; }
 
+
         // Use this for initialization
         private void Start()
         {

@@ -70,7 +70,7 @@ namespace worldWizards.core.input.Tools
         
         private void CreateObject(Vector3 position)
         {
-            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, curRotation);
             WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTileIndex]);
             WWObject gameObj = WWObjectFactory.Instantiate(objData);
             curObject = gameObj;

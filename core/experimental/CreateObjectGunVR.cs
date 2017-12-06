@@ -151,7 +151,7 @@ namespace WorldWizards.core.experimental
         private WWObject PlaceObject(Vector3 position)
         {
             int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
-            Coordinate coordinate = CoordinateHelper.convertUnityCoordinateToWWCoordinate(position, curRotation);
+            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, curRotation);
             WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;

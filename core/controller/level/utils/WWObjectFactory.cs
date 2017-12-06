@@ -6,6 +6,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.controller.level.utils
@@ -54,11 +55,8 @@ namespace WorldWizards.core.controller.level.utils
 
             // Use ResourceMetaData to construct the object.
             WWObject wwObject = ConstructWWObject(gameObject, resourceMetaData);
-
             // Give the new WWObject the data used to create it.
             wwObject.Init(objectData, resourceMetaData);
-
-
             wwObject.SetPosition(objectData.coordinate);
 
             return wwObject;
@@ -73,10 +71,8 @@ namespace WorldWizards.core.controller.level.utils
         public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
         {
             // Make the GameObject into a Tile, Prop, etc.
-            Type type = WWTypeHelper.ConvertToSysType(metaData.type);
+            Type type = WWTypeHelper.ConvertToSysType(metaData.wwObjectMetaData.type);
             var wwObject = gameObject.AddComponent(type) as WWObject;
-
-            // Add Collision Boxes to Object.
 
             // Scale the object to the current tile scale.
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;

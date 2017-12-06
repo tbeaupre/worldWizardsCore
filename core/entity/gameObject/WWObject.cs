@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
-using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject
@@ -18,6 +20,8 @@ namespace WorldWizards.core.entity.gameObject
 
         public WWObjectData objectData { get; private set; }
 
+        public TileFader tileFader { get; private set; }
+
         public virtual void Init(Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
@@ -28,6 +32,7 @@ namespace WorldWizards.core.entity.gameObject
         {
             this.objectData = objectData;
             this.resourceMetaData = resourceMetaData;
+            tileFader = new TileFader(gameObject);
         }
 
         public Guid GetId()
@@ -37,16 +42,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public Coordinate GetCoordinate()
         {
+            if (resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+            {
+                // we only want the index without the offset for Tiles
+                return new Coordinate(objectData.coordinate.index, objectData.coordinate.rotation);
+            }
             return objectData.coordinate;
         }
 
         public WWWalls GetWallsWRotationApplied()
         {
             return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
-        }
-
-        public void SetCoordinate(Coordinate coordinate)
-        {
         }
 
         public WWObject GetOldestParent()
@@ -108,12 +114,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public virtual void SetPosition(Coordinate coordinate)
         {
+            SetCoordinate(coordinate);
             Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
             int yRotation = coordinate.rotation;
             Quaternion rotation = Quaternion.Euler(0, yRotation, 0);
-
             transform.position = position;
             transform.rotation = rotation;
+        }
+
+        public void SetCoordinate(Coordinate coordinate)
+        {
+            objectData.coordinate = coordinate;
         }
     }
 }

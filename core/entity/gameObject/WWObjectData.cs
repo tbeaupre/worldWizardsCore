@@ -37,7 +37,7 @@ namespace WorldWizards.core.entity.gameObject
         //		public WWType type { get; }
         //		public MetaData metaData { get;}
 
-        public Coordinate coordinate { get; private set; }
+        public Coordinate coordinate { get; set; }
 
         public WWObjectData parent { get; set; }
         public List<WWObjectData> children { get; private set; }
