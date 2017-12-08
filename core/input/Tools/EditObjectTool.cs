@@ -133,106 +133,35 @@ namespace worldWizards.core.input.Tools
             }
         }
 
-        /*
-        // Grip
-        public override void OnUngrip()
-        {
-            if (curObject == null)
-            {
-                RaycastHit raycastHit;
-                if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out raycastHit, 100))
-                {
-                    WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
-                    if (wwObject != null)
-                    {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
-                    }
-                }
-            }
-        }
-        
-        
         // Touchpad Press
         public override void OnPadUnclick(Vector2 lastPadPos)
         {
             // Rotation
-            if (validTarget && curObject != null)
+            if (curObjects != null)
             {
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
-                    curRotation -= 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    RotateObjects(-90);
                 }
                 if (lastPadPos.x > DEADZONE_SIZE)
                 {
-                    curRotation += 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    RotateObjects(90);
                 }
             }
+        }
 
-            // Move Grid
-            Vector3 gridPosition = gridCollider.transform.position;
-            if (lastPadPos.y > DEADZONE_SIZE)
-            {
-                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            }
-            if (lastPadPos.y < -DEADZONE_SIZE)
-            {
-                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            }
-            gridCollider.transform.position = gridPosition;
-        }
-        
-        
-        // Touchpad Touch
-        public override void OnPadUntouch(Vector2 lastPadPos)
+        private void RotateObjects(int rotation)
         {
-            trackingSwipe = false;
-
-            if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2)
+            foreach (WWObject curObject in curObjects)
             {
-                if (lastPadPos.y > DEADZONE_SIZE)
+                curObject.SetRotation(curObject.GetCoordinate().rotation + rotation);
+                if (originalOffsets.ContainsKey(curObject))
                 {
-                    curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
-                }
-                if (lastPadPos.y < -DEADZONE_SIZE)
-                {
-                    curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    Vector3 offset = originalOffsets[curObject];
+                    Vector3 temp = new Vector3(offset.z * Math.Sign(rotation), offset.y, offset.x * -Math.Sign(rotation));
+                    originalOffsets[curObject] = temp;
                 }
             }
         }
-        
-        public override void UpdateTouch(Vector2 padPos)
-        {
-            if (curObject != null)
-            {
-                if (!trackingSwipe)
-                {
-                    trackingSwipe = true;
-                    swipeStartPosition = padPos;
-                }
-                
-                var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
-                if (offset != 0)
-                {
-                    swipeStartPosition = padPos;
-                    curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
-                }
-            }
-        }
-        
-        private float CalculateSwipe(float x)
-        {
-            return (x - swipeStartPosition.x) / 5;
-        }
-        */
     }
 }
