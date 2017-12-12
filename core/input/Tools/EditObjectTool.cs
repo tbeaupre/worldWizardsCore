@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.common;
@@ -39,11 +40,7 @@ namespace worldWizards.core.input.Tools
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
 
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
+            gridCollider = FindObjectOfType<GridController>().GetComponent<Collider>();
         }
 
         public void Update()
