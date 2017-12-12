@@ -4,11 +4,14 @@ using WorldWizards.core.entity.gameObject;
 
 namespace worldWizards.core.input.Tools
 {
+    /// <summary>
+    /// Based on this script from 
+    /// https://paulbutera.wordpress.com/2013/04/04/unity-rts-tutorial-part-1-marquee-selection-of-units/
+    /// </summary>
     public class SelectionTool : Tool
     {
         private bool justClicked; // defaults to false
         
-//        [SerializeField]
         private Texture marqueeGraphics;
         private Rect backupRect;
         private Vector2 marqueeOrigin;
