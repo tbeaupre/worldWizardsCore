@@ -16,7 +16,8 @@ namespace WorldWizards.core.experimental
     {
         Normal,
         DoorAttach,
-        PerimeterWalls
+        PerimeterWalls,
+        MarqueeSelect
     }
 
     public class CreateObjectGun : MonoBehaviour
@@ -99,6 +100,7 @@ namespace WorldWizards.core.experimental
             EnterNormalState();
             EnterDoorAttachState();
             EnterPerimeterState();
+            EnterMarqueeSelectState();
         }
 
         private void EnterNormalState()
@@ -124,12 +126,24 @@ namespace WorldWizards.core.experimental
                 state = State.PerimeterWalls;
             }
         }
+        
+        private void EnterMarqueeSelectState()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                state = State.MarqueeSelect;
+            }
+        }
 
         private void Update()
         {
             CheckForStateChange();
             RotateObjects();
 
+            if (state == State.MarqueeSelect)
+            {
+                return;
+            }
 
             if (state == State.PerimeterWalls)
             {

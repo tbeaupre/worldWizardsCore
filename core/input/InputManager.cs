@@ -68,6 +68,7 @@ namespace worldWizards.core.input
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(SelectionTool));
 //                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(EditObjectTool));
             }
         }

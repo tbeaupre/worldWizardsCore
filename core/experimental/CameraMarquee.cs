@@ -2,16 +2,15 @@
 using UnityEngine;
 using WorldWizards.core.entity.gameObject;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.experimental
 {
     /// <summary>
     /// Based on this script from 
     /// https://paulbutera.wordpress.com/2013/04/04/unity-rts-tutorial-part-1-marquee-selection-of-units/
     /// </summary>
-    public class SelectionTool : Tool
+    public class CameraMarquee : MonoBehaviour
     {
-        private bool justClicked; // defaults to false
-        
+        [SerializeField]
         private Texture marqueeGraphics;
         private Rect backupRect;
         private Vector2 marqueeOrigin;
@@ -19,45 +18,23 @@ namespace worldWizards.core.input.Tools
         private Vector2 marqueeSize;
         private List<WWObject> SelectableUnits;
 
-        void Awake()
-        {
-            marqueeGraphics = new Texture2D(2, 2, TextureFormat.ARGB32, false); 
-        }
-
         private void OnGUI()
         {
             marqueeRect = new Rect(marqueeOrigin.x, marqueeOrigin.y, marqueeSize.x, marqueeSize.y);
             GUI.color = new Color(0, 0, 0, .3f);
             GUI.DrawTexture(marqueeRect, marqueeGraphics);
         }
-        
-        public override void OnTriggerUnclick()
-        {
-            Debug.Log("OnTriggerUp");
-            // reset state
-            justClicked = false;
-            marqueeRect.width = 0;
-            marqueeRect.height = 0;
-            backupRect.width = 0;
-            backupRect.height = 0;
-            marqueeSize = Vector2.zero;
-        }
 
-        public override void UpdateTrigger()
+        private void Update()
         {
-            if (!justClicked)
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("OnTriggerPressed");
-                justClicked = true;
-                // treat this as OnPress
-
                 SelectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
 
                 float _invertedY = Screen.height - Input.mousePosition.y;
                 marqueeOrigin = new Vector2(Input.mousePosition.x, _invertedY);
 
-                //Check if the player just wants to select a single unit opposed to 
-                // drawing a marquee and selecting a range of units
+                //Check if the player just wants to select a single unit opposed to drawing a marquee and selecting a range of units
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
@@ -70,9 +47,17 @@ namespace worldWizards.core.input.Tools
                     }
                 }
             }
-            else
+            if (Input.GetMouseButtonUp(0))
             {
-                Debug.Log("OnTriggerDown");
+                //Reset the marquee so it no longer appears on the screen.
+                marqueeRect.width = 0;
+                marqueeRect.height = 0;
+                backupRect.width = 0;
+                backupRect.height = 0;
+                marqueeSize = Vector2.zero;
+            }
+            if (Input.GetMouseButton(0))
+            {
                 float _invertedY = Screen.height - Input.mousePosition.y;
                 marqueeSize = new Vector2(Input.mousePosition.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
                 
