@@ -40,8 +40,8 @@ namespace WorldWizards.core.experimental
         {
             // Need to make sure Manager registry is initialized first
             groundPlane = new Plane(Vector3.up, Vector3.up);
-//            ResourceLoader.LoadResources();
-//            foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
+
+            foreach (string s in ResourceLoader.FindAssetBundlePaths()) Debug.Log(s);
 
             possibleTiles = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
             Debug.Log(possibleTiles.Count);
@@ -72,7 +72,7 @@ namespace WorldWizards.core.experimental
         private void TryPlaceDoor(Vector3 hitPoint)
         {
             Debug.Log("TryPlaceDoor called.");
-            Coordinate coord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(hitPoint, 0);
+            Coordinate coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
             List<WWObject> objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
 
@@ -240,7 +240,7 @@ namespace WorldWizards.core.experimental
         private WWObject ForceRotateAndPlaceObject(Vector3 position)
         {
             int theRot = curRotation;
-            Coordinate coordRotated = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, theRot);
+            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
@@ -260,7 +260,7 @@ namespace WorldWizards.core.experimental
             {
                 theRot = curRotation;
             }
-            Coordinate coordRotated = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, theRot);
+            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
             WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;

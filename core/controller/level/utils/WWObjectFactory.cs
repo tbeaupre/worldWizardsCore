@@ -29,7 +29,7 @@ namespace WorldWizards.core.controller.level.utils
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
-            Vector3 spawnPos = CoordinateHelper.convertWWCoordinateToUnityCoordinate(objectData.coordinate);
+            Vector3 spawnPos = CoordinateHelper.WWCoordToUnityCoord(objectData.coordinate);
 
             // Load resource and check to see if it is valid.
             WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
@@ -50,7 +50,7 @@ namespace WorldWizards.core.controller.level.utils
                 }
                 // Create a GameObject at the correct location and rotation.
                 gameObject = Object.Instantiate(resource.GetPrefab(), spawnPos,
-                    Quaternion.Euler(0, objectData.coordinate.rotation, 0));
+                    Quaternion.Euler(0, objectData.coordinate.Rotation, 0));
             }
 
             // Use ResourceMetaData to construct the object.
@@ -82,7 +82,7 @@ namespace WorldWizards.core.controller.level.utils
             Object.DestroyImmediate(wwObject.GetComponent<WWResourceMetaData>());
 #else
 			GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
-			#endif
+#endif
 
             wwObject.gameObject.SetActive(true);
 

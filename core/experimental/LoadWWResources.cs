@@ -14,9 +14,6 @@ namespace WorldWizards.core.experimental
         {
             CoordinateHelper.baseTileLength = 1;
 
-            // Load Resources from AssetBundles.
-            ResourceLoader.LoadResources();
-
             for (var i = 0; i < 5; i++)
             {
                 WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "defaultWhiteCube");

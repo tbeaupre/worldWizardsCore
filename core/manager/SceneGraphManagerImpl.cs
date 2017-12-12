@@ -81,7 +81,7 @@ namespace WorldWizards.core.manager
             List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
             foreach (WWObject obj in allObjects)
             {
-                obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(obj.GetCoordinate());
+                obj.transform.position = CoordinateHelper.WWCoordToUnityCoord(obj.GetCoordinate());
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }
             var gridController = Object.FindObjectOfType<GridController>();
@@ -99,6 +99,16 @@ namespace WorldWizards.core.manager
 
         public void Delete(Guid id)
         {
+            Remove(id, true);
+        }
+
+        public void Remove(Guid id)
+        {
+            Remove(id, false);
+        }
+
+        private void Remove(Guid id, bool delete)
+        {
             if (_sceneDictionary.ContainsGuid(id))
             {
                 WWObject rootObject = Get(id);
@@ -110,14 +120,18 @@ namespace WorldWizards.core.manager
                     WWObject parentObject = Get(parent.id);
                     parentObject.RemoveChild(rootObject);
                 }
-
-                List<WWObjectData> objectsToDelete = rootObject.GetAllDescendents();
+                
+                List<WWObjectData> objectDescendents = rootObject.GetAllDescendents();
                 // include the root
-                objectsToDelete.Add(rootObject.objectData);
-                foreach (WWObjectData objectToDelete in objectsToDelete)
+                objectDescendents.Add(rootObject.objectData);
+
+                foreach (WWObjectData objectToDelete in objectDescendents)
                 {
-                    WWObject objectToDestroy = Remove(objectToDelete.id);
-                    Destroy(objectToDestroy);
+                    WWObject objectToDestroy = RemoveObject(objectToDelete.id);
+                    if (delete)
+                    {
+                        Destroy(objectToDestroy);
+                    }
                 }
             }
         }
@@ -181,13 +195,13 @@ namespace WorldWizards.core.manager
                     // TODO handle the rotation
                     // TODO handle collision for existing doors
 
-                    var holderRot = holder.GetCoordinate().rotation;                    
+                    var holderRot = holder.GetCoordinate().Rotation;                    
 //                    var config = new WWDoorHolderConfiguration(holder);
                     var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
                         Vector3.zero, 
                         new Vector3(0, holderRot, 0));
                     
-                    var coord = new Coordinate(holder.GetCoordinate().index, rotatedOffset, holderRot);
+                    var coord = new Coordinate(holder.GetCoordinate().Index, rotatedOffset, holderRot);
                     door.SetPosition(coord);
                     _sceneDictionary.Add(door);
                     return true;
@@ -205,7 +219,7 @@ namespace WorldWizards.core.manager
         /// </summary>
         /// <param name="id"></param>
         /// <returns>returns removed object, which may be null.</returns>
-        private WWObject Remove(Guid id)
+        private WWObject RemoveObject(Guid id)
         {
             return _sceneDictionary.Remove(id);
         }

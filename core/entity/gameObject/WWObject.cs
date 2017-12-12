@@ -45,14 +45,14 @@ namespace WorldWizards.core.entity.gameObject
             if (resourceMetaData.wwObjectMetaData.type == WWType.Tile)
             {
                 // we only want the index without the offset for Tiles
-                return new Coordinate(objectData.coordinate.index, objectData.coordinate.rotation);
+                return new Coordinate(objectData.coordinate.Index, objectData.coordinate.Rotation);
             }
             return objectData.coordinate;
         }
 
         public WWWalls GetWallsWRotationApplied()
         {
-            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
+            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().Rotation);
         }
 
         public WWObject GetOldestParent()
@@ -112,19 +112,24 @@ namespace WorldWizards.core.entity.gameObject
             return objectData.GetAllDescendents();
         }
 
-        public virtual void SetPosition(Coordinate coordinate)
+        public void SetRotation(int yRotation)
         {
-            SetCoordinate(coordinate);
-            Vector3 position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(coordinate);
-            int yRotation = coordinate.rotation;
-            Quaternion rotation = Quaternion.Euler(0, yRotation, 0);
-            transform.position = position;
-            transform.rotation = rotation;
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);
+            objectData.coordinate.Rotation = yRotation;
         }
 
-        public void SetCoordinate(Coordinate coordinate)
+        public virtual void SetPosition(Vector3 position, bool snapToGrid)
         {
-            objectData.coordinate = coordinate;
+            transform.position = position + GetPositionOffset();
+            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.Rotation);
         }
+
+        public void SetPosition(Coordinate coordinate)
+        {
+            SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate), false);
+            SetRotation(coordinate.Rotation);
+        }
+
+        protected abstract Vector3 GetPositionOffset();
     }
 }
