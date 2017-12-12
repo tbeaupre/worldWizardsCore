@@ -22,13 +22,13 @@ namespace WorldWizards.core.file.entity
 
         public CoordinateJSONBlob(Coordinate c)
         {
-            indexX = c.index.x;
-            indexY = c.index.y;
-            indexZ = c.index.z;
-            offsetX = c.offset.x;
-            offsetY = c.offset.y;
-            offsetZ = c.offset.z;
-            rotation = c.rotation;
+            indexX = c.Index.x;
+            indexY = c.Index.y;
+            indexZ = c.Index.z;
+            offsetX = c.Offset.x;
+            offsetY = c.Offset.y;
+            offsetZ = c.Offset.z;
+            rotation = c.Rotation;
         }
     }
 }
