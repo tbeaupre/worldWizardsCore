@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using WorldWizards.core.controller.level;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject.resource
 {

@@ -32,7 +32,7 @@ namespace WorldWizards.core.entity.gameObject
 
         public Coordinate coordinate { get; set; }
 
-        public WWObjectData parent { get; private set; }
+        public WWObjectData parent { get; set; }
         public List<WWObjectData> children { get; private set; }
 
         public string resourceTag { get; private set; }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
-using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject
@@ -18,6 +20,8 @@ namespace WorldWizards.core.entity.gameObject
 
         public WWObjectData objectData { get; private set; }
 
+        public TileFader tileFader { get; private set; }
+
         public virtual void Init(Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
@@ -28,6 +32,7 @@ namespace WorldWizards.core.entity.gameObject
         {
             this.objectData = objectData;
             this.resourceMetaData = resourceMetaData;
+            tileFader = new TileFader(gameObject);
         }
 
         public Guid GetId()
@@ -37,16 +42,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public Coordinate GetCoordinate()
         {
+            if (resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+            {
+                // we only want the index without the offset for Tiles
+                return new Coordinate(objectData.coordinate.Index, objectData.coordinate.Rotation);
+            }
             return objectData.coordinate;
         }
 
         public WWWalls GetWallsWRotationApplied()
         {
-            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().rotation);
-        }
-
-        public void SetCoordinate(Coordinate coordinate)
-        {
+            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().Rotation);
         }
 
         public WWObject GetOldestParent()
@@ -109,19 +115,19 @@ namespace WorldWizards.core.entity.gameObject
         public void SetRotation(int yRotation)
         {
             transform.rotation = Quaternion.Euler(0, yRotation, 0);
-            objectData.coordinate.rotation = yRotation;
+            objectData.coordinate.Rotation = yRotation;
         }
 
         public virtual void SetPosition(Vector3 position, bool snapToGrid)
         {
             transform.position = position + GetPositionOffset();
-            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.rotation);
+            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.Rotation);
         }
 
         public void SetPosition(Coordinate coordinate)
         {
             SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate), false);
-            SetRotation(coordinate.rotation);
+            SetRotation(coordinate.Rotation);
         }
 
         protected abstract Vector3 GetPositionOffset();

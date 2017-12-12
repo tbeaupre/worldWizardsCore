@@ -8,9 +8,9 @@ namespace WorldWizards.core.entity.coordinate
     {
         public Coordinate(IntVector3 index, Vector3 offset, int rotation)
         {
-            this.index = index;
-            this.offset = offset;
-            this.rotation = rotation;
+            this.Index = index;
+            SetOffset(offset);
+            this.Rotation = rotation;
         }
 
         public Coordinate(CoordinateJSONBlob b) : this(
@@ -32,14 +32,22 @@ namespace WorldWizards.core.entity.coordinate
         {
         }
 
-        public IntVector3 index { get; private set; }
-        public Vector3 offset { get; set; } // (-1,1)
+        public IntVector3 Index { get; private set; }
+        public Vector3 Offset { get; set; } // (-1,1)
 
-        public int rotation { get; set; } // y rotation
+        public int Rotation { get; set; } // y rotation
+
+        private void SetOffset(Vector3 offset)
+        {
+            offset.x = Mathf.Clamp(offset.x, -1, 1f);
+            offset.y = Mathf.Clamp(offset.y, -1, 1f);
+            offset.z = Mathf.Clamp(offset.z, -1, 1f);
+            this.Offset = offset;
+        }
 
         public void SnapToGrid()
         {
-            offset = Vector3.zero;
+            Offset = Vector3.zero;
         }
     }
 }

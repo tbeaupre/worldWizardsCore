@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.level;
 using WorldWizards.core.file.entity;
 using Object = UnityEngine.Object;
@@ -62,33 +64,29 @@ namespace WorldWizards.core.manager
             return false;
         }
 
+
         public void HideObjectsAbove(int height)
         {
             List<WWObject> objects = _sceneDictionary.GetObjectsAbove(height);
             foreach (WWObject obj in objects)
-            {
-                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (MeshRenderer mesh in meshRenders)
-                    mesh.enabled = false;
-                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-                    skin.enabled = false;
-            }
+                obj.tileFader.Off();
 
             List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
-            {
-                MeshRenderer[] meshRenders = obj.GetComponentsInChildren<MeshRenderer>();
-                SkinnedMeshRenderer[] skinnedRenders = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
-
-                foreach (MeshRenderer mesh in meshRenders)
-                    mesh.enabled = true;
-                foreach (SkinnedMeshRenderer skin in skinnedRenders)
-                    skin.enabled = true;
-            }
+                obj.tileFader.On();
         }
 
+        public void ChangeScale(float scale)
+        {
+            List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
+            foreach (WWObject obj in allObjects)
+            {
+                obj.transform.position = CoordinateHelper.convertWWCoordinateToUnityCoordinate(obj.GetCoordinate());
+                obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            }
+            var gridController = Object.FindObjectOfType<GridController>();
+            gridController.MoveGrid();
+        }
 
         public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
         {
@@ -171,6 +169,49 @@ namespace WorldWizards.core.manager
                 }
                 root.AddChildren(childrenToRestore);
             }
+        }
+
+        public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
+        {
+            float doorWidth = door.GetWidth();
+            float doorHeight = door.GetHeight();
+            List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
+            // TODO, use the DoorHolder that is closest to the hitPoint
+            // TODO handle the posibility that a Tile has mutliple Door Holders
+            if (doorHolders.Count > 0)
+            {
+                WWDoorHolderMetaData doorHolder = doorHolders[0];
+                float holderWidth = doorHolder.width;
+                float holderHeight = doorHolder.height;
+
+                float doorRatio = doorWidth / doorHeight;
+                float holderRatio = holderWidth / holderHeight;
+
+                float diff = Math.Abs(holderRatio - doorRatio);
+                var threshold = 0.2f;
+                if (diff < threshold)
+                {
+                    // TODO scale up to match door to holder if necessary
+                    // TODO handle the rotation
+                    // TODO handle collision for existing doors
+
+                    var holderRot = holder.GetCoordinate().rotation;                    
+//                    var config = new WWDoorHolderConfiguration(holder);
+                    var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
+                        Vector3.zero, 
+                        new Vector3(0, holderRot, 0));
+                    
+                    var coord = new Coordinate(holder.GetCoordinate().index, rotatedOffset, holderRot);
+                    door.SetPosition(coord);
+                    _sceneDictionary.Add(door);
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        private static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
+            return Quaternion.Euler(angles) * (point - pivot) + pivot;
         }
 
         /// <summary>

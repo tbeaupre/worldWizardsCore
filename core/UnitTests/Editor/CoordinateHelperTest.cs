@@ -3,7 +3,7 @@ using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 
-namespace worldWizards.core.unitTests
+namespace WorldWizards.core.UnitTests.Editor
 {
     [TestFixture]
     /// <summary>
@@ -26,8 +26,8 @@ namespace worldWizards.core.unitTests
         {
             Vector3 unityCoord = new Vector3(3.0f, 0.0f, 3.9f) * CoordinateHelper.baseTileLength *
                                  CoordinateHelper.tileLengthScale;
-            Coordinate wwCoord = CoordinateHelper.UnityCoordToWWCoord(unityCoord);
-            Debug.Log(wwCoord.index);
+            Coordinate wwCoord = CoordinateHelper.UnityCoordToWWCoord(unityCoord, 0);
+            Debug.Log(wwCoord.Index);
             Assert.True(true);
         }
     }

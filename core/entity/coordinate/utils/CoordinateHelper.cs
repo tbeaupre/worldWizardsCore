@@ -9,7 +9,7 @@ namespace WorldWizards.core.entity.coordinate.utils
     /// </summary>
     public static class CoordinateHelper
     {
-        public static float baseTileLength = 10; // the base size of what a tile should be
+        public static float baseTileLength = 10f; // the base size of what a tile should be
         public static float tileLengthScale = 1f; // how much to scale up the base size
 
         /// <summary>
@@ -23,12 +23,9 @@ namespace WorldWizards.core.entity.coordinate.utils
 
         public static Vector3 GetTileCenter(Vector3 position)
         {
-            return WWCoordToUnityCoord(UnityCoordToWWCoord(position));
-        }
-
-        public static Coordinate UnityCoordToWWCoord(Vector3 position)
-        {
-            return new Coordinate(new IntVector3(position / GetTileScale()));
+            Coordinate coord = UnityCoordToWWCoord(position, 0);
+            coord.SnapToGrid();
+            return WWCoordToUnityCoord(coord);
         }
 
         public static Coordinate UnityCoordToWWCoord(Vector3 position, int rotation)
@@ -47,11 +44,11 @@ namespace WorldWizards.core.entity.coordinate.utils
         public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
         {
             // Move origin to bottom left corner.
-            float offsetX = coordinate.offset.x / 2 + 0.5f;
-            float offsetY = coordinate.offset.y / 2 + 0.5f;
-            float offsetZ = coordinate.offset.z / 2 + 0.5f;
+            float offsetX = coordinate.Offset.x / 2 + 0.5f;
+            float offsetY = coordinate.Offset.y / 2 + 0.5f;
+            float offsetZ = coordinate.Offset.z / 2 + 0.5f;
             var offset = new Vector3(offsetX, offsetY, offsetZ);
-            Vector3 index = new Vector3(coordinate.index.x, coordinate.index.y, coordinate.index.z);
+            Vector3 index = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z);
             return (index + offset) * GetTileScale();
         }
     }
