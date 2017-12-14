@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using NUnit.Framework.Constraints;
+using UnityEngine;
 using worldWizards.core.input.Desktop;
 using worldWizards.core.input.Tools;
 using worldWizards.core.input.VRControls;
@@ -16,10 +18,20 @@ namespace worldWizards.core.input
         private InputListener left;  // The left controller's input listener.
         private InputListener right; // The right controller's input listener.
         
+        private static List<string> AvailableTools = new List<string>();
+        private static string EDITOBJECTOOL = "EditObjectTool";
+        private static string CREATEOBJECTOOL = "CreateObjectTool";
+        private static string SELECTIONTOOL = "SelectionTool";
+        private static int toolIndex;
+        
         private void Awake()
         {
+            AvailableTools.Add(EDITOBJECTOOL);
+            AvailableTools.Add(CREATEOBJECTOOL);
+            AvailableTools.Add(SELECTIONTOOL);
+            
             // Check for VRDevice and create the necessary InputListeners for either VR or Desktop mode.
-            if (UnityEngine.VR.VRDevice.isPresent)
+            if (UnityEngine.XR.XRDevice.isPresent)
             {
                 Debug.Log("InputManager::Awake(): VR Controls Enabled");
                 // Change the current camera to the VR rig's headCamera.
@@ -62,10 +74,33 @@ namespace worldWizards.core.input
                 right = rightListener;
             }
         }
+
+
+
+        private string GetNextTool()
+        {
+            toolIndex++;
+            if (toolIndex > AvailableTools.Count - 1)
+            {
+                toolIndex = 0;
+            }
+            return AvailableTools[toolIndex];
+        }
         
+        private string GetPrevTool()
+        {
+            toolIndex--;
+            if (toolIndex < 0)
+            {
+                toolIndex = AvailableTools.Count - 1;
+            }
+            return AvailableTools[toolIndex];
+        }
+
         // This is just for debugging the new EditObject Tool.
         public  void Update()
         {
+            string nextTool = AvailableTools[0];
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
                 gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(EditObjectTool));
