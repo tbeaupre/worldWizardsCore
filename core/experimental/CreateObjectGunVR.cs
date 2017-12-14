@@ -38,8 +38,6 @@ namespace WorldWizards.core.experimental
         {
             groundPlane = new Plane(Vector3.up, Vector3.up);
 
-            ResourceLoader.LoadResources();
-
             possibleTiles = new List<string>(WWResourceController.bundles.Keys);
             Debug.Log(possibleTiles.Count);
 
@@ -151,7 +149,7 @@ namespace WorldWizards.core.experimental
         private WWObject PlaceObject(Vector3 position)
         {
             int tileIndex = Mathf.Abs(curTile) % possibleTiles.Count;
-            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, curRotation);
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
             WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[tileIndex]);
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;

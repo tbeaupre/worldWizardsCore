@@ -1,12 +1,13 @@
-﻿using WorldWizards.core.entity.coordinate;
+﻿using UnityEngine;
+using WorldWizards.core.entity.coordinate;
 
 namespace WorldWizards.core.entity.gameObject
 {
     public class Prop : WWObject
     {
-        public override void SetPosition(Coordinate coordinate)
+        protected override Vector3 GetPositionOffset()
         {
-            base.SetPosition(coordinate);
+            return Vector3.zero;
         }
     }
 }

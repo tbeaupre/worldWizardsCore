@@ -26,8 +26,8 @@ namespace WorldWizards.core.UnitTests.Editor
         {
             Vector3 unityCoord = new Vector3(3.0f, 0.0f, 3.9f) * CoordinateHelper.baseTileLength *
                                  CoordinateHelper.tileLengthScale;
-            Coordinate wwCoord = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(unityCoord);
-            Debug.Log(wwCoord.index);
+            Coordinate wwCoord = CoordinateHelper.UnityCoordToWWCoord(unityCoord, 0);
+            Debug.Log(wwCoord.Index);
             Assert.True(true);
         }
     }

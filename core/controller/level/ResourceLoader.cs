@@ -7,6 +7,8 @@ namespace WorldWizards.core.controller.level
 {
     public class ResourceLoader
     {
+        private static bool loaded = false;
+        
         public static List<string> FindAssetBundlePaths()
         {
             var results = new List<string>();
@@ -36,6 +38,9 @@ namespace WorldWizards.core.controller.level
 
         public static void LoadResources()
         {
+            if (loaded) return; // Check if resources have already been loaded.
+
+            loaded = true;
             foreach (string assetBundlePath in FindAssetBundlePaths())
             {
                 AssetBundle assetBundle = AssetBundle.LoadFromFile(assetBundlePath);

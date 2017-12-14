@@ -51,7 +51,7 @@ namespace worldWizards.core.input
         {
             if (canChangeTools)
             {
-                Destroy(GetComponent<Tool>());
+                Destroy(tool);
                 tool = gameObject.AddComponent(newToolType) as Tool;
             }
         }

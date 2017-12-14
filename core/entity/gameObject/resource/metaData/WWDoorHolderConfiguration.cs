@@ -1,4 +1,6 @@
-﻿namespace WorldWizards.core.entity.gameObject.resource.metaData
+﻿using UnityEngine.WSA;
+
+namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     public class WWDoorHolderConfiguration
     {

@@ -19,7 +19,7 @@ namespace worldWizards.core.input
         private void Awake()
         {
             // Check for VRDevice and create the necessary InputListeners for either VR or Desktop mode.
-            if (UnityEngine.XR.XRDevice.isPresent)
+            if (UnityEngine.VR.VRDevice.isPresent)
             {
                 Debug.Log("InputManager::Awake(): VR Controls Enabled");
                 // Change the current camera to the VR rig's headCamera.
@@ -66,10 +66,14 @@ namespace worldWizards.core.input
         // This is just for debugging the new EditObject Tool.
         public  void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(SelectionTool));
-//                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(EditObjectTool));
+                gameObject.GetComponent<DesktopListener>().ChangeTool(typeof(EditObjectTool));
+                right.ChangeTool(typeof(EditObjectTool));
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                right.ChangeTool(typeof(CreateObjectTool));
             }
         }
     }

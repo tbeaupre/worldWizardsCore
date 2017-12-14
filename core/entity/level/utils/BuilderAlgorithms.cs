@@ -19,7 +19,7 @@ namespace WorldWizards.core.entity.level.utils
     {
         public static void BuildPerimeterWalls(string resourceTag, WWObject wwObject)
         {
-            IntVector3 curIndex = wwObject.GetCoordinate().index;
+            IntVector3 curIndex = wwObject.GetCoordinate().Index;
             Dictionary<IntVector3, WWWalls> walls = SelectPerimeter(curIndex);
             foreach (KeyValuePair<IntVector3, WWWalls> wall in walls)
             {
@@ -79,7 +79,7 @@ namespace WorldWizards.core.entity.level.utils
         public static List<int> GetPossibleRotations(Vector3 position, string resourceTag)
         {
             var result = new List<int>();
-            Coordinate coordinate = CoordinateHelper.ConvertUnityCoordinateToWWCoordinate(position, 0);
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, 0);
             WWWalls wallsToFit = ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            
