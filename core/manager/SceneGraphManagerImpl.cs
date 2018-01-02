@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -25,6 +25,7 @@ namespace WorldWizards.core.manager
         public SceneGraphManagerImpl()
         {
             _sceneDictionary = new SceneDictionary();
+           
         }
 
         /// <summary>
