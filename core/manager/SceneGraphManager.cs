@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.entity.coordinate;
@@ -8,7 +8,7 @@ namespace WorldWizards.core.manager
 {
     /// <summary>
     /// </summary>
-    public interface SceneGraphManager
+    public interface SceneGraphManager: Manager
     {
         /// <summary>
         ///     Determine how many WWObjects are in the scene graph

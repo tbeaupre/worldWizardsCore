@@ -19,7 +19,7 @@ namespace worldWizards.core.input
         private void Awake()
         {
             // Check for VRDevice and create the necessary InputListeners for either VR or Desktop mode.
-            if (UnityEngine.VR.VRDevice.isPresent)
+            if (UnityEngine.XR.XRDevice.isPresent)
             {
                 Debug.Log("InputManager::Awake(): VR Controls Enabled");
                 // Change the current camera to the VR rig's headCamera.
