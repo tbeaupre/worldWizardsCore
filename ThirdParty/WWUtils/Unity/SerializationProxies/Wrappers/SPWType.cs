@@ -11,6 +11,10 @@ using UnityEngine;
 
 [System.Serializable]
 public class SPWType : ISerializationCallbackReceiver {
+    public SPWType()
+    {
+        type = null;
+    }
 
     public SPWType(Type t)
     {
@@ -24,20 +28,28 @@ public class SPWType : ISerializationCallbackReceiver {
     }
 
     [SerializeField]
-    private string fqtn;
+    [HideInInspector]
+    private string fqtn=null;
     [SerializeField]
-    private string assemblyName;
+    [HideInInspector]
+    private string assemblyName=null;
 
 
     public void OnBeforeSerialize()
     {
-        fqtn = type.FullName;
-        assemblyName = type.Assembly.FullName;
+        if (type != null)
+        {
+            fqtn = type.FullName;
+            assemblyName = type.Assembly.FullName;
+        }
     }
 
     public void OnAfterDeserialize()
     {
-        Assembly assembly = Assembly.Load(assemblyName);
-        type = assembly.GetType(fqtn);
+        if (fqtn != null)
+        {
+            Assembly assembly = Assembly.Load(assemblyName);
+            type = assembly.GetType(fqtn);
+        }
     }
 }
