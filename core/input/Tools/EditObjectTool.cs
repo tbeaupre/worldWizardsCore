@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using worldWizards.core.input.VRControls;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
-using WorldWizards.core.entity.common;
+using worldWizards.core.input.Tools;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
-namespace worldWizards.core.input.Tools
+namespace worldWizardsCore.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
@@ -42,11 +38,7 @@ namespace worldWizards.core.input.Tools
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
 
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
+            gridCollider = FindObjectOfType<GridController>().GetComponent<Collider>();
         }
 
         public void Update()
@@ -63,7 +55,7 @@ namespace worldWizards.core.input.Tools
                 }
                 else
                 {
-                    Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(hitPoint);
+                    Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
                     hoveredObjects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coordinate);
                     validTarget = hoveredObjects.Count > 0;
                 }
@@ -127,7 +119,7 @@ namespace worldWizards.core.input.Tools
                         ManagerRegistry.Instance.sceneGraphManager.Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
-                            Vector3 wwOffset = curObject.objectData.coordinate.offset / 2 * CoordinateHelper.GetTileScale();
+                            Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();
                             originalOffsets.Add(curObject, wwOffset);
                         }
                     }
@@ -136,106 +128,35 @@ namespace worldWizards.core.input.Tools
             }
         }
 
-        /*
-        // Grip
-        public override void OnUngrip()
-        {
-            if (curObject == null)
-            {
-                RaycastHit raycastHit;
-                if (Physics.Raycast(controller.GetControllerPoint(), controller.GetControllerDirection(), out raycastHit, 100))
-                {
-                    WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
-                    if (wwObject != null)
-                    {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
-                    }
-                }
-            }
-        }
-        
-        
         // Touchpad Press
         public override void OnPadUnclick(Vector2 lastPadPos)
         {
             // Rotation
-            if (validTarget && curObject != null)
+            if (curObjects != null)
             {
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
-                    curRotation -= 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    RotateObjects(-90);
                 }
                 if (lastPadPos.x > DEADZONE_SIZE)
                 {
-                    curRotation += 90;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    RotateObjects(90);
                 }
             }
+        }
 
-            // Move Grid
-            Vector3 gridPosition = gridCollider.transform.position;
-            if (lastPadPos.y > DEADZONE_SIZE)
-            {
-                gridPosition.y += CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            }
-            if (lastPadPos.y < -DEADZONE_SIZE)
-            {
-                gridPosition.y -= CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
-            }
-            gridCollider.transform.position = gridPosition;
-        }
-        
-        
-        // Touchpad Touch
-        public override void OnPadUntouch(Vector2 lastPadPos)
+        private void RotateObjects(int rotation)
         {
-            trackingSwipe = false;
-
-            if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2)
+            foreach (WWObject curObject in curObjects)
             {
-                if (lastPadPos.y > DEADZONE_SIZE)
+                curObject.SetRotation(curObject.GetCoordinate().Rotation + rotation);
+                if (originalOffsets.ContainsKey(curObject))
                 {
-                    curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
-                }
-                if (lastPadPos.y < -DEADZONE_SIZE)
-                {
-                    curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
-                    if (curObject != null) Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
+                    Vector3 offset = originalOffsets[curObject];
+                    Vector3 temp = new Vector3(offset.z * Math.Sign(rotation), offset.y, offset.x * -Math.Sign(rotation));
+                    originalOffsets[curObject] = temp;
                 }
             }
         }
-        
-        public override void UpdateTouch(Vector2 padPos)
-        {
-            if (curObject != null)
-            {
-                if (!trackingSwipe)
-                {
-                    trackingSwipe = true;
-                    swipeStartPosition = padPos;
-                }
-                
-                var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
-                if (offset != 0)
-                {
-                    swipeStartPosition = padPos;
-                    curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
-                    Destroy(curObject.gameObject);
-                    curObject = PlaceObject(hitPoint);
-                }
-            }
-        }
-        
-        private float CalculateSwipe(float x)
-        {
-            return (x - swipeStartPosition.x) / 5;
-        }
-        */
     }
 }

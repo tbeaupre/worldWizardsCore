@@ -12,6 +12,7 @@
         public SceneGraphManager sceneGraphManager { get; private set; }
         public WWMenuManager menuManager { get; private set; }
 
+
         // Use this for initialization
         private void Start()
         {

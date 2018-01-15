@@ -1,5 +1,5 @@
 ﻿using UnityEngine.Assertions;
-using WorldWizards.core.entity.gameObject.resource;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject.utils
 {
@@ -20,36 +20,36 @@ namespace WorldWizards.core.entity.gameObject.utils
 
             if (yRotation == 0 || yRotation == 360)
             {
-                north = metaData.north;
-                east = metaData.east;
-                south = metaData.south;
-                west = metaData.west;
+                north = metaData.wwTileMetaData.wwWallMetaData.north;
+                east = metaData.wwTileMetaData.wwWallMetaData.east;
+                south = metaData.wwTileMetaData.wwWallMetaData.south;
+                west = metaData.wwTileMetaData.wwWallMetaData.west;
             }
             else if (yRotation == 90)
             {
-                north = metaData.west;
-                east = metaData.north;
-                south = metaData.east;
-                west = metaData.south;
+                north = metaData.wwTileMetaData.wwWallMetaData.west;
+                east = metaData.wwTileMetaData.wwWallMetaData.north;
+                south = metaData.wwTileMetaData.wwWallMetaData.east;
+                west = metaData.wwTileMetaData.wwWallMetaData.south;
             }
             else if (yRotation == 180)
             {
-                north = metaData.south;
-                east = metaData.west;
-                south = metaData.north;
-                west = metaData.east;
+                north = metaData.wwTileMetaData.wwWallMetaData.south;
+                east = metaData.wwTileMetaData.wwWallMetaData.west;
+                south = metaData.wwTileMetaData.wwWallMetaData.north;
+                west = metaData.wwTileMetaData.wwWallMetaData.east;
             }
             else // (yRotation == 270)
             {
-                north = metaData.east;
-                east = metaData.south;
-                south = metaData.west;
-                west = metaData.north;
+                north = metaData.wwTileMetaData.wwWallMetaData.east;
+                east = metaData.wwTileMetaData.wwWallMetaData.south;
+                south = metaData.wwTileMetaData.wwWallMetaData.west;
+                west = metaData.wwTileMetaData.wwWallMetaData.north;
             }
 
-            bool top = metaData.top;
-            bool bottom = metaData.bottom;
-            var rotatedMetaData = new WWResourceMetaData(north, east, south, west, top, bottom, metaData.type);
+            bool top = metaData.wwTileMetaData.wwWallMetaData.top;
+            bool bottom = metaData.wwTileMetaData.wwWallMetaData.bottom;
+            var rotatedMetaData = new WWWallMetaData(north, east, south, west, top, bottom);
             WWWalls walls = rotatedMetaData.GetWallsEnum();
 
             return walls;

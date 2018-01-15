@@ -20,6 +20,10 @@ namespace WorldWizards.core.entity.level
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
+        public List<WWObject> GetAllObjects()
+        {
+            return new List<WWObject>(objects.Values);
+        }
 
         public List<WWObject> GetObjectsAbove(int height)
         {
@@ -70,19 +74,19 @@ namespace WorldWizards.core.entity.level
 
         private bool Collides(WWObject wwObject)
         {
-            if (coordinates.ContainsKey(wwObject.GetCoordinate().index))
+            if (coordinates.ContainsKey(wwObject.GetCoordinate().Index))
             {
                 List<WWObject> objectsAtCoord = GetObjects(wwObject.GetCoordinate());
                 WWWalls existingWalls = 0;
                 foreach (WWObject obj in objectsAtCoord)
-                    if (obj.resourceMetaData.type.Equals(WWType.Tile))
+                    if (obj.resourceMetaData.wwObjectMetaData.type.Equals(WWType.Tile))
                     {
                         WWWalls walls =
-                            WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().rotation);
+                            WWWallsHelper.GetRotatedWWWalls(obj.resourceMetaData, obj.GetCoordinate().Rotation);
                         existingWalls = existingWalls | walls;
                     }
                 WWWalls newWalls =
-                    WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().rotation);
+                    WWWallsHelper.GetRotatedWWWalls(wwObject.resourceMetaData, wwObject.GetCoordinate().Rotation);
                 bool doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }
@@ -94,22 +98,22 @@ namespace WorldWizards.core.entity.level
             Coordinate coord = wwObject.GetCoordinate();
             Guid guid = wwObject.GetId();
 
-            if (Collides(wwObject) && wwObject.resourceMetaData.type.Equals(WWType.Tile))
+            if (Collides(wwObject) && wwObject.resourceMetaData.wwObjectMetaData.type.Equals(WWType.Tile))
             {
                 Debug.Log("Tile collides with existing tiles. Preventing placement of new tile.");
                 return false;
             }
-            if (coordinates.ContainsKey(coord.index))
+            if (coordinates.ContainsKey(coord.Index))
             {
                 //Debug.Log("Updating Guid list.");
-                coordinates[coord.index].Add(guid);
+                coordinates[coord.Index].Add(guid);
             }
             else
             {
                 //Debug.Log("Creating new Guid list.");
                 var guidList = new List<Guid>();
                 guidList.Add(guid);
-                coordinates.Add(coord.index, guidList);
+                coordinates.Add(coord.Index, guidList);
             }
             objects.Add(wwObject.GetId(), wwObject);
             return true;
@@ -152,7 +156,7 @@ namespace WorldWizards.core.entity.level
 
         public List<WWObject> GetObjects(Coordinate coord)
         {
-            return GetObjects(coord.index);
+            return GetObjects(coord.Index);
         }
 
         public List<WWObject> GetObjects(IntVector3 index)

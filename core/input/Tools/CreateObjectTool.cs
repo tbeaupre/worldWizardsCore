@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using worldWizards.core.input.VRControls;
 using worldWizardsCore.core.input.Tools;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
@@ -15,7 +16,7 @@ namespace worldWizards.core.input.Tools
     public class CreateObjectTool : Tool
     {
         // Prefabs
-        private static Collider gridCollider;
+        private static GridController gridController;
         
         // Resources
         private static string currentAssetBundle;
@@ -42,11 +43,7 @@ namespace worldWizards.core.input.Tools
             
             Debug.Log("Create Object Tool");
 
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
+            gridController = FindObjectOfType<GridController>();
 
             if (currentAssetBundle == null)
             {
@@ -73,7 +70,7 @@ namespace worldWizards.core.input.Tools
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridCollider.Raycast(ray, out raycastHit, 100))
+            if (gridController.GetComponent<Collider>().Raycast(ray, out raycastHit, 100))
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
@@ -173,11 +170,11 @@ namespace worldWizards.core.input.Tools
             // Move Grid
             if (lastPadPos.y > DEADZONE_SIZE)
             {
-                gridCollider.transform.position += new Vector3(0, CoordinateHelper.GetTileScale(), 0);
+                gridController.StepUp();
             }
             if (lastPadPos.y < -DEADZONE_SIZE)
             {
-                gridCollider.transform.position -= new Vector3(0, CoordinateHelper.GetTileScale(), 0);
+                gridController.StepDown();
             }
         }
         

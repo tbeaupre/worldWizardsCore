@@ -40,7 +40,6 @@ namespace WorldWizards.core.controller.level
             return filteredKeys;
         }
 
-
         public static void LoadResource(string tag, string assetBundleTag, string path)
         {
             if (bundles.ContainsKey(tag))

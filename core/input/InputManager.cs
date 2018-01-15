@@ -2,6 +2,7 @@
 using worldWizards.core.input.Desktop;
 using worldWizards.core.input.Tools;
 using worldWizards.core.input.VRControls;
+using worldWizardsCore.core.input.Tools;
 
 namespace worldWizards.core.input
 {

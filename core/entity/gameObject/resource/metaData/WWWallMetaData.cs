@@ -1,11 +1,10 @@
 ﻿using System;
-using UnityEngine;
 using WorldWizards.core.entity.common;
 
-namespace WorldWizards.core.entity.gameObject.resource
+namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
     [Serializable]
-    public class WWResourceMetaData : MonoBehaviour
+    public class WWWallMetaData
     {
         public bool north;
         public bool east;
@@ -15,7 +14,7 @@ namespace WorldWizards.core.entity.gameObject.resource
         public bool bottom;
         public WWType type;
 
-        public WWResourceMetaData()
+        public WWWallMetaData()
         {
             north = false;
             east = false;
@@ -23,10 +22,9 @@ namespace WorldWizards.core.entity.gameObject.resource
             west = false;
             top = false;
             bottom = false;
-            type = WWType.Tile;
         }
 
-        public WWResourceMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom, WWType type)
+        public WWWallMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom)
         {
             this.north = north;
             this.east = east;
@@ -34,7 +32,6 @@ namespace WorldWizards.core.entity.gameObject.resource
             this.west = west;
             this.top = top;
             this.bottom = bottom;
-            this.type = type;
         }
 
         /// <summary>

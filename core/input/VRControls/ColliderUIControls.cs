@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using worldWizards.core.input.Tools;
 using worldWizards.core.input.VRControls;
+using worldWizardsCore.core.input.Tools;
 using WorldWizards.core.manager;
 
 namespace worldWizardsCore.core.input.VRControls
