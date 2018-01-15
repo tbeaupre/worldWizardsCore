@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.gameObject.resource;
 
 namespace WorldWizards.core.controller.level
@@ -15,11 +16,26 @@ namespace WorldWizards.core.controller.level
         /// <param name="assetBundleTag">Asset bundle tag.</param>
         public static List<string> GetResourceKeysByAssetBundle(string assetBundleTag)
         {
+            Debug.Log(bundles.Keys);
             var filteredKeys = new List<string>();
             foreach (KeyValuePair<string, WWResource> kvp in bundles)
                 if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
                 {
                     filteredKeys.Add(kvp.Key);
+                }
+            return filteredKeys;
+        }
+
+        public static List<string> GetResourceKeysByAssetBundleFiltered(string assetBundleTag, WWType type)
+        {
+            var filteredKeys = new List<string>();
+            foreach (KeyValuePair<string, WWResource> kvp in bundles)
+                if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
+                {
+                    if (kvp.Value.GetMetaData().type.Equals(type))
+                    {
+                        filteredKeys.Add(kvp.Key);
+                    }
                 }
             return filteredKeys;
         }

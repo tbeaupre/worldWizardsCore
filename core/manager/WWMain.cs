@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using WorldWizards.core.controller.level;
+using WorldWizards.core.manager;
 
-namespace WorldWizards.core.manager
+namespace worldWizardsCore.core.manager
 {
     /// <summary>
     /// This MonoBehavior needs to execute before everything else in World Wizards.

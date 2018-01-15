@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using worldWizards.core.input.VRControls;
+using worldWizardsCore.core.input.Tools;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
@@ -36,6 +38,9 @@ namespace worldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
+            ResourceLoader.LoadResources();
+            
+            Debug.Log("Create Object Tool");
 
             if (gridCollider == null)
             {
@@ -46,7 +51,17 @@ namespace worldWizards.core.input.Tools
             if (currentAssetBundle == null)
             {
                 currentAssetBundle = "ww_basic_assets";
-                possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
+                // TODO: Get possible tiles from MenuBuilder instead
+                //var tempTiles = GameObject.Find("AssetBundleMenu").GetComponent<MenuBuilder>().GetPossibleTiles();
+                /*if (tempTiles.Count > 0)
+                {
+                    
+                    possibleTiles = tempTiles;
+                }
+                else
+                {*/
+                    possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
+                //}
                 Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
             }
 
@@ -206,6 +221,28 @@ namespace worldWizards.core.input.Tools
                     ReplaceObject(hitPoint);
                 }
             }
+        }
+
+        public override void OnMenuUnclick()
+        {
+            if (UnityEngine.VR.VRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+            }
+            else
+            {
+                if (ManagerRegistry.Instance.menuManager.GetMenuReference("AssetBundlesMenu").activeSelf)
+                {
+                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", false);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+                }
+            }
+            base.OnMenuUnclick();
         }
         
         private float CalculateSwipe(float x)

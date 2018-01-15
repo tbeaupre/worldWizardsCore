@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using worldWizards.core.input.VRControls;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.common;
@@ -36,6 +37,8 @@ namespace worldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
+            
+            Debug.Log("Edit Object Tool");
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
 

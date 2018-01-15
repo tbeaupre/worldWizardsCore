@@ -37,5 +37,10 @@ namespace WorldWizards.core.controller.level
             Debug.Log("An asset bundle with the tag: " + tag + " has not been loaded.");
             return null;
         }
+
+        public static Dictionary<string, AssetBundle> GetAllAssetBundles()
+        {
+            return bundles;
+        }
     }
 }

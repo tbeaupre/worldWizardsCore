@@ -10,11 +10,13 @@
         } // guarantee this will be always a singleton only - can't use the constructor!
 
         public SceneGraphManager sceneGraphManager { get; private set; }
+        public WWMenuManager menuManager { get; private set; }
 
         // Use this for initialization
         private void Start()
         {
             sceneGraphManager = new SceneGraphManagerImpl();
+            menuManager = new WWMenuManager();
         }
     }
 }

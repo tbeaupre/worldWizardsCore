@@ -1,5 +1,8 @@
 ﻿using System;
 using UnityEngine;
+using worldWizards.core.input.VRControls;
+using worldWizardsCore.core.input.Tools;
+using WorldWizards.core.manager;
 
 namespace worldWizards.core.input.Tools
 {
@@ -106,7 +109,24 @@ namespace worldWizards.core.input.Tools
         // Application Menu
         public override void OnMenuUnclick()
         {
-            // Menu Logic.
+            if (UnityEngine.VR.VRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+            }
+            else
+            {
+                if (ManagerRegistry.Instance.menuManager.GetMenuReference("AssetBundlesMenu").activeSelf)
+                {
+                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", false);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+                }
+            }
+            base.OnMenuUnclick();
         }
 
         
