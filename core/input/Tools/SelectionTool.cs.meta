@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: b149b2607e864940becee74bdeec3bc7
+timeCreated: 1516073166
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - marqueeGraphics: {fileID: 2800000, guid: 77065ea79a21043e58bf4272ac225d48, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

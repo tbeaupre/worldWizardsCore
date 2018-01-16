@@ -22,6 +22,16 @@ namespace WorldWizards.core.entity.gameObject
 
         public TileFader tileFader { get; private set; }
 
+        public void Select()
+        {
+            tileFader.On();
+        }
+
+        public void Deselect()
+        {
+            tileFader.Off();
+        }
+
         public virtual void Init(Guid id, Coordinate coordinate,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {

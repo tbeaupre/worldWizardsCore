@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using worldWizards.core.input.Desktop;
 using worldWizards.core.input.Tools;
 using worldWizards.core.input.VRControls;
@@ -16,8 +18,12 @@ namespace worldWizards.core.input
         private InputListener left;  // The left controller's input listener.
         private InputListener right; // The right controller's input listener.
         
+        private List<Type> availableToolTypes;
+        private int toolIndex;
+        
         private void Awake()
         {
+            BuildAvailableToolTypes();
             // Check for VRDevice and create the necessary InputListeners for either VR or Desktop mode.
             if (UnityEngine.XR.XRDevice.isPresent)
             {
@@ -68,14 +74,47 @@ namespace worldWizards.core.input
         {
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                right.ChangeTool(typeof(EditObjectTool));
+                ToolIndexDown();
+                right.ChangeTool(GetCurrentTool());
             }
             if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                right.ChangeTool(typeof(CreateObjectTool));
+                ToolIndexUp();
+                right.ChangeTool(GetCurrentTool());
             }
         }
+
+        private void BuildAvailableToolTypes()
+        {
+            availableToolTypes = new List<Type>();
+            availableToolTypes.Add(typeof(EditObjectTool));
+            availableToolTypes.Add(typeof(CreateObjectTool));
+            availableToolTypes.Add(typeof(SelectionTool));
+        }
+
+        private Type GetCurrentTool()
+        {
+            return availableToolTypes[toolIndex];
+        }
+
+        private void ToolIndexUp()
+        {
+            toolIndex++;
+            if (toolIndex >= availableToolTypes.Count)
+            {
+                toolIndex = 0;
+            }
+        } 
         
+        private void ToolIndexDown()
+        {
+            toolIndex--;
+            if (toolIndex < 0)
+            {
+                toolIndex = availableToolTypes.Count - 1;
+            }
+        }
+
         public string GetLeftToolName()
         {
             return left.GetToolName();
