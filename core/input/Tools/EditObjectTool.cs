@@ -14,10 +14,6 @@ namespace worldWizards.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
-        
-        // Prefabs
-        private static Collider gridCollider;
-        
         // Object Properties
         private List<WWObject> curObjects;
         private Dictionary<WWObject, Vector3> originalOffsets; // set when objects are picked up.
@@ -38,19 +34,13 @@ namespace worldWizards.core.input.Tools
             base.Awake();
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
-
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
         }
 
         public void Update()
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridCollider.Raycast(ray, out raycastHit, 100))
+            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 hitPoint = raycastHit.point;
 

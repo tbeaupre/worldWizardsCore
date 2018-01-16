@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
@@ -12,9 +13,6 @@ namespace worldWizards.core.input.Tools
 {
     public class CreateObjectTool : Tool
     {
-        // Prefabs
-        private static Collider gridCollider;
-        
         // Resources
         private static string currentAssetBundle;
         private static List<string> possibleTiles;
@@ -37,12 +35,6 @@ namespace worldWizards.core.input.Tools
         {
             base.Awake();
 
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
-
             if (currentAssetBundle == null)
             {
                 currentAssetBundle = "ww_basic_assets";
@@ -58,7 +50,7 @@ namespace worldWizards.core.input.Tools
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridCollider.Raycast(ray, out raycastHit, 100))
+            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
@@ -158,11 +150,11 @@ namespace worldWizards.core.input.Tools
             // Move Grid
             if (lastPadPos.y > DEADZONE_SIZE)
             {
-                gridCollider.transform.position += new Vector3(0, CoordinateHelper.GetTileScale(), 0);
+                gridController.StepUp();
             }
             if (lastPadPos.y < -DEADZONE_SIZE)
             {
-                gridCollider.transform.position -= new Vector3(0, CoordinateHelper.GetTileScale(), 0);
+                gridController.StepDown();
             }
         }
         

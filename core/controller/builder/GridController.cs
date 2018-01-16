@@ -24,22 +24,27 @@ namespace WorldWizards.core.controller.builder
             playerReferenceScale.transform.localScale = Vector3.one;
         }
 
-        private void Update()
+        public Collider GetGridCollider()
         {
-            GetInput();
+            return GetComponent<Collider>();
         }
 
-        private void GetInput()
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                StepUp();
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                StepDown();
-            }
-        }
+//        private void Update()
+//        {
+//            GetInput();
+//        }
+//
+//        private void GetInput()
+//        {
+//            if (Input.GetKeyDown(KeyCode.UpArrow))
+//            {
+//                StepUp();
+//            }
+//            else if (Input.GetKeyDown(KeyCode.DownArrow))
+//            {
+//                StepDown();
+//            }
+//        }
 
         public void MoveGrid()
         {

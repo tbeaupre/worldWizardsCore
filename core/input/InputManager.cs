@@ -75,5 +75,15 @@ namespace worldWizards.core.input
                 right.ChangeTool(typeof(CreateObjectTool));
             }
         }
+        
+        public string GetLeftToolName()
+        {
+            return left.GetToolName();
+        }
+        
+        public string GetRighttToolName()
+        {
+            return right.GetToolName();
+        }
     }
 }
