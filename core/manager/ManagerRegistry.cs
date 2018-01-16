@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -18,10 +18,10 @@ namespace WorldWizards.core.manager
         } // guarantee this will be always a singleton only - can't use the constructor!
 
 
-        //For compatability, future code should call registry directly
-        public SceneGraphManager sceneGraphManager {
-            get { return GetAnInstance<SceneGraphManager>(); }
-        }
+//        //For compatability, future code should call registry directly
+//        public SceneGraphManager sceneGraphManager {
+//            get { return GetAnInstance<SceneGraphManager>(); }
+//        }
 
         /// <summary>
         /// This method registers an object  with the registry so it can be efficeintly found

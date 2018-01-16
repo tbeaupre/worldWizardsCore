@@ -73,7 +73,7 @@ namespace WorldWizards.core.experimental
         {
             Debug.Log("TryPlaceDoor called.");
             Coordinate coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
-            List<WWObject> objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
+            List<WWObject> objects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
 
             foreach (WWObject obj in objects)
@@ -85,7 +85,7 @@ namespace WorldWizards.core.experimental
                     if (curObject.resourceMetaData.wwObjectMetaData.type == WWType.Door)
                     {
                         Debug.Log("The current Object is a door");
-                        if (ManagerRegistry.Instance.sceneGraphManager.AddDoor((Door) curObject, (Tile) obj, hitPoint))
+                        if ( ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().AddDoor((Door) curObject, (Tile) obj, hitPoint))
                         {
                             curObject = null;
                         }
@@ -173,7 +173,7 @@ namespace WorldWizards.core.experimental
                         }
                         else if (state == State.Normal)
                         {
-                            if (ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                            if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                             {
                                 curObject = null;
                             }
@@ -277,7 +277,7 @@ namespace WorldWizards.core.experimental
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
                     if (!wwObject.Equals(curObject))
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Delete(wwObject.GetId());
                     }
                 }
             }

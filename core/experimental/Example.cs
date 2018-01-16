@@ -25,7 +25,7 @@ namespace WorldWizards.core.experimental
             // instantiate the tile in the world
             WWObject tile = WWObjectFactory.Instantiate(tileData);
             // add the newly created tile to the SceneGraph
-            ManagerRegistry.Instance.sceneGraphManager.Add(tile);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(tile);
         }
     }
 }

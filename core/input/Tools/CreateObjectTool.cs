@@ -86,7 +86,7 @@ namespace worldWizards.core.input.Tools
                 if (curObject != null)
                 {
                     curObject.SetPosition(hitPoint, true);
-                    if (!ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                     {
                         Destroy(curObject.gameObject); // If the object collided with another, destroy it.
                     }
@@ -122,7 +122,7 @@ namespace worldWizards.core.input.Tools
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Delete(wwObject.GetId());
                     }
                 }
             }

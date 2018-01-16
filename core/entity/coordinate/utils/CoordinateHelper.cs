@@ -47,6 +47,10 @@ namespace WorldWizards.core.entity.coordinate.utils
             float offsetX = coordinate.Offset.x / 2 + 0.5f;
             float offsetY = coordinate.Offset.y / 2 + 0.5f;
             float offsetZ = coordinate.Offset.z / 2 + 0.5f;
+//            float offsetX = coordinate.Offset.x * 0.5f;
+//            float offsetY = coordinate.Offset.y * 0.5f;
+//            float offsetZ = coordinate.Offset.z * 0.5f;
+            
             var offset = new Vector3(offsetX, offsetY, offsetZ);
             Vector3 index = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z);
             return (index + offset) * GetTileScale();

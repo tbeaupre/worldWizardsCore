@@ -51,7 +51,7 @@ namespace worldWizards.core.input.Tools
                 else
                 {
                     Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
-                    hoveredObjects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coordinate);
+                    hoveredObjects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coordinate);
                     validTarget = hoveredObjects.Count > 0;
                 }
             }
@@ -94,7 +94,7 @@ namespace worldWizards.core.input.Tools
                         offset = originalOffsets[curObject];
                     }
                     curObject.SetPosition(target + offset, true);
-                    ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
+                    ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject);
                 }
                 curObjects = null;
                 originalOffsets.Clear();
@@ -111,7 +111,7 @@ namespace worldWizards.core.input.Tools
                     curObjects = hoveredObjects;
                     foreach (WWObject curObject in curObjects)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Remove(curObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
                             Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();

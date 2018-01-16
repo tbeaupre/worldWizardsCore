@@ -16,7 +16,8 @@ namespace WorldWizards.core.controller.builder
         {
             float newScale = _slider.value;
             CoordinateHelper.tileLengthScale = newScale;
-            ManagerRegistry.Instance.sceneGraphManager.ChangeScale(newScale);
+//            ManagerRegistry.Instance.sceneGraphManager.ChangeScale(newScale);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ChangeScale(newScale);
         }
     }
 }

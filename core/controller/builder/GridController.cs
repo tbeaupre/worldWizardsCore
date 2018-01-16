@@ -53,7 +53,9 @@ namespace WorldWizards.core.controller.builder
             gridPosition.y = yPos;
             grid.transform.position = gridPosition;
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
-            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.Index.y);
+//            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.Index.y);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);
+            
 
             // set the scale too
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;

@@ -17,7 +17,7 @@ namespace WorldWizards.core.experimental
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Delete(wwObject.GetId());
                     }
                 }
             }
