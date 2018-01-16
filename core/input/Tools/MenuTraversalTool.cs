@@ -8,7 +8,10 @@ using WorldWizards.core.manager;
 
 namespace worldWizardsCore.core.input.Tools
 {
-    // VR menu traversal with laser pointer
+    /**
+     * VR menu traversal with controller.
+     * Gives controller a laser pointer that is able to interact with WWButtons.
+     */
     public class MenuTraversalTool : Tool
     {
         private SteamVR_LaserPointer laserPointer;
@@ -17,7 +20,7 @@ namespace worldWizardsCore.core.input.Tools
         void Awake()
         {
             base.Awake();
-            assetBundleMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("AsstBundleMenu");
+            assetBundleMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("AssetBundlesMenu");
         }
 
         private void OnEnable()

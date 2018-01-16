@@ -7,6 +7,10 @@ using WorldWizards.core.entity.gameObject.resource;
 
 namespace worldWizardsCore.core.menus
 {
+    /**
+     * MenuBuilder adds a button for each Asset Bundle to the AssetBundlesMenu at runtime.
+     * NOTE: Will be refactored to allow generic use among all menus to add buttons at runtime
+     */
     // TODO: Convert this to generic menu builder for all menus to use
     public class MenuBuilder : MonoBehaviour
     {
@@ -59,6 +63,11 @@ namespace worldWizardsCore.core.menus
             }
         }
 
+        /**
+         * Instantiates a button and adds it to the list of all buttons for this menu
+         * 
+         * @param bundleTag the string representing the asset bundle tag to be put on the button
+         */
         private void AddButton(string bundleTag)
         {
             Button button = Instantiate(buttonPrefab);

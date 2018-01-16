@@ -5,9 +5,12 @@ using WorldWizards.core.manager;
 
 namespace worldWizardsCore.core.menus
 {
+    /**
+     * ArmMenu is a VR-only WWMenu that sits on the player's arm and allows them to quickly change controller tools.
+     * Sets up positioning based on left controller position & rotation
+     */
     public class ArmMenu : WWMenu
     { 
-        private GameObject armMenu;
         private GameObject popupArmMenu;
         private GameObject controller;
 

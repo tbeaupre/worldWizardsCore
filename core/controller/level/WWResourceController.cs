@@ -32,7 +32,7 @@ namespace WorldWizards.core.controller.level
             foreach (KeyValuePair<string, WWResource> kvp in bundles)
                 if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
                 {
-                    if (kvp.Value.GetMetaData().type.Equals(type))
+                    if (kvp.Value.GetMetaData().wwObjectMetaData.type.Equals(type))
                     {
                         filteredKeys.Add(kvp.Key);
                     }

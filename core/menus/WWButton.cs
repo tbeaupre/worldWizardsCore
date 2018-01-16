@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace worldWizardsCore.core.menus
 {
+    /**
+     * WWButton holds all the info for a button used in World Wizards.
+     * It allows buttons to be clicked with the VR controller laser.
+     * Also holds any metadata the button might need when clicked.
+     * All buttons inherit from WWButton.
+     */
     [RequireComponent(typeof(RectTransform))]
     public class WWButton : MonoBehaviour {
 
@@ -34,11 +40,19 @@ namespace worldWizardsCore.core.menus
             boxCollider.size = rectTransform.sizeDelta;
         }
 
+        /**
+         * Get button's metadata
+         * @return metadata string
+         */
         public String GetMetaData()
         {
             return metaData;
         }
 
+        /**
+         * Set button's metadata
+         * @param metadata what string the metadata will be set to
+         */
         public void SetMetadata(String metadata)
         {
             metaData = metadata;

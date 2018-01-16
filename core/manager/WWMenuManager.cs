@@ -12,6 +12,12 @@ public class WWMenuManager
 
     private const string clone = "(Clone)";
 
+    
+    /**
+     * WWMenuManager holds references to all of the menus used in World Wizards.
+     * Allows menus to be activated/deactivated from anywhere.
+     * Allows you to get references to specific menus from anywhere.
+     */
     public WWMenuManager()
     {
         allMenus = new Dictionary<string, GameObject>();

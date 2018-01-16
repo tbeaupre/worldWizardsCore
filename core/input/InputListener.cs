@@ -52,13 +52,14 @@ namespace worldWizards.core.input
         {
             if (canChangeTools)
             {
+                Debug.Log("Tool changed to " + newToolType);
                 previousTool = tool;
                 Destroy(tool);
                 tool = gameObject.AddComponent(newToolType) as Tool;
             }
         }
 
-        // Allows for closing menus to go back to the previous tool the user was using
+        // Allows for going back to the previous tool the user had on the controller
         public void ChangeToPreviousTool()
         {
             ChangeTool(previousTool.GetType());
