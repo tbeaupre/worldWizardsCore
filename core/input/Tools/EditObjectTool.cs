@@ -12,10 +12,6 @@ namespace worldWizardsCore.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
-        
-        // Prefabs
-        private static Collider gridCollider;
-        
         // Object Properties
         private List<WWObject> curObjects;
         private Dictionary<WWObject, Vector3> originalOffsets; // set when objects are picked up.
@@ -38,15 +34,13 @@ namespace worldWizardsCore.core.input.Tools
             Debug.Log("Edit Object Tool");
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
-
-            gridCollider = FindObjectOfType<GridController>().GetComponent<Collider>();
         }
 
         public void Update()
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridCollider.Raycast(ray, out raycastHit, 100))
+            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 hitPoint = raycastHit.point;
 
@@ -57,7 +51,7 @@ namespace worldWizardsCore.core.input.Tools
                 else
                 {
                     Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
-                    hoveredObjects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coordinate);
+                    hoveredObjects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coordinate);
                     validTarget = hoveredObjects.Count > 0;
                 }
             }
@@ -100,7 +94,7 @@ namespace worldWizardsCore.core.input.Tools
                         offset = originalOffsets[curObject];
                     }
                     curObject.SetPosition(target + offset, true);
-                    ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
+                    ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject);
                 }
                 curObjects = null;
                 originalOffsets.Clear();
@@ -117,7 +111,7 @@ namespace worldWizardsCore.core.input.Tools
                     curObjects = hoveredObjects;
                     foreach (WWObject curObject in curObjects)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Remove(curObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
                             Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();

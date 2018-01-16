@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 564783321
+CRC: 529614612
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e6b7224c557174ba75cfa45d9b3c4c33
+    Hash: b49edadf89cb6d942bcced8099e96c20
   TypeTreeHash:
     serializedVersion: 2
-    Hash: b32e37b01645f8b2b20c2e2534b0a3ea
+    Hash: 48712ff6f2352909e9d494b481833114
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -53,6 +53,7 @@ Assets:
 - Assets/PrefabsForAssetBundle/Tile_Staircase.prefab
 - Assets/3DTiles/Materials/FloorGrout.mat
 - Assets/PrefabsForAssetBundle/Tile_WallWindow.prefab
+- Assets/PrefabsForAssetBundle/Door_WoodArch.prefab
 - Assets/PrefabsForAssetBundle/Tile_WallBrick.prefab
 - Assets/3DTiles/Materials/Wall.mat
 Dependencies: []

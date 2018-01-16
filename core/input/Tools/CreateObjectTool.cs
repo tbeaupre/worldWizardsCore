@@ -70,7 +70,8 @@ namespace worldWizards.core.input.Tools
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridController.GetComponent<Collider>().Raycast(ray, out raycastHit, 100))
+
+            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 validTarget = true;
                 hitPoint = raycastHit.point;
@@ -106,7 +107,7 @@ namespace worldWizards.core.input.Tools
                 if (curObject != null)
                 {
                     curObject.SetPosition(hitPoint, true);
-                    if (!ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                     {
                         Destroy(curObject.gameObject); // If the object collided with another, destroy it.
                     }
@@ -142,7 +143,7 @@ namespace worldWizards.core.input.Tools
                     WWObject wwObject = raycastHit.transform.gameObject.GetComponent<WWObject>();
                     if (wwObject != null)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Delete(wwObject.GetId());
                     }
                 }
             }

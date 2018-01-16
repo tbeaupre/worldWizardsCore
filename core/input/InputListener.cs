@@ -120,5 +120,10 @@ namespace worldWizards.core.input
             tool.OnPadUntouch(lastPadPos);
         }
         #endregion
+
+        public string GetToolName()
+        {
+            return tool.GetToolName();
+        }
     }
 }

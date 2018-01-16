@@ -17,12 +17,12 @@ namespace WorldWizards.core.experimental
 
         public void Save()
         {
-            ManagerRegistry.Instance.sceneGraphManager.Save();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Save();
         }
 
         public void Load()
         {
-            ManagerRegistry.Instance.sceneGraphManager.Load();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load();
         }
 
         public void CreateMaze()
@@ -42,7 +42,7 @@ namespace WorldWizards.core.experimental
 
         public void DeleteObjects()
         {
-            ManagerRegistry.Instance.sceneGraphManager.ClearAll();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ClearAll();
         }
     }
 }

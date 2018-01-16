@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WorldWizards.core.controller.builder;
 
 namespace worldWizards.core.input.Tools
 {
@@ -6,10 +7,13 @@ namespace worldWizards.core.input.Tools
     {
         protected const float DEADZONE_SIZE = 0.7f; // The distance from the center of the touchpad which is dead.
         protected InputListener input;
+        protected GridController gridController;
+
 
         protected virtual void Awake()
         {
             input = GetComponentInParent<InputListener>();
+            gridController = FindObjectOfType<GridController>();
         }
 
         // These methods are called when the button is released
@@ -25,5 +29,11 @@ namespace worldWizards.core.input.Tools
         public virtual void UpdateMenu() {}
         public virtual void UpdatePress(Vector2 padPos) {}
         public virtual void UpdateTouch(Vector2 padPos) {}
+
+
+        public string GetToolName()
+        {
+            return GetType().Name;
+        }
     }
 }
