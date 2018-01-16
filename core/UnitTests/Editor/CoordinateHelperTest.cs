@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
+using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 
 namespace WorldWizards.core.UnitTests.Editor
@@ -11,14 +13,25 @@ namespace WorldWizards.core.UnitTests.Editor
     internal class CoordinateHelperTest
     {
         [Test]
-        public static void CoordinateConversionWithNoOffset()
+        public static void CoordinateConversionPerservesUnitySpace()
         {
-            var position = new Vector3(3.0f, 0.0f, 3.9f) * CoordinateHelper.baseTileLength *
+            var position = new Vector3(3.333f, 0.94444f, 3.1238746f) * CoordinateHelper.baseTileLength *
                                           CoordinateHelper.tileLengthScale;
             var wwCoord = CoordinateHelper.UnityCoordToWWCoord(position, 0);
             var decodedPostion = CoordinateHelper.WWCoordToUnityCoord(wwCoord);
+            Debug.Log(string.Format(" {0} , {1}", position.ToString(), decodedPostion.ToString()));
             Assert.True(position.Equals(decodedPostion));
-
         }
+        
+        [Test]
+        public static void CoordinateConversionPerservesWorldWizardSpace()
+        {
+            var wwwCoord = new Coordinate(new IntVector3(1,2,3), new Vector3(-.33f, 1f, 0), 0);
+            var position = CoordinateHelper.WWCoordToUnityCoord(wwwCoord);
+            var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
+            Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
+            Assert.True(wwwCoord.Equals(decodedWWCoord));
+        }
+        
     }
 }

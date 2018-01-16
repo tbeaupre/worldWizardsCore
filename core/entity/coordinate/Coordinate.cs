@@ -49,5 +49,11 @@ namespace WorldWizards.core.entity.coordinate
         {
             Offset = Vector3.zero;
         }
+        
+        public override string ToString()
+        {
+            return string.Format("Index x : {0}, y : {1}, z : {2} Offset x : {3}, y : {4}, z : {5} Rotation : {6}",
+                Index.x, Index.y, Index.z, Offset.x, Offset.y, Offset.z, Rotation);
+        }
     }
 }
