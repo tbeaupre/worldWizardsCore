@@ -20,9 +20,9 @@ namespace worldWizardsCore.core.input.VRControls
 
         void Awake()
         {
-            if (ManagerRegistry.Instance.menuManager.GetMenuExists("PopupArmMenu"))
+            if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("PopupArmMenu"))
             {
-                popupArmMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("PopupArmMenu");
+                popupArmMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("PopupArmMenu");
             }
             
             controller = GetComponent<SteamVR_TrackedController>();

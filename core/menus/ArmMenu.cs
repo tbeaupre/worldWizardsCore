@@ -19,17 +19,17 @@ namespace worldWizardsCore.core.menus
         {
             Debug.Log("ArmMenu Start");
 
-            /*if (ManagerRegistry.Instance.menuManager.GetMenuExists("ArmMenu"))
+            /*if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("ArmMenu"))
             {
-                armMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("ArmMenu");
+                armMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("ArmMenu");
             }
 
-            if (ManagerRegistry.Instance.menuManager.GetMenuExists("PopupArmMenu"))
+            if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("PopupArmMenu"))
             {
-                popupArmMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("PopupArmMenu");
+                popupArmMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("PopupArmMenu");
             }*/
 
-            if (UnityEngine.VR.VRDevice.isPresent)
+            if (UnityEngine.XR.XRDevice.isPresent)
             {
                 controller = FindObjectOfType<SteamVR_ControllerManager>().left;
                 Setup();

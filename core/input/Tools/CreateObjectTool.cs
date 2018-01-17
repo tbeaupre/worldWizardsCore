@@ -223,21 +223,21 @@ namespace worldWizards.core.input.Tools
 
         public override void OnMenuUnclick()
         {
-            if (UnityEngine.VR.VRDevice.isPresent)
+            if (UnityEngine.XR.XRDevice.isPresent)
             {
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
                 controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
-                ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
             }
             else
             {
-                if (ManagerRegistry.Instance.menuManager.GetMenuReference("AssetBundlesMenu").activeSelf)
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
                 {
-                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", false);
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
                 }
                 else
                 {
-                    ManagerRegistry.Instance.menuManager.SetMenuActive("AssetBundlesMenu", true);
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
                 }
             }
             base.OnMenuUnclick();

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-public class WWMenuManager
+public class WWMenuManager : Manager
 {
 
     private UnityEngine.Object[] allMenusArray;
@@ -45,7 +45,7 @@ public class WWMenuManager
         }
         
         // VR startup menus
-        if (UnityEngine.VR.VRDevice.isPresent)
+        if (UnityEngine.XR.XRDevice.isPresent)
         {
             SetMenuActive("ArmMenu", true);
         }

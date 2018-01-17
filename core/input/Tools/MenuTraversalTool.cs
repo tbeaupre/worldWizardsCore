@@ -20,7 +20,7 @@ namespace worldWizardsCore.core.input.Tools
         void Awake()
         {
             base.Awake();
-            assetBundleMenu = ManagerRegistry.Instance.menuManager.GetMenuReference("AssetBundlesMenu");
+            assetBundleMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu");
         }
 
         private void OnEnable()
