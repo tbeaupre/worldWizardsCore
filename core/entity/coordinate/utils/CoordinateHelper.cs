@@ -41,19 +41,40 @@ namespace WorldWizards.core.entity.coordinate.utils
             return new Coordinate(new IntVector3(scaled), offset, rotation);
         }
 
+//        public static Coordinate UnityCoordToWWCoord(Vector3 coordinate, int rotation)
+//        {
+//            Vector3 full = coordinate / GetTileScale();
+//            Vector3 fraction = full - new Vector3(Mathf.Floor(full.x), Mathf.Floor(full.y), Mathf.Floor(full.z));
+//
+//            // Convert the coordinate origin to be in the center of tile. Origin is in the middle of the Tile Cube.
+//            fraction -= new Vector3(0.5f, 0.5f, 0.5f); // convert to center
+//            fraction *= 2f; // convert to center
+//
+//            var offset = new Vector3(fraction.x, -1, fraction.z);
+//            return new Coordinate(new IntVector3(full), offset, rotation);
+//        }
+        
+        
         public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
         {
             // Move origin to bottom left corner.
             float offsetX = coordinate.Offset.x / 2 + 0.5f;
             float offsetY = coordinate.Offset.y / 2 + 0.5f;
             float offsetZ = coordinate.Offset.z / 2 + 0.5f;
-//            float offsetX = coordinate.Offset.x * 0.5f;
-//            float offsetY = coordinate.Offset.y * 0.5f;
-//            float offsetZ = coordinate.Offset.z * 0.5f;
             
             var offset = new Vector3(offsetX, offsetY, offsetZ);
             Vector3 index = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z);
             return (index + offset) * GetTileScale();
         }
+        
+//        public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
+//        {
+//            float offsetX = coordinate.Offset.x * GetTileScale() * 0.5f;
+//            float offsetY = coordinate.Offset.y * GetTileScale() * 0.5f;
+//            float offsetZ = coordinate.Offset.z * GetTileScale() * 0.5f;
+//            var offset = new Vector3(offsetX, offsetY, offsetZ);
+//            Vector3 c = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z) * GetTileScale();
+//            return c + offset;
+//        }
     }
 }
