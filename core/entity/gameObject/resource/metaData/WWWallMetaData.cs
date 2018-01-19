@@ -12,7 +12,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
         public bool west;
         public bool top;
         public bool bottom;
-        public WWType type;
 
         public WWWallMetaData()
         {

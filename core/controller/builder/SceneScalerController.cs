@@ -12,11 +12,13 @@ namespace WorldWizards.core.controller.builder
 
         [SerializeField] public Slider _slider;
 
+        /// <summary>
+        /// Called from a UI Event. 
+        /// </summary>
         public void OnSliderChange()
         {
             float newScale = _slider.value;
             CoordinateHelper.tileLengthScale = newScale;
-//            ManagerRegistry.Instance.sceneGraphManager.ChangeScale(newScale);
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ChangeScale(newScale);
         }
     }

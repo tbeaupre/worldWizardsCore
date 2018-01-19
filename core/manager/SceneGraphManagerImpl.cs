@@ -86,7 +86,7 @@ namespace WorldWizards.core.manager
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }
             var gridController = Object.FindObjectOfType<GridController>();
-            gridController.MoveGrid();
+            gridController.RefreshGrid();
         }
 
         public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
@@ -141,7 +141,7 @@ namespace WorldWizards.core.manager
         {
             List<WWObjectJSONBlob> objectsToSave = _sceneDictionary.GetMementoObjects();
             string json = JsonConvert.SerializeObject(objectsToSave);
-            FileIO.SaveJSONToFile(json, FileIO.testPath);
+            FileIO.SaveJsonToFile(json, FileIO.testPath);
         }
 
         public void Load()
@@ -172,11 +172,11 @@ namespace WorldWizards.core.manager
             }
         }
 
-        public bool AddDoor(Door door, Tile holder, Vector3 hitPoint)
+        public bool AddDoor(Door door, Tile tile, Vector3 hitPoint)
         {
             float doorWidth = door.GetWidth();
             float doorHeight = door.GetHeight();
-            List<WWDoorHolderMetaData> doorHolders = holder.GetDoorHolders();
+            List<WWDoorHolderMetaData> doorHolders = tile.GetDoorHolders();
             // TODO, use the DoorHolder that is closest to the hitPoint
             // TODO handle the posibility that a Tile has mutliple Door Holders
             if (doorHolders.Count > 0)
@@ -192,17 +192,17 @@ namespace WorldWizards.core.manager
                 var threshold = 0.2f;
                 if (diff < threshold)
                 {
-                    // TODO scale up to match door to holder if necessary
+                    // TODO scale up to match door to tile if necessary
                     // TODO handle the rotation
                     // TODO handle collision for existing doors
 
-                    var holderRot = holder.GetCoordinate().Rotation;                    
-//                    var config = new WWDoorHolderConfiguration(holder);
+                    var holderRot = tile.GetCoordinate().Rotation;                    
+//                    var config = new WWDoorHolderConfiguration(tile);
                     var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
                         Vector3.zero, 
                         new Vector3(0, holderRot, 0));
                     
-                    var coord = new Coordinate(holder.GetCoordinate().Index, rotatedOffset, holderRot);
+                    var coord = new Coordinate(tile.GetCoordinate().Index, rotatedOffset, holderRot);
                     door.SetPosition(coord);
                     _sceneDictionary.Add(door);
                     return true;

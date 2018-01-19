@@ -8,9 +8,7 @@ namespace WorldWizards.core.controller.builder
     public class GridController : MonoBehaviour
     {
         [SerializeField] private GameObject grid;
-
         private int height;
-
         private GameObject playerReferenceScale;
 
         private void Awake()
@@ -24,29 +22,19 @@ namespace WorldWizards.core.controller.builder
             playerReferenceScale.transform.localScale = Vector3.one;
         }
 
+        /// <summary>
+        /// Get the grid collider.
+        /// </summary>
+        /// <returns> The Grid's Collider</returns>
         public Collider GetGridCollider()
         {
             return GetComponent<Collider>();
         }
 
-//        private void Update()
-//        {
-//            GetInput();
-//        }
-//
-//        private void GetInput()
-//        {
-//            if (Input.GetKeyDown(KeyCode.UpArrow))
-//            {
-//                StepUp();
-//            }
-//            else if (Input.GetKeyDown(KeyCode.DownArrow))
-//            {
-//                StepDown();
-//            }
-//        }
-
-        public void MoveGrid()
+        /// <summary>
+        /// Refresh the grid position and scale.
+        /// </summary>
+        public void RefreshGrid()
         {
             float yPos = height * CoordinateHelper.GetTileScale();
             Vector3 gridPosition = grid.transform.position;
@@ -62,16 +50,22 @@ namespace WorldWizards.core.controller.builder
                 0);
         }
 
+        /// <summary>
+        /// Move the grid up one step.
+        /// </summary>
         public void StepUp()
         {
             height++;
-            MoveGrid();
+            RefreshGrid();
         }
 
+        /// <summary>
+        /// Move the grid down one step.
+        /// </summary>
         public void StepDown()
         {
             height--;
-            MoveGrid();
+            RefreshGrid();
         }
     }
 }

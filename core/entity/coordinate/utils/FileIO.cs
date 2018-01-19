@@ -6,7 +6,7 @@ namespace WorldWizards.core.entity.coordinate.utils
     {
         public static string testPath = "Assets/Resources/test.json";
 
-        public static void SaveJSONToFile(string json, string filePath)
+        public static void SaveJsonToFile(string json, string filePath)
         {
             File.WriteAllText(filePath, json);
         }
