@@ -9,6 +9,11 @@ using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.level
 {
+    /// <summary>
+    /// A data structure that efficiently maintains the World Wizard Objects for a Scene.
+    /// WWObjects are indexed by both Guid and Coordinate Index, allowing for constant time lookups
+    /// for either index.
+    /// </summary>
     public class SceneDictionary
     {
         private readonly Dictionary<IntVector3, List<Guid>> coordinates;
@@ -50,7 +55,7 @@ namespace WorldWizards.core.entity.level
         }
 
 
-        public List<WWObjectJSONBlob> GetMementoObjects()
+        public List<WWObjectJSONBlob> GetObjectsAsJSONBlobs()
         {
             var objectstoSave = new List<WWObjectJSONBlob>();
             Debug.Log(GetCount());
@@ -105,12 +110,10 @@ namespace WorldWizards.core.entity.level
             }
             if (coordinates.ContainsKey(coord.Index))
             {
-                //Debug.Log("Updating Guid list.");
                 coordinates[coord.Index].Add(guid);
             }
             else
             {
-                //Debug.Log("Creating new Guid list.");
                 var guidList = new List<Guid>();
                 guidList.Add(guid);
                 coordinates.Add(coord.Index, guidList);
@@ -173,11 +176,13 @@ namespace WorldWizards.core.entity.level
 
         public List<WWObject> GetPossibleTiles()
         {
+            // not implemented yet
             return null;
         }
 
         public List<WWObject> RankObjectsToPlace()
         {
+            // not implemented yet
             return null;
         }
     }

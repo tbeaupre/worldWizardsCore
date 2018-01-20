@@ -20,66 +20,65 @@ namespace WorldWizards.core.manager
     /// </summary>
     public class SceneGraphManagerImpl : SceneGraphManager
     {
-        private readonly SceneDictionary _sceneDictionary;
+        /// <summary>
+        /// The data structure used by this implementation.
+        /// </summary>
+        private readonly SceneDictionary sceneDictionary;
 
+        /// <summary>
+        /// Basic constructor.
+        /// </summary>
         public SceneGraphManagerImpl()
         {
-            _sceneDictionary = new SceneDictionary();
+            sceneDictionary = new SceneDictionary();
            
         }
-
-        /// <summary>
-        ///     Determine how many WWObjects are in the scene graph
-        /// </summary>
-        /// <returns>The number if WWObjects in the scene graph.</returns>
+        
+        /// <see cref="SceneGraphManager.SceneSize"/>
         public int SceneSize()
         {
-            return _sceneDictionary.GetCount();
+            return sceneDictionary.GetCount();
         }
 
-        /// <summary>
-        ///     Clears all the objects in the scene graph.
-        /// </summary>
+        /// <see cref="SceneGraphManager.ClearAll"/>
         public void ClearAll()
         {
-            List<Guid> keys = _sceneDictionary.GetAllGuids();
+            List<Guid> keys = sceneDictionary.GetAllGuids();
             foreach (Guid key in keys) Delete(key);
         }
 
-        /// <summary>
-        ///     Gets the objects in the SceneGraph in the given coordinate index space.
-        /// </summary>
-        /// <returns>the objects in the SceneGraph in the given coordinate index space.</returns>
-        /// <param name="coordinate">The coordinate to space to get.</param>
+        /// <see cref="SceneGraphManager.GetObjectsInCoordinateIndex"/>
         public List<WWObject> GetObjectsInCoordinateIndex(Coordinate coordinate)
         {
-            return _sceneDictionary.GetObjects(coordinate);
+            return sceneDictionary.GetObjects(coordinate);
         }
 
+        /// <see cref="SceneGraphManager.Add"/>
         public bool Add(WWObject worldWizardsObject)
         {
             if (worldWizardsObject != null)
             {
-                return _sceneDictionary.Add(worldWizardsObject);
+                return sceneDictionary.Add(worldWizardsObject);
             }
             return false;
         }
 
-
+        /// <see cref="SceneGraphManager.HideObjectsAbove"/>
         public void HideObjectsAbove(int height)
         {
-            List<WWObject> objects = _sceneDictionary.GetObjectsAbove(height);
+            List<WWObject> objects = sceneDictionary.GetObjectsAbove(height);
             foreach (WWObject obj in objects)
                 obj.tileFader.Off();
 
-            List<WWObject> objectsAtAndBelow = _sceneDictionary.GetObjectsAtAndBelow(height);
+            List<WWObject> objectsAtAndBelow = sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
                 obj.tileFader.On();
         }
 
+        /// <see cref="SceneGraphManager.ChangeScale"/>
         public void ChangeScale(float scale)
         {
-            List<WWObject> allObjects = _sceneDictionary.GetAllObjects();
+            List<WWObject> allObjects = sceneDictionary.GetAllObjects();
             foreach (WWObject obj in allObjects)
             {
                 obj.transform.position = CoordinateHelper.WWCoordToUnityCoord(obj.GetCoordinate());
@@ -89,6 +88,7 @@ namespace WorldWizards.core.manager
             gridController.RefreshGrid();
         }
 
+        /// <see cref="SceneGraphManager.GetWallsAtCoordinate"/>
         public WWWalls GetWallsAtCoordinate(Coordinate coordinate)
         {
             List<WWObject> objects = GetObjectsInCoordinateIndex(coordinate);
@@ -98,11 +98,13 @@ namespace WorldWizards.core.manager
             return walls;
         }
 
+        /// <see cref="SceneGraphManager.Delete"/>
         public void Delete(Guid id)
         {
             Remove(id, true);
         }
 
+        /// <see cref="SceneGraphManager.Remove"/>
         public void Remove(Guid id)
         {
             Remove(id, false);
@@ -110,7 +112,7 @@ namespace WorldWizards.core.manager
 
         private void Remove(Guid id, bool delete)
         {
-            if (_sceneDictionary.ContainsGuid(id))
+            if (sceneDictionary.ContainsGuid(id))
             {
                 WWObject rootObject = Get(id);
 
@@ -137,16 +139,17 @@ namespace WorldWizards.core.manager
             }
         }
 
-        public void Save()
+        /// <see cref="SceneGraphManager.Save"/>
+        public void Save(string filePath)
         {
-            List<WWObjectJSONBlob> objectsToSave = _sceneDictionary.GetMementoObjects();
+            List<WWObjectJSONBlob> objectsToSave = sceneDictionary.GetObjectsAsJSONBlobs();
             string json = JsonConvert.SerializeObject(objectsToSave);
-            FileIO.SaveJsonToFile(json, FileIO.testPath);
+            FileIO.SaveJsonToFile(json, filePath);
         }
 
-        public void Load()
+        public void Load(string filePath)
         {
-            string json = FileIO.LoadJsonFromFile(FileIO.testPath);
+            string json = FileIO.LoadJsonFromFile(filePath);
 
             var objectsToRestore = JsonConvert.DeserializeObject<List<WWObjectJSONBlob>>(json);
             Debug.Log(string.Format("Loaded {0} objects from file", objectsToRestore.Count));
@@ -172,6 +175,7 @@ namespace WorldWizards.core.manager
             }
         }
 
+        /// <see cref="SceneGraphManager.AddDoor"/>
         public bool AddDoor(Door door, Tile tile, Vector3 hitPoint)
         {
             float doorWidth = door.GetWidth();
@@ -204,7 +208,7 @@ namespace WorldWizards.core.manager
                     
                     var coord = new Coordinate(tile.GetCoordinate().Index, rotatedOffset, holderRot);
                     door.SetPosition(coord);
-                    _sceneDictionary.Add(door);
+                    sceneDictionary.Add(door);
                     return true;
                 }
             }
@@ -215,14 +219,9 @@ namespace WorldWizards.core.manager
             return Quaternion.Euler(angles) * (point - pivot) + pivot;
         }
 
-        /// <summary>
-        ///     Remove an object from the scene graph.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>returns removed object, which may be null.</returns>
         private WWObject RemoveObject(Guid id)
         {
-            return _sceneDictionary.Remove(id);
+            return sceneDictionary.Remove(id);
         }
 
         private void Destroy(WWObject objectToDestroy)
@@ -234,9 +233,9 @@ namespace WorldWizards.core.manager
 			#endif
         }
 
-        public WWObject Get(Guid id)
+        private WWObject Get(Guid id)
         {
-            return _sceneDictionary.Get(id);
+            return sceneDictionary.Get(id);
         }
     }
 }
