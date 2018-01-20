@@ -4,6 +4,10 @@ using WorldWizards.core.entity.coordinate;
 
 namespace WorldWizards.core.file.entity
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// JSON blobl structure for coordinates.
+    /// </summary>
     [Serializable]
     public class CoordinateJSONBlob
     {
@@ -15,6 +19,9 @@ namespace WorldWizards.core.file.entity
         public float offsetZ;
         public int rotation;
 
+        /// <summary>
+        /// Constructor used by the JSON parser.
+        /// </summary>
         [JsonConstructor]
         public CoordinateJSONBlob()
         {

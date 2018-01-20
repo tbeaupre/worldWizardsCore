@@ -5,6 +5,7 @@ using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.gameObject
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// The WWObjectData class holds all the properties that describes the current state of a WWObject.
     /// </summary>
@@ -70,18 +71,18 @@ namespace WorldWizards.core.entity.gameObject
 
 
         /// <summary>
-        /// 
+        /// Add this list of children to this object's chidlren.
         /// </summary>
-        /// <param name="children"></param>
+        /// <param name="children">The list of children to add</param>
         public void AddChildren(List<WWObject> children)
         {
             foreach (WWObject child in children) this.children.Add(child.objectData);
         }
 
         /// <summary>
-        /// Gets all descendents.
+        /// Get all of the descendents of this object.
         /// </summary>
-        /// <returns>The all descendents.</returns>
+        /// <returns>This object's descendents.</returns>
         public List<WWObjectData> GetAllDescendents()
         {
             var descendents = new List<WWObjectData>();
@@ -94,6 +95,10 @@ namespace WorldWizards.core.entity.gameObject
             return descendents;
         }
 
+        /// <summary>
+        /// Unparents this object from its parent object if it has a parent. Also removes
+        /// this object from the parent's list of children.
+        /// </summary>
         public void Unparent()
         {
             if (parent != null)
@@ -103,11 +108,19 @@ namespace WorldWizards.core.entity.gameObject
             }
         }
 
-        public void Parent(WWObjectData parent)
+        /// <summary>
+        /// Set the parent object for this object. 
+        /// </summary>
+        /// <param name="parent">The parent object for this object to become a child of.</param>
+        public void SetParent(WWObjectData parent)
         {
             this.parent = parent;
         }
 
+        /// <summary>
+        /// Removes the given child if object is in fact a child of this object.
+        /// </summary>
+        /// <param name="child">The child to emancipate.</param>
         public void RemoveChild(WWObjectData child)
         {
             if (children.Contains(child))

@@ -7,6 +7,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using WorldWizards.SteamVR.Scripts;
 
 [CustomEditor(typeof(SteamVR_Camera)), CanEditMultipleObjects]
 public class SteamVR_Editor : Editor

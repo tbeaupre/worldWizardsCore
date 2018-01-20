@@ -2,6 +2,10 @@
 
 namespace WorldWizards.core.entity.common
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// A Vector3 data type with integers instead of floating pointer numbers.
+    /// </summary>
     public class IntVector3
     {
         public IntVector3(int x, int y, int z)
@@ -17,7 +21,6 @@ namespace WorldWizards.core.entity.common
             y = (int) Mathf.Floor(vector.y);
             z = (int) Mathf.Floor(vector.z);
         }
-
 
         public int x { get; private set; }
         public int y { get; private set; }
@@ -41,7 +44,8 @@ namespace WorldWizards.core.entity.common
         }
 
         /// <summary>
-        ///     from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
+        /// from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
+        /// Generates a unique hash code even when the sum of x y and z is the same.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

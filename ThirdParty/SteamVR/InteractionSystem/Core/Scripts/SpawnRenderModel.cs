@@ -4,11 +4,12 @@
 //
 //=============================================================================
 
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using WorldWizards.SteamVR.Plugins;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class SpawnRenderModel : MonoBehaviour

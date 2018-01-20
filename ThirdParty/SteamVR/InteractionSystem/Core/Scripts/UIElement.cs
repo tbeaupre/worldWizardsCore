@@ -5,11 +5,11 @@
 //=============================================================================
 
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
-using System;
+using WorldWizards.SteamVR.InteractionSystem.Hints.Scripts;
+using WorldWizards.SteamVR.Plugins;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	[RequireComponent( typeof( Interactable ) )]
@@ -35,7 +35,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			currentHand = hand;
 			InputModule.instance.HoverBegin( gameObject );
-			ControllerButtonHints.ShowButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+			ControllerButtonHints.ShowButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 		}
 
 
@@ -43,7 +43,7 @@ namespace Valve.VR.InteractionSystem
 		private void OnHandHoverEnd( Hand hand )
 		{
 			InputModule.instance.HoverEnd( gameObject );
-			ControllerButtonHints.HideButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+			ControllerButtonHints.HideButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 			currentHand = null;
 		}
 
@@ -54,7 +54,7 @@ namespace Valve.VR.InteractionSystem
 			if ( hand.GetStandardInteractionButtonDown() )
 			{
 				InputModule.instance.Submit( gameObject );
-				ControllerButtonHints.HideButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+				ControllerButtonHints.HideButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 			}
 		}
 

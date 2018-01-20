@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
@@ -9,7 +8,7 @@ using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
     public class CreateObjectTool : Tool
     {

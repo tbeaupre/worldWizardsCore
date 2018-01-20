@@ -1,8 +1,10 @@
 ﻿using System;
 using UnityEngine;
-using worldWizards.core.input.Tools;
+using WorldWizards.core.input.Tools;
+using WorldWizards.SteamVR.Extras;
+using WorldWizards.SteamVR.Scripts;
 
-namespace worldWizards.core.input.VRControls
+namespace WorldWizards.core.input.VRControls
 {
     /**
      * Holds information specific to VR Controllers and registers listeners for the buttons.

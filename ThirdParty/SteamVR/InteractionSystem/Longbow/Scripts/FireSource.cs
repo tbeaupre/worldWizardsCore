@@ -5,9 +5,9 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Longbow.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class FireSource : MonoBehaviour

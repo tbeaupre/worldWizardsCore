@@ -1,8 +1,10 @@
 ﻿using System;
-using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
+    /// <summary>
+    /// Metadata required to describe whether a wall of the Tile should have collision or not.
+    /// </summary>
     [Serializable]
     public class WWWallMetaData
     {
@@ -34,8 +36,8 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
         }
 
         /// <summary>
-        ///     Serializable boolean values are used to make editing metadata in the inspector easier, but they must be converted
-        ///     to the enum bitflag for use.
+        /// Serializable boolean values are used to make editing metadata in the inspector easier,
+        /// but they must be converted to the enum bitflag for use.
         /// </summary>
         /// <returns>WWWalls equivalent to the serializable boolean values set in the inspector.</returns>
         public WWWalls GetWallsEnum()

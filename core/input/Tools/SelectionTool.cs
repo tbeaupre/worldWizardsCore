@@ -2,8 +2,9 @@
 using UnityEngine;
 using WorldWizards.core.entity.gameObject;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// Based on this script from 
     /// https://paulbutera.wordpress.com/2013/04/04/unity-rts-tutorial-part-1-marquee-selection-of-units/

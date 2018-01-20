@@ -4,15 +4,18 @@ using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Metadata required for describing a Door.
+    /// </summary>
     [Serializable]
     public class WWDoorMetaData
     {
-        public Animation closeAnimation;
-
-        public Vector3 facingDirection;
+        public Vector3 facingDirection; // the direction the door faces to open
         public float height;
-        public InteractionType interactionType;
-        public Animation openAnimation;
         public float width;
+        public InteractionType interactionType;
+        public Animation closeAnimation;
+        public Animation openAnimation;
     }
 }

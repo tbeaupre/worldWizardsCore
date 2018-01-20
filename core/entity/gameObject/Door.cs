@@ -2,6 +2,7 @@
 
 namespace WorldWizards.core.entity.gameObject
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class Door : Interactable
     {
         public Vector3 GetPivot()

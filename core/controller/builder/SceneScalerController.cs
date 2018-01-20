@@ -5,6 +5,10 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.controller.builder
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Simple Controller to adjust the Scene Scale.
+    /// </summary>
     public class SceneScalerController : MonoBehaviour
     {
         private static readonly float MIN_SCALE = 0.1f;

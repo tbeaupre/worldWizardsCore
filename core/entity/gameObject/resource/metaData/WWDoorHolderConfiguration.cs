@@ -1,7 +1,10 @@
-﻿using UnityEngine.WSA;
-
-namespace WorldWizards.core.entity.gameObject.resource.metaData
+﻿namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Metadata necessary for describing a Configuration of Door Holders.
+    /// A World Wizard Tile can have up to four doors, one for each wall.
+    /// </summary>
     public class WWDoorHolderConfiguration
     {
         public WWDoorHolderMetaData northWWDoorHolderMetaData;
@@ -16,7 +19,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
             tile.resourceMetaData.wwTileMetaData.westWwDoorHolderMetaData)
         {
         }
-
 
         public WWDoorHolderConfiguration(
             WWDoorHolderMetaData northWWDoorHolderMetaData,

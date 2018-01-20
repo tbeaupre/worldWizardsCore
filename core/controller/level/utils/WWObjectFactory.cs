@@ -11,9 +11,10 @@ using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.controller.level.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
-    ///     The WorldWizard Object Factory is responsible for instantiating gameobjects into the
-    ///     unity environment.
+    ///  The World Wizard Object Factory is responsible for instantiating gameobjects into the
+    ///  Unity environment.
     /// </summary>
     public static class WWObjectFactory
     {

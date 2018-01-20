@@ -9,6 +9,7 @@ using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.level
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// A data structure that efficiently maintains the World Wizard Objects for a Scene.
     /// WWObjects are indexed by both Guid and Coordinate Index, allowing for constant time lookups

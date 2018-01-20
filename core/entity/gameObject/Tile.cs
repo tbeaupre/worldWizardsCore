@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
- using UnityEngine;
- using WorldWizards.core.entity.coordinate;
- using WorldWizards.core.entity.coordinate.utils;
- using WorldWizards.core.entity.gameObject.resource.metaData;
+using UnityEngine;
+using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class Tile : WWObject
     {
         public override void SetPosition(Vector3 position, bool snapToGrid)

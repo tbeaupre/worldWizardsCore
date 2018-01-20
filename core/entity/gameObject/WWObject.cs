@@ -10,6 +10,7 @@ using WorldWizards.core.entity.gameObject.utils;
 
 namespace WorldWizards.core.entity.gameObject
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// The WWObject is an abstract base class for all World Wizards objects.
     /// WWObject extends MonoBehavior so it has to be attached to a GameObject.
@@ -17,7 +18,6 @@ namespace WorldWizards.core.entity.gameObject
     public abstract class WWObject : MonoBehaviour
     {
         public WWResourceMetaData resourceMetaData { get; private set; }
-
         public WWObjectData objectData { get; private set; }
 
         /// <summary>
@@ -99,14 +99,13 @@ namespace WorldWizards.core.entity.gameObject
             objectData.Unparent();
         }
 
-
         /// <summary>
         /// Set this WWObject to be the child of the given parent WWObject. 
         /// </summary>
         /// <param name="parent">The parent to become a child of.</param>
         public void SetParent(WWObject parent)
         {
-            objectData.Parent(parent.objectData);
+            objectData.SetParent(parent.objectData);
         }
 
         /// <summary>

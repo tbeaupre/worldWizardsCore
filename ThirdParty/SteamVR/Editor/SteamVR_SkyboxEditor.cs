@@ -8,8 +8,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Text;
 using System.Collections.Generic;
-using Valve.VR;
 using System.IO;
+using WorldWizards.SteamVR.Scripts;
 
 [CustomEditor(typeof(SteamVR_Skybox)), CanEditMultipleObjects]
 public class SteamVR_SkyboxEditor : Editor

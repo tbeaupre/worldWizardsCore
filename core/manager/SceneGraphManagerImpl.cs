@@ -10,10 +10,12 @@ using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 using WorldWizards.core.entity.level;
 using WorldWizards.core.file.entity;
+using WorldWizards.core.file.utils;
 using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.manager
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     ///     The Scene Graph is the data structure that holds all the World
     ///     Wizards Objects in the current level.
@@ -31,7 +33,6 @@ namespace WorldWizards.core.manager
         public SceneGraphManagerImpl()
         {
             sceneDictionary = new SceneDictionary();
-           
         }
         
         /// <see cref="SceneGraphManager.SceneSize"/>
@@ -147,6 +148,7 @@ namespace WorldWizards.core.manager
             FileIO.SaveJsonToFile(json, filePath);
         }
 
+        /// <see cref="SceneGraphManager.Load"/>
         public void Load(string filePath)
         {
             string json = FileIO.LoadJsonFromFile(filePath);

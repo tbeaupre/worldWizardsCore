@@ -19,6 +19,7 @@ namespace WorldWizards.core.experimental
         PerimeterWalls
     }
 
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class CreateObjectGun : MonoBehaviour
     {
         public Text coordDebugText;

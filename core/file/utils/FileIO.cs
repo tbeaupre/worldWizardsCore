@@ -1,7 +1,11 @@
 ﻿using System.IO;
 
-namespace WorldWizards.core.entity.coordinate.utils
+namespace WorldWizards.core.file.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Utility for Saving and Loading JSON strings to and from files.
+    /// </summary>
     public static class FileIO
     {
         public static string testPath = "Assets/Resources/test.json";

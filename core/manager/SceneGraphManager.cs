@@ -6,6 +6,7 @@ using WorldWizards.core.entity.gameObject;
 
 namespace WorldWizards.core.manager
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// The Scene Graph is responsible for maintaining all of the World Wizard Objects in a given scene.
     /// </summary>

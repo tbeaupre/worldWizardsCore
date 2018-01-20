@@ -4,12 +4,14 @@
 //
 //=============================================================================
 
-using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine;
+
+#if UNITY_EDITOR
+
 #endif
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class EnumFlags : PropertyAttribute

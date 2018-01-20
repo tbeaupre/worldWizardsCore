@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using worldWizards.core.input;
+using WorldWizards.core.input;
 
 namespace WorldWizards.core.experimental
 {

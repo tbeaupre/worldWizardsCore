@@ -1,13 +1,13 @@
-//======= Copyright (c) Valve Corporation, All rights reserved. ===============
+﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
 //
 // Purpose: BALLOONS!!
 //
 //=============================================================================
 
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Longbow.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class Balloon : MonoBehaviour

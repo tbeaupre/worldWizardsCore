@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.core.controller.level;
@@ -8,6 +7,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.experimental
 {

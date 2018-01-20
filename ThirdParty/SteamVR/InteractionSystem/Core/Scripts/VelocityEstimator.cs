@@ -4,10 +4,10 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class VelocityEstimator : MonoBehaviour

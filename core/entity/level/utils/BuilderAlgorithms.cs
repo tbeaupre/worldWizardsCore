@@ -15,6 +15,10 @@ using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// 
+    /// </summary>
     public static class BuilderAlgorithms
     {
         public static void BuildPerimeterWalls(string resourceTag, WWObject wwObject)

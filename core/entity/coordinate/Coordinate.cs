@@ -4,8 +4,18 @@ using WorldWizards.core.file.entity;
 
 namespace WorldWizards.core.entity.coordinate
 {
+    //@author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// A Coordinate is the unit used by World Wizards to describe a WWObject's position.
+    /// A coordinate is independent of scale. A coordinate has an a discrete index
+    /// and an offset describing a smaller fraction of space within the Coordinate's index space.
+    /// </summary>
     public class Coordinate
     {
+        public IntVector3 Index { get; private set; }
+        public Vector3 Offset { get; set; } // between [-1,1]
+        public int Rotation { get; set; } // y rotation
+        
         public Coordinate(IntVector3 index, Vector3 offset, int rotation)
         {
             this.Index = index;
@@ -31,11 +41,6 @@ namespace WorldWizards.core.entity.coordinate
         public Coordinate(int x, int y, int z) : this(new IntVector3(x, y, z))
         {
         }
-
-        public IntVector3 Index { get; private set; }
-        public Vector3 Offset { get; set; } // (-1,1)
-
-        public int Rotation { get; set; } // y rotation
 
         private void SetOffset(Vector3 offset)
         {

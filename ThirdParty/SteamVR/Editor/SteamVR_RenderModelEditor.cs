@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Text;
 using System.Collections.Generic;
+using WorldWizards.SteamVR.Scripts;
 
 [CustomEditor(typeof(SteamVR_RenderModel)), CanEditMultipleObjects]
 public class SteamVR_RenderModelEditor : Editor

@@ -5,9 +5,10 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
+using WorldWizards.SteamVR.Plugins;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Samples.Scripts
 {
 	//-------------------------------------------------------------------------
 	[RequireComponent( typeof( Interactable ) )]
@@ -52,7 +53,7 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void HandHoverUpdate( Hand hand )
 		{
-			if ( hand.GetStandardInteractionButtonDown() || ( ( hand.controller != null ) && hand.controller.GetPressDown( Valve.VR.EVRButtonId.k_EButton_Grip ) ) )
+			if ( hand.GetStandardInteractionButtonDown() || ( ( hand.controller != null ) && hand.controller.GetPressDown( EVRButtonId.k_EButton_Grip ) ) )
 			{
 				if ( hand.currentAttachedObject != gameObject )
 				{

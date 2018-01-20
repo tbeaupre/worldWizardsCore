@@ -3,9 +3,10 @@ using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.coordinate.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
-    ///     A utility that converts the Unity Coordinate System to World
-    ///     Wizards Coordinate System.
+    /// A utility that converts the Unity Coordinate System to World
+    /// Wizards Coordinate System.
     /// </summary>
     public static class CoordinateHelper
     {
@@ -13,7 +14,7 @@ namespace WorldWizards.core.entity.coordinate.utils
         public static float tileLengthScale = 1f; // how much to scale up the base size
 
         /// <summary>
-        ///     Gets the tile scale. Takes into account original scale of tiles.
+        /// Gets the tile scale. Takes into account original scale of tiles.
         /// </summary>
         /// <returns>The tile scale.</returns>
         public static float GetTileScale()

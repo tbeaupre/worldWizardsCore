@@ -4,11 +4,14 @@
 //
 //=============================================================================
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
+using WorldWizards.SteamVR.InteractionSystem.Hints.Scripts;
+using WorldWizards.SteamVR.Plugins;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 
 	//-------------------------------------------------------------------------
@@ -34,13 +37,13 @@ namespace Valve.VR.InteractionSystem
 		[Tooltip( "If true, the drive will stay manipulating as long as the button is held down, if false, it will stop if the controller moves out of the collider" )]
 		public bool hoverLock = false;
 
-		[HeaderAttribute( "Limited Rotation" )]
+		[Header( "Limited Rotation" )]
 		[Tooltip( "If true, the rotation will be limited to [minAngle, maxAngle], if false, the rotation is unlimited" )]
 		public bool limited = false;
 		public Vector2 frozenDistanceMinMaxThreshold = new Vector2( 0.1f, 0.2f );
 		public UnityEvent onFrozenDistanceThreshold;
 
-		[HeaderAttribute( "Limited Rotation Min" )]
+		[Header( "Limited Rotation Min" )]
 		[Tooltip( "If limited is true, the specifies the lower limit, otherwise value is unused" )]
 		public float minAngle = -45.0f;
 		[Tooltip( "If limited, set whether drive will freeze its angle when the min angle is reached" )]
@@ -48,7 +51,7 @@ namespace Valve.VR.InteractionSystem
 		[Tooltip( "If limited, event invoked when minAngle is reached" )]
 		public UnityEvent onMinAngle;
 
-		[HeaderAttribute( "Limited Rotation Max" )]
+		[Header( "Limited Rotation Max" )]
 		[Tooltip( "If limited is true, the specifies the upper limit, otherwise value is unused" )]
 		public float maxAngle = 45.0f;
 		[Tooltip( "If limited, set whether drive will freeze its angle when the max angle is reached" )]
@@ -181,7 +184,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( handHoverLocked )
 			{
-				ControllerButtonHints.HideButtonHint( handHoverLocked, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+				ControllerButtonHints.HideButtonHint( handHoverLocked, EVRButtonId.k_EButton_SteamVR_Trigger );
 				handHoverLocked.HoverUnlock( GetComponent<Interactable>() );
 				handHoverLocked = null;
 			}
@@ -209,14 +212,14 @@ namespace Valve.VR.InteractionSystem
 		//-------------------------------------------------
 		private void OnHandHoverBegin( Hand hand )
 		{
-			ControllerButtonHints.ShowButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+			ControllerButtonHints.ShowButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 		}
 
 
 		//-------------------------------------------------
 		private void OnHandHoverEnd( Hand hand )
 		{
-			ControllerButtonHints.HideButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+			ControllerButtonHints.HideButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 
 			if ( driving && hand.GetStandardInteractionButton() )
 			{
@@ -247,7 +250,7 @@ namespace Valve.VR.InteractionSystem
 				ComputeAngle( hand );
 				UpdateAll();
 
-				ControllerButtonHints.HideButtonHint( hand, Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger );
+				ControllerButtonHints.HideButtonHint( hand, EVRButtonId.k_EButton_SteamVR_Trigger );
 			}
 			else if ( hand.GetStandardInteractionButtonUp() )
 			{

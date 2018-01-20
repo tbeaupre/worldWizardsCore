@@ -5,8 +5,9 @@ using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
-    ///     This class is a UI helper that makes it easier for artists to setup assets in the Unity Inspector.
+    /// This class is a UI helper that makes it easier for artists to setup assets in the Unity Inspector.
     /// </summary>
     [CustomEditor(typeof(WWResourceMetaData))]
     public class WWResourceMetaDataEditor : UnityEditor.Editor

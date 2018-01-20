@@ -5,12 +5,19 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.controller.builder
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// A simple controller for scaling and moving a Grid Collider up and down in the Builder.
+    /// </summary>
     public class GridController : MonoBehaviour
     {
         [SerializeField] private GameObject grid;
         private int height;
         private GameObject playerReferenceScale;
 
+        /// <summary>
+        /// Basic setup
+        /// </summary>
         private void Awake()
         {
             grid.transform.position = Vector3.zero;
