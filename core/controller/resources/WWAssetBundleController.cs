@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace WorldWizards.core.controller.level
+namespace WorldWizards.core.controller.resources
 {
     public static class WWAssetBundleController
     {

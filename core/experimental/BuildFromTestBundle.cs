@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental

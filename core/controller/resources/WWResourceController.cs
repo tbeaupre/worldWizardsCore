@@ -2,7 +2,7 @@
 using UnityEngine;
 using WorldWizards.core.entity.gameObject.resource;
 
-namespace WorldWizards.core.controller.level
+namespace WorldWizards.core.controller.resources
 {
     public static class WWResourceController
     {

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.resources;
 
 namespace WorldWizards.core.manager
 {

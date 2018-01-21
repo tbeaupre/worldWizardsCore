@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
-using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.resource;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 using Object = UnityEngine.Object;
 
-namespace WorldWizards.core.controller.level.utils
+namespace WorldWizards.core.entity.gameObject.utils
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>

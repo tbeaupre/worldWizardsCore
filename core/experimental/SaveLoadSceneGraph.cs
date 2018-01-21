@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.file.utils;
 using WorldWizards.core.manager;

@@ -2,9 +2,10 @@
 using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.manager;
 
-namespace WorldWizards.core.controller.level.utils
+namespace WorldWizards.core.experimental
 {
     public class TerrainGenerator
     {

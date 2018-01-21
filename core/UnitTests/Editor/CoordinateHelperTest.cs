@@ -6,9 +6,11 @@ using WorldWizards.core.entity.coordinate.utils;
 
 namespace WorldWizards.core.UnitTests.Editor
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     [TestFixture]
     /// <summary>
-    /// CoordinateHelper tests.
+    /// CoordinateHelper Tests. Tests that coordinates can be converted to and from Unity Space to
+    /// World Wizard Space multiple times and always result in the same coordinate.
     /// </summary>
     internal class CoordinateHelperTest
     {

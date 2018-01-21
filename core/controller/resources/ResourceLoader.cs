@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 
-namespace WorldWizards.core.controller.level
+namespace WorldWizards.core.controller.resources
 {
     public class ResourceLoader
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WorldWizards.core.entity.common
+namespace WorldWizards.core.entity.coordinate
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>

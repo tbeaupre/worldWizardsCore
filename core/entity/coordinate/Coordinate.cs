@@ -15,7 +15,7 @@ namespace WorldWizards.core.entity.coordinate
         // The Index is the Coordinate's Index in 3D space.
         public IntVector3 Index { get; private set; }
         // The Offset is a 3D position within the Coordinate's Index space
-        private Vector3 Offset;// all values between [-1,1]
+        private Vector3 Offset;// all values between (-1,1) not inclusive
         public int Rotation { get; set; } // y rotation
         
         public Coordinate(IntVector3 index, Vector3 offset, int rotation)
@@ -52,7 +52,7 @@ namespace WorldWizards.core.entity.coordinate
         }
 
         /// <summary>
-        /// Returns the Offset, which is clamped between [-1,1]
+        /// Returns the Offset, which is clamped between (-1,1) not inclusive
         /// </summary>
         /// <returns></returns>
         public Vector3 GetOffset()
@@ -62,7 +62,9 @@ namespace WorldWizards.core.entity.coordinate
 
         /// <summary>
         /// Sets the Offset for this Coordinate. The Offset is a 3D position within the Coordinates Index Space.
-        /// The x,y,z values of the Offset are clamped between [-1,1]. A value of (0,0,0) means their is no Offset. Offset is from          /// the 3D center of the coordinate space, so inside at the center of a cube. This method can also mutate Index.
+        /// The x,y,z values of the Offset are clamped between (-1, 1) and are not inclusive.
+        /// A value of (0,0,0) means their is no Offset. Offset is from the 3D center of the coordinate space,
+        /// so inside at the center of a cube. This method can also mutate Index.
         /// <param name="offset"> the offset to set. Clamp is applied to be safe.</param>
         public void SetOffset(Vector3 offset)
         {
@@ -74,7 +76,7 @@ namespace WorldWizards.core.entity.coordinate
             // In order to guarantee that Coordinates can be converted to and from Unity Space to World Wizard Space
             // any number of times and always result in the same conversion, it is necassary to define the behavior
             // for when any axis of the Offset is 1 or -1. If the Offset is this value, there could be multiple possible
-            // Coordinates. For example, counsider a Coordinate with Index (1,1,1) and offset (0,-1,0). This Coordinate
+            // Coordinates. For example, consider a Coordinate with Index (1,1,1) and offset (0,-1,0). This Coordinate
             // could also have the same Unity Space as a Coordinate with Index (1,0,1) and offset (0,0,0).
             // To avoid this, the convention will be to always increment or decrement the Index if an Offset is -1 or 1
             // and zero out the Offset.
