@@ -13,24 +13,37 @@ namespace WorldWizards.core.entity.level
     /// <summary>
     /// A data structure that efficiently maintains the World Wizard Objects for a Scene.
     /// WWObjects are indexed by both Guid and Coordinate Index, allowing for constant time lookups
-    /// for either index.
+    /// for either method of index.
     /// </summary>
     public class SceneDictionary
     {
         private readonly Dictionary<IntVector3, List<Guid>> coordinates;
         private readonly Dictionary<Guid, WWObject> objects;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public SceneDictionary()
         {
             objects = new Dictionary<Guid, WWObject>();
             coordinates = new Dictionary<IntVector3, List<Guid>>();
         }
 
+        /// <summary>
+        /// Get all WWObjects stored in the data structure.
+        /// </summary>
+        /// <returns></returns>
         public List<WWObject> GetAllObjects()
         {
             return new List<WWObject>(objects.Values);
         }
 
+        /// <summary>
+        /// Get all WWObjects that have a Coordinate Index height greater
+        /// than the given height.
+        /// </summary>
+        /// <param name="height">The height to compare against</param>
+        /// <returns></returns>
         public List<WWObject> GetObjectsAbove(int height)
         {
             var result = new List<WWObject>();
@@ -43,6 +56,12 @@ namespace WorldWizards.core.entity.level
             return result;
         }
 
+        /// <summary>
+        /// Get all WWObjects that have a Coordinate Index height greater
+        /// than the given height.
+        /// </summary>
+        /// <param name="height">The height to compare against</param>
+        /// <returns></returns>
         public List<WWObject> GetObjectsAtAndBelow(int height)
         {
             var result = new List<WWObject>();
@@ -56,6 +75,10 @@ namespace WorldWizards.core.entity.level
         }
 
 
+        /// <summary>
+        /// Get all WWObjects in the scene and create a list of Serializable JSON Blobs.
+        /// </summary>
+        /// <returns>a list of WWObjectJSONBlobs for all objects maintained by the data structure.</returns>
         public List<WWObjectJSONBlob> GetObjectsAsJSONBlobs()
         {
             var objectstoSave = new List<WWObjectJSONBlob>();
@@ -68,11 +91,20 @@ namespace WorldWizards.core.entity.level
             return objectstoSave;
         }
 
+        /// <summary>
+        /// Determine whether the data structure contains a WWObject of the given Guid.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>true if the object exists or false if it does not.</returns>
         public bool ContainsGuid(Guid id)
         {
             return objects.ContainsKey(id);
         }
 
+        /// <summary>
+        /// Get the WWObject count maintained by the data structure.
+        /// </summary>
+        /// <returns>The number of WWObjects being maintained.</returns>
         public int GetCount()
         {
             return objects.Count;
@@ -147,17 +179,28 @@ namespace WorldWizards.core.entity.level
             return removedObject;
         }
 
+        /// <summary>
+        /// Get a WWObject
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public WWObject Get(Guid id)
         {
             WWObject objectToGet;
             objects.TryGetValue(id, out objectToGet);
             if (!objectToGet)
             {
-                Debug.LogError("SceneGraph : Failed to get Object with Guid " + id);
+                Debug.LogError(string.Format(
+                    "SceneGraph : Failed to get Object with Guid {0}. This SHOULD NOT happen.", id));
             }
             return objectToGet;
         }
 
+        /// <summary>
+        /// Get all WWObjects at the given Coordinate.
+        /// </summary>
+        /// <param name="coord"></param>
+        /// <returns>a list of WWObjects at the given Coordiante.</returns>
         public List<WWObject> GetObjects(Coordinate coord)
         {
             return GetObjects(coord.Index);

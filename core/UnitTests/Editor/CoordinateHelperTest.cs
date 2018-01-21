@@ -32,9 +32,9 @@ namespace WorldWizards.core.UnitTests.Editor
             var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
             Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
             Assert.AreEqual(wwwCoord.Index, decodedWWCoord.Index);
-            Assert.AreEqual(wwwCoord.Offset.x, decodedWWCoord.Offset.x, delta);
-            Assert.AreEqual(wwwCoord.Offset.y, decodedWWCoord.Offset.y, delta);
-            Assert.AreEqual(wwwCoord.Offset.z, decodedWWCoord.Offset.z, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().x, decodedWWCoord.GetOffset().x, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().y, decodedWWCoord.GetOffset().y, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().z, decodedWWCoord.GetOffset().z, delta);
             Assert.AreEqual(wwwCoord.Rotation, decodedWWCoord.Rotation);
         }
         
@@ -42,16 +42,59 @@ namespace WorldWizards.core.UnitTests.Editor
         [Test]
         public static void CoordinateConversionPerservesWorldWizardSpaceWithNegOffset()
         {
-            var wwwCoord = new Coordinate(new IntVector3(1,2,3), new Vector3(-.33f, -1f, 0), 0);
+            var wwwCoord = new Coordinate(new IntVector3(1,2,3), new Vector3(-.33f, -1f, .8f), 0);
             var position = CoordinateHelper.WWCoordToUnityCoord(wwwCoord);
             var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
             Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
             Assert.AreEqual(wwwCoord.Index, decodedWWCoord.Index);
-            Assert.AreEqual(wwwCoord.Offset.x, decodedWWCoord.Offset.x, delta);
-            Assert.AreEqual(wwwCoord.Offset.y, decodedWWCoord.Offset.y, delta);
-            Assert.AreEqual(wwwCoord.Offset.z, decodedWWCoord.Offset.z, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().x, decodedWWCoord.GetOffset().x, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().y, decodedWWCoord.GetOffset().y, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().z, decodedWWCoord.GetOffset().z, delta);
             Assert.AreEqual(wwwCoord.Rotation, decodedWWCoord.Rotation);
         }
+        
+        [Test]
+        public static void CoordinateConversionPerservesWorldWizardSpaceWithNegOffset2()
+        {
+            var wwwCoord = new Coordinate(new IntVector3(0,-2,33), new Vector3(-.33f, 1f, .8f), 0);
+            var position = CoordinateHelper.WWCoordToUnityCoord(wwwCoord);
+            var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
+            Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
+            Assert.AreEqual(wwwCoord.Index, decodedWWCoord.Index);
+            Assert.AreEqual(wwwCoord.GetOffset().x, decodedWWCoord.GetOffset().x, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().y, decodedWWCoord.GetOffset().y, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().z, decodedWWCoord.GetOffset().z, delta);
+            Assert.AreEqual(wwwCoord.Rotation, decodedWWCoord.Rotation);
+        }
+        
+        [Test]
+        public static void CoordinateConversionPerservesWorldWizardSpaceWithNegOffset3()
+        {
+            var wwwCoord = new Coordinate(new IntVector3(1,1,1), new Vector3(1f, 1f, 1f), 0);
+            var position = CoordinateHelper.WWCoordToUnityCoord(wwwCoord);
+            var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
+            Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
+            Assert.AreEqual(wwwCoord.Index, decodedWWCoord.Index);
+            Assert.AreEqual(wwwCoord.GetOffset().x, decodedWWCoord.GetOffset().x, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().y, decodedWWCoord.GetOffset().y, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().z, decodedWWCoord.GetOffset().z, delta);
+            Assert.AreEqual(wwwCoord.Rotation, decodedWWCoord.Rotation);
+        }
+        
+        [Test]
+        public static void CoordinateConversionPerservesWorldWizardSpaceWithNegOffset4()
+        {
+            var wwwCoord = new Coordinate(new IntVector3(1,-1,1), new Vector3(-1f, 1f, 1f), 0);
+            var position = CoordinateHelper.WWCoordToUnityCoord(wwwCoord);
+            var decodedWWCoord = CoordinateHelper.UnityCoordToWWCoord(position, wwwCoord.Rotation);
+            Debug.Log(string.Format("{0} , {1}", wwwCoord.ToString(), decodedWWCoord.ToString()));
+            Assert.AreEqual(wwwCoord.Index, decodedWWCoord.Index);
+            Assert.AreEqual(wwwCoord.GetOffset().x, decodedWWCoord.GetOffset().x, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().y, decodedWWCoord.GetOffset().y, delta);
+            Assert.AreEqual(wwwCoord.GetOffset().z, decodedWWCoord.GetOffset().z, delta);
+            Assert.AreEqual(wwwCoord.Rotation, decodedWWCoord.Rotation);
+        }
+        
         
     }
 }

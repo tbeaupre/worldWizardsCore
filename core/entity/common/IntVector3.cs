@@ -22,9 +22,9 @@ namespace WorldWizards.core.entity.common
             z = (int) Mathf.Floor(vector.z);
         }
 
-        public int x { get; private set; }
-        public int y { get; private set; }
-        public int z { get; private set; }
+        public int x { get; set; }
+        public int y { get; set; }
+        public int z { get; set; }
 
         public override string ToString()
         {
@@ -45,7 +45,8 @@ namespace WorldWizards.core.entity.common
 
         /// <summary>
         /// from https://stackoverflow.com/questions/2634690/good-hash-function-for-a-2d-index
-        /// Generates a unique hash code even when the sum of x y and z is the same.
+        /// Generates a unique hash code even when the sum of x y and z is the same.'
+        /// Neccassary in order to use IntVector3 as a key for a Dictionary.
         /// </summary>
         /// <returns></returns>
         public override int GetHashCode()

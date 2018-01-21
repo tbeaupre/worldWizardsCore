@@ -110,7 +110,7 @@ namespace WorldWizards.core.input.Tools
                         ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
-                            Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();
+                            Vector3 wwOffset = curObject.objectData.coordinate.GetOffset() / 2 * CoordinateHelper.GetTileScale();
                             originalOffsets.Add(curObject, wwOffset);
                         }
                     }

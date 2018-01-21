@@ -6,6 +6,7 @@ namespace WorldWizards.core.input.Tools
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
+    /// This tool allows a user to select World Wizard Objects using a marquee-drag style selection.
     /// Based on this script from 
     /// https://paulbutera.wordpress.com/2013/04/04/unity-rts-tutorial-part-1-marquee-selection-of-units/
     /// </summary>

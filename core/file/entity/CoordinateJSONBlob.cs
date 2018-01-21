@@ -32,9 +32,9 @@ namespace WorldWizards.core.file.entity
             indexX = c.Index.x;
             indexY = c.Index.y;
             indexZ = c.Index.z;
-            offsetX = c.Offset.x;
-            offsetY = c.Offset.y;
-            offsetZ = c.Offset.z;
+            offsetX = c.GetOffset().x;
+            offsetY = c.GetOffset().y;
+            offsetZ = c.GetOffset().z;
             rotation = c.Rotation;
         }
     }
