@@ -4,13 +4,12 @@
 //
 //=============================================================================
 
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
 
 #if UNITY_EDITOR
-
+using UnityEditor;
 #endif
 
 namespace WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts
