@@ -30,6 +30,18 @@ namespace WorldWizards.core.entity.coordinate.utils
             return WWCoordToUnityCoord(coord);
         }
 
+        /// <see cref="UnityCoordToWWCoord(Vector3, int)"/>
+        public static Coordinate UnityCoordToWWCoord(Vector3 position)
+        {
+            return UnityCoordToWWCoord(position, 0);
+        }
+        
+        /// <summary>
+        /// Convert a Unity Space position to a WWCoordinate.
+        /// </summary>
+        /// <param name="position">The Unity position.</param>
+        /// <param name="rotation">The desired rotation for the resulting coordinate.</param>
+        /// <returns></returns>
         public static Coordinate UnityCoordToWWCoord(Vector3 position, int rotation)
         {
             Vector3 scaled = position / GetTileScale();
@@ -44,8 +56,11 @@ namespace WorldWizards.core.entity.coordinate.utils
             return new Coordinate(new IntVector3(scaled), offset, rotation);
         }
 
-
-        
+        /// <summary>
+        /// Convert a WWCoordinate to a Unity Space position.
+        /// </summary>
+        /// <param name="coordinate">The coordinate to convert.</param>
+        /// <returns>The coordinate as a Unity Space position.</returns>
         public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
         {
             // Move origin to bottom left corner.

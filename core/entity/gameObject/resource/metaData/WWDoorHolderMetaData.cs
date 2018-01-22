@@ -8,7 +8,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// Metadata necessary for describing a Door Holder.
     /// </summary>
     [Serializable]
-    public class WWDoorHolderMetaData
+    public class WWDoorHolderMetadata
     {
         public bool hasDoorHolder; // is this Door Holder available?
         public float height;

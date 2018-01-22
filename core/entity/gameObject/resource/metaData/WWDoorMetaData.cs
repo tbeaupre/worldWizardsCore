@@ -9,7 +9,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// Metadata required for describing a Door.
     /// </summary>
     [Serializable]
-    public class WWDoorMetaData
+    public class WWDoorMetadata
     {
         public Vector3 facingDirection; // the direction the door faces to open
         public float height;

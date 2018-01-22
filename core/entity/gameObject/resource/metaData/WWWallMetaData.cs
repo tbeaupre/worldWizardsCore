@@ -6,7 +6,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// Metadata required to describe whether a wall of the Tile should have collision or not.
     /// </summary>
     [Serializable]
-    public class WWWallMetaData
+    public class WWWallMetadata
     {
         public bool north;
         public bool east;
@@ -15,7 +15,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
         public bool top;
         public bool bottom;
 
-        public WWWallMetaData()
+        public WWWallMetadata()
         {
             north = false;
             east = false;
@@ -25,7 +25,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
             bottom = false;
         }
 
-        public WWWallMetaData(bool north, bool east, bool south, bool west, bool top, bool bottom)
+        public WWWallMetadata(bool north, bool east, bool south, bool west, bool top, bool bottom)
         {
             this.north = north;
             this.east = east;

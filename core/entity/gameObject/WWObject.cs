@@ -17,7 +17,7 @@ namespace WorldWizards.core.entity.gameObject
     /// </summary>
     public abstract class WWObject : MonoBehaviour
     {
-        public WWResourceMetaData resourceMetaData { get; private set; }
+        public WWResourceMetadata ResourceMetadata { get; private set; }
         public WWObjectData objectData { get; private set; }
 
         /// <summary>
@@ -45,11 +45,11 @@ namespace WorldWizards.core.entity.gameObject
         /// Initialize the WWObject
         /// </summary>
         /// <param name="objectData">The instance data for the WWObject.</param>
-        /// <param name="resourceMetaData">The resource meta data that describes this WWObject.</param>
-        public void Init(WWObjectData objectData, WWResourceMetaData resourceMetaData)
+        /// <param name="resourceMetadata">The resource meta data that describes this WWObject.</param>
+        public void Init(WWObjectData objectData, WWResourceMetadata resourceMetadata)
         {
             this.objectData = objectData;
-            this.resourceMetaData = resourceMetaData;
+            this.ResourceMetadata = resourceMetadata;
             tileFader = new TileFader(gameObject);
         }
 
@@ -68,7 +68,7 @@ namespace WorldWizards.core.entity.gameObject
         /// <returns>the coordinate.</returns>
         public Coordinate GetCoordinate()
         {
-            if (resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+            if (ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
             {
                 // we only want the index without the offset for Tiles
                 return new Coordinate(objectData.coordinate.Index, objectData.coordinate.Rotation);
@@ -82,7 +82,7 @@ namespace WorldWizards.core.entity.gameObject
         /// <returns>The Wall collisions after applying rotation</returns>
         public WWWalls GetWallsWRotationApplied()
         {
-            return WWWallsHelper.GetRotatedWWWalls(resourceMetaData, GetCoordinate().Rotation);
+            return WWWallsHelper.GetRotatedWWWalls(ResourceMetadata, GetCoordinate().Rotation);
         }
 
         public WWObject GetOldestParent()

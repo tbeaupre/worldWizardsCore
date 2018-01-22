@@ -9,7 +9,7 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// Metadata required to describe a WWObject.
     /// </summary>
     [Serializable]
-    public class WWObjectMetaData
+    public class WWObjectMetadata
     {
         [Range(1, 10000)] public int baseTileSize = 10; // What is scale at which this Object's art assset was built?
         public WWType type = WWType.Tile; // default to type to Tile

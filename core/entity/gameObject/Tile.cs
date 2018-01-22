@@ -25,24 +25,24 @@ namespace WorldWizards.core.entity.gameObject
                 0);
         }
 
-        public List<WWDoorHolderMetaData> GetDoorHolders()
+        public List<WWDoorHolderMetadata> GetDoorHolders()
         {
-            var result = new List<WWDoorHolderMetaData>();
-            if (resourceMetaData.wwTileMetaData.northWwDoorHolderMetaData.hasDoorHolder)
+            var result = new List<WWDoorHolderMetadata>();
+            if (ResourceMetadata.wwTileMetadata.northWwDoorHolderMetadata.hasDoorHolder)
             {
-                result.Add(resourceMetaData.wwTileMetaData.northWwDoorHolderMetaData);
+                result.Add(ResourceMetadata.wwTileMetadata.northWwDoorHolderMetadata);
             }
-            if (resourceMetaData.wwTileMetaData.eastWwDoorHolderMetaData.hasDoorHolder)
+            if (ResourceMetadata.wwTileMetadata.eastWwDoorHolderMetadata.hasDoorHolder)
             {
-                result.Add(resourceMetaData.wwTileMetaData.eastWwDoorHolderMetaData);
+                result.Add(ResourceMetadata.wwTileMetadata.eastWwDoorHolderMetadata);
             }
-            if (resourceMetaData.wwTileMetaData.southWwDoorHolderMetaData.hasDoorHolder)
+            if (ResourceMetadata.wwTileMetadata.southWwDoorHolderMetadata.hasDoorHolder)
             {
-                result.Add(resourceMetaData.wwTileMetaData.southWwDoorHolderMetaData);
+                result.Add(ResourceMetadata.wwTileMetadata.southWwDoorHolderMetadata);
             }
-            if (resourceMetaData.wwTileMetaData.westWwDoorHolderMetaData.hasDoorHolder)
+            if (ResourceMetadata.wwTileMetadata.westWwDoorHolderMetadata.hasDoorHolder)
             {
-                result.Add(resourceMetaData.wwTileMetaData.westWwDoorHolderMetaData);
+                result.Add(ResourceMetadata.wwTileMetadata.westWwDoorHolderMetadata);
             }
             return result;
         }

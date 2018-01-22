@@ -182,12 +182,12 @@ namespace WorldWizards.core.manager
         {
             float doorWidth = door.GetWidth();
             float doorHeight = door.GetHeight();
-            List<WWDoorHolderMetaData> doorHolders = tile.GetDoorHolders();
+            List<WWDoorHolderMetadata> doorHolders = tile.GetDoorHolders();
             // TODO, use the DoorHolder that is closest to the hitPoint
             // TODO handle the posibility that a Tile has mutliple Door Holders
             if (doorHolders.Count > 0)
             {
-                WWDoorHolderMetaData doorHolder = doorHolders[0];
+                WWDoorHolderMetadata doorHolder = doorHolders[0];
                 float holderWidth = doorHolder.width;
                 float holderHeight = doorHolder.height;
 

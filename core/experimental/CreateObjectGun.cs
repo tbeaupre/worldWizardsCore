@@ -79,11 +79,11 @@ namespace WorldWizards.core.experimental
 
             foreach (WWObject obj in objects)
             {
-                Debug.Log(" object type " + obj.resourceMetaData.wwObjectMetaData.type);
-                if (obj.resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+                Debug.Log(" object type " + obj.ResourceMetadata.wwObjectMetadata.type);
+                if (obj.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
                 {
                     Debug.Log("A tile was in the coordinate");
-                    if (curObject.resourceMetaData.wwObjectMetaData.type == WWType.Door)
+                    if (curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Door)
                     {
                         Debug.Log("The current Object is a door");
                         if ( ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().AddDoor((Door) curObject, (Tile) obj, hitPoint))

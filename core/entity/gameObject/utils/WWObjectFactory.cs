@@ -35,11 +35,11 @@ namespace WorldWizards.core.entity.gameObject.utils
             // Load resource and check to see if it is valid.
             WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
             GameObject gameObject;
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
             if (resource.GetPrefab() == null)
             {
                 gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                resourceMetaData = gameObject.AddComponent<WWResourceMetaData>();
+                resourceMetadata = gameObject.AddComponent<WWResourceMetadata>();
                 gameObject.transform.Translate(spawnPos);
             }
             else
@@ -55,9 +55,9 @@ namespace WorldWizards.core.entity.gameObject.utils
             }
 
             // Use ResourceMetaData to construct the object.
-            WWObject wwObject = ConstructWWObject(gameObject, resourceMetaData);
+            WWObject wwObject = ConstructWWObject(gameObject, resourceMetadata);
             // Give the new WWObject the data used to create it.
-            wwObject.Init(objectData, resourceMetaData);
+            wwObject.Init(objectData, resourceMetadata);
             wwObject.SetPosition(objectData.coordinate);
 
             return wwObject;
@@ -67,22 +67,22 @@ namespace WorldWizards.core.entity.gameObject.utils
         ///     Handles the aspects of WWObject Instantiation that rely on the resource metadata.
         /// </summary>
         /// <param name="gameObject">The base GameObject which contains only resource, location, and rotation data</param>
-        /// <param name="metaData">The metadata which will be used to construct the WWObject</param>
+        /// <param name="metadata">The metadata which will be used to construct the WWObject</param>
         /// <returns></returns>
-        public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetaData metaData)
+        public static WWObject ConstructWWObject(GameObject gameObject, WWResourceMetadata metadata)
         {
             // Make the GameObject into a Tile, Prop, etc.
-            Type type = WWTypeHelper.ConvertToSysType(metaData.wwObjectMetaData.type);
+            Type type = WWTypeHelper.ConvertToSysType(metadata.wwObjectMetadata.type);
             var wwObject = gameObject.AddComponent(type) as WWObject;
 
             // Scale the object to the current tile scale.
             wwObject.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
 
-            // remove the WWResourceMetaData component for a microptimization
+            // remove the WWResourceMetadata component for a microptimization
 #if UNITY_EDITOR
-            Object.DestroyImmediate(wwObject.GetComponent<WWResourceMetaData>());
+            Object.DestroyImmediate(wwObject.GetComponent<WWResourceMetadata>());
 #else
-			GameObject.Destroy(wwObject.GetComponent<WWResourceMetaData>());
+			GameObject.Destroy(wwObject.GetComponent<WWResourceMetadata>());
 #endif
 
             wwObject.gameObject.SetActive(true);

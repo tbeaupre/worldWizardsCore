@@ -7,12 +7,12 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// Metadata required to describe a Tile.
     /// </summary>
     [Serializable]
-    public class WWTileMetaData
+    public class WWTileMetadata
     {
-        public WWDoorHolderMetaData eastWwDoorHolderMetaData;
-        public WWDoorHolderMetaData northWwDoorHolderMetaData;
-        public WWDoorHolderMetaData southWwDoorHolderMetaData;
-        public WWDoorHolderMetaData westWwDoorHolderMetaData;
-        public WWWallMetaData wwWallMetaData;
+        public WWDoorHolderMetadata eastWwDoorHolderMetadata;
+        public WWDoorHolderMetadata northWwDoorHolderMetadata;
+        public WWDoorHolderMetadata southWwDoorHolderMetadata;
+        public WWDoorHolderMetadata westWwDoorHolderMetadata;
+        public WWWallMetadata wwWallMetadata;
     }
 }

@@ -9,13 +9,13 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData
     /// asset bundle. The artist, or person who sets up the prefab needs to configure 
     /// the properties. This component is composed of various pieces of metadata that are relevent to describing a WWObject.
     /// The metadata is subject to change and be extended as more features are added to World Wizards.
-    /// WWResourceMetaData is composed of all possible types of metadata.
+    /// WWResourceMetadata is composed of all possible types of metadata.
     /// </summary>
     [Serializable]
-    public class WWResourceMetaData : MonoBehaviour
+    public class WWResourceMetadata : MonoBehaviour
     {
-        public WWDoorMetaData doorMetaData;
-        public WWObjectMetaData wwObjectMetaData;
-        public WWTileMetaData wwTileMetaData;
+        public WWDoorMetadata doorMetadata;
+        public WWObjectMetadata wwObjectMetadata;
+        public WWTileMetadata wwTileMetadata;
     }
 }

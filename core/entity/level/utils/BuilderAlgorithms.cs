@@ -50,11 +50,11 @@ namespace WorldWizards.core.entity.level.utils
                                  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetWallsAtCoordinate(
                                      new Coordinate(coordIndex));
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
@@ -86,11 +86,11 @@ namespace WorldWizards.core.entity.level.utils
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {

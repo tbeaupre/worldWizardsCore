@@ -12,17 +12,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public Vector3 GetFacingDirection()
         {
-            return resourceMetaData.doorMetaData.facingDirection;
+            return ResourceMetadata.doorMetadata.facingDirection;
         }
 
         public float GetWidth()
         {
-            return resourceMetaData.doorMetaData.width;
+            return ResourceMetadata.doorMetadata.width;
         }
 
         public float GetHeight()
         {
-            return resourceMetaData.doorMetaData.height;
+            return ResourceMetadata.doorMetadata.height;
         }
     }
 }

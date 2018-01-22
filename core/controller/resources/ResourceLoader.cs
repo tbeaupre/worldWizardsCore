@@ -54,7 +54,7 @@ namespace WorldWizards.core.controller.resources
                     foreach (string assetName in allAssetNames)
                     {
                         var obj = assetBundle.LoadAsset(assetName) as GameObject;
-                        if (obj != null && obj.GetComponent<WWResourceMetaData>() != null)
+                        if (obj != null && obj.GetComponent<WWResourceMetadata>() != null)
                         {
                             string assetBundleTag = Path.GetFileName(assetBundlePath);
                             string tag = assetBundleTag + "_" + Path.GetFileNameWithoutExtension(assetName);
