@@ -36,7 +36,7 @@ namespace worldWizardsCore.core.menus
             }
         }
 
-        public override void Setup()
+        protected override void Setup()
         {
             // Get list of all buttons on this menu.
             allButtons = new List<Button>(gameObject.GetComponents<Button>());

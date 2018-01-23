@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using worldWizards.core.input.VRControls;
 using worldWizardsCore.core.input.Tools;
+using worldWizardsCore.core.manager;
 using WorldWizards.core.controller.builder;
 using WorldWizards.core.controller.level;
 using WorldWizards.core.controller.level.utils;
@@ -19,7 +20,7 @@ namespace worldWizards.core.input.Tools
         private static GridController gridController;
         
         // Resources
-        private static string currentAssetBundle;
+        //private static string currentAssetBundle;
         private static List<string> possibleTiles;
         
         // Object Properties
@@ -39,16 +40,17 @@ namespace worldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
+            
+            // TODO: Check if this line is needed (really shouldn't be needed)
             ResourceLoader.LoadResources();
             
             Debug.Log("Create Object Tool");
 
             gridController = FindObjectOfType<GridController>();
 
-            if (currentAssetBundle == null)
-            {
-                currentAssetBundle = "ww_basic_assets";
-                // TODO: Get possible tiles from MenuBuilder instead
+            //if (currentAssetBundle == null)
+            //{
+                //currentAssetBundle = "ww_basic_assets";
                 //var tempTiles = GameObject.Find("AssetBundleMenu").GetComponent<MenuBuilder>().GetPossibleTiles();
                 /*if (tempTiles.Count > 0)
                 {
@@ -57,10 +59,11 @@ namespace worldWizards.core.input.Tools
                 }
                 else
                 {*/
-                    possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
+                    //possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
                 //}
+                possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
                 Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
-            }
+            //}
 
             curTileIndex = 0;
             curRotation = 0;

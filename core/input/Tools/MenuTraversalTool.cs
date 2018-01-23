@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using worldWizards.core.input.Tools;
 using worldWizards.core.input.VRControls;
+using worldWizardsCore.core.manager;
 using worldWizardsCore.core.menus;
 using WorldWizards.core.manager;
 
@@ -47,10 +48,7 @@ namespace worldWizardsCore.core.input.Tools
         public override void OnMenuUnclick()
         {
             if (assetBundleMenu.activeSelf)
-            {
-                // Create the filtered asset bundle
-                assetBundleMenu.GetComponent<MenuBuilder>().GetFilteredPossibleTilesKeys();
-                
+            {   
                 assetBundleMenu.SetActive(false);
                 
                 // Go back to tool we were using before
