@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
-using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
-        
-        // Prefabs
-        private static Collider gridCollider;
-        
         // Object Properties
         private List<WWObject> curObjects;
         private Dictionary<WWObject, Vector3> originalOffsets; // set when objects are picked up.
@@ -38,19 +30,13 @@ namespace worldWizards.core.input.Tools
             base.Awake();
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
-
-            if (gridCollider == null)
-            {
-                gridCollider = FindObjectOfType<MeshCollider>();
-                gridCollider.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-            }
         }
 
         public void Update()
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-            if (gridCollider.Raycast(ray, out raycastHit, 100))
+            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 hitPoint = raycastHit.point;
 
@@ -61,7 +47,7 @@ namespace worldWizards.core.input.Tools
                 else
                 {
                     Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
-                    hoveredObjects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coordinate);
+                    hoveredObjects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coordinate);
                     validTarget = hoveredObjects.Count > 0;
                 }
             }
@@ -104,7 +90,7 @@ namespace worldWizards.core.input.Tools
                         offset = originalOffsets[curObject];
                     }
                     curObject.SetPosition(target + offset, true);
-                    ManagerRegistry.Instance.sceneGraphManager.Add(curObject);
+                    ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject);
                 }
                 curObjects = null;
                 originalOffsets.Clear();
@@ -121,10 +107,10 @@ namespace worldWizards.core.input.Tools
                     curObjects = hoveredObjects;
                     foreach (WWObject curObject in curObjects)
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Remove(curObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
-                            Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();
+                            Vector3 wwOffset = curObject.objectData.coordinate.GetOffset() / 2 * CoordinateHelper.GetTileScale();
                             originalOffsets.Add(curObject, wwOffset);
                         }
                     }

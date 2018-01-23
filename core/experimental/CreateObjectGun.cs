@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.entity.level.utils;
 using WorldWizards.core.manager;
 
@@ -19,6 +19,7 @@ namespace WorldWizards.core.experimental
         PerimeterWalls
     }
 
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class CreateObjectGun : MonoBehaviour
     {
         public Text coordDebugText;
@@ -73,19 +74,19 @@ namespace WorldWizards.core.experimental
         {
             Debug.Log("TryPlaceDoor called.");
             Coordinate coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
-            List<WWObject> objects = ManagerRegistry.Instance.sceneGraphManager.GetObjectsInCoordinateIndex(coord);
+            List<WWObject> objects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
 
             foreach (WWObject obj in objects)
             {
-                Debug.Log(" object type " + obj.resourceMetaData.wwObjectMetaData.type);
-                if (obj.resourceMetaData.wwObjectMetaData.type == WWType.Tile)
+                Debug.Log(" object type " + obj.ResourceMetadata.wwObjectMetadata.type);
+                if (obj.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
                 {
                     Debug.Log("A tile was in the coordinate");
-                    if (curObject.resourceMetaData.wwObjectMetaData.type == WWType.Door)
+                    if (curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Door)
                     {
                         Debug.Log("The current Object is a door");
-                        if (ManagerRegistry.Instance.sceneGraphManager.AddDoor((Door) curObject, (Tile) obj, hitPoint))
+                        if ( ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().AddDoor((Door) curObject, (Tile) obj, hitPoint))
                         {
                             curObject = null;
                         }
@@ -173,7 +174,7 @@ namespace WorldWizards.core.experimental
                         }
                         else if (state == State.Normal)
                         {
-                            if (ManagerRegistry.Instance.sceneGraphManager.Add(curObject))
+                            if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                             {
                                 curObject = null;
                             }
@@ -277,7 +278,7 @@ namespace WorldWizards.core.experimental
                     var wwObject = hit.transform.gameObject.GetComponent<WWObject>();
                     if (!wwObject.Equals(curObject))
                     {
-                        ManagerRegistry.Instance.sceneGraphManager.Delete(wwObject.GetId());
+                        ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Delete(wwObject.GetId());
                     }
                 }
             }

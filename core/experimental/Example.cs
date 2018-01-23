@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
@@ -25,7 +24,7 @@ namespace WorldWizards.core.experimental
             // instantiate the tile in the world
             WWObject tile = WWObjectFactory.Instantiate(tileData);
             // add the newly created tile to the SceneGraph
-            ManagerRegistry.Instance.sceneGraphManager.Add(tile);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(tile);
         }
     }
 }

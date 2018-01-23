@@ -6,9 +6,8 @@
 
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	[RequireComponent( typeof( Interactable ) )]

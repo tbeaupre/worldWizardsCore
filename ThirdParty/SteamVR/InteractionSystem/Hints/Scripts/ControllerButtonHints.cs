@@ -4,12 +4,15 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
+using WorldWizards.SteamVR.Plugins;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Hints.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class ControllerButtonHints : MonoBehaviour
@@ -203,7 +206,7 @@ namespace Valve.VR.InteractionSystem
 			string buttonDebug = "Looking for button: " + buttonID;
 
 			EVRButtonId searchButtonID = buttonID;
-			if ( buttonID == EVRButtonId.k_EButton_Grip && SteamVR.instance.hmd_TrackingSystemName.ToLowerInvariant().Contains( "oculus" ) )
+			if ( buttonID == EVRButtonId.k_EButton_Grip && SteamVR.Scripts.SteamVR.instance.hmd_TrackingSystemName.ToLowerInvariant().Contains( "oculus" ) )
 			{
 				searchButtonID = EVRButtonId.k_EButton_Axis2;
 			}
@@ -265,12 +268,12 @@ namespace Valve.VR.InteractionSystem
 						offsetType = OffsetType.Right;
 					}
 					break;
-				case Valve.VR.EVRButtonId.k_EButton_Grip:
+				case EVRButtonId.k_EButton_Grip:
 					{
 						offsetType = OffsetType.Forward;
 					}
 					break;
-				case Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad:
+				case EVRButtonId.k_EButton_SteamVR_Touchpad:
 					{
 						offsetType = OffsetType.Up;
 					}

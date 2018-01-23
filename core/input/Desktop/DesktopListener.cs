@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
-using worldWizards.core.input.Tools;
+using WorldWizards.core.input.Tools;
 
-namespace worldWizards.core.input.Desktop
+namespace WorldWizards.core.input.Desktop
 {
     /**
      * Holds information specific to Desktop Controllers and handles key presses.

@@ -6,13 +6,16 @@
 
 using UnityEngine;
 
-[ExecuteInEditMode]
-public class SteamVR_GameView : MonoBehaviour
+namespace WorldWizards.SteamVR.Scripts
 {
-	void Awake()
-	{
-		Debug.Log("SteamVR_GameView is deprecated in Unity 5.4 - REMOVING");
-		DestroyImmediate(this);
-	}
+    [ExecuteInEditMode]
+    public class SteamVR_GameView : MonoBehaviour
+    {
+        void Awake()
+        {
+            Debug.Log("SteamVR_GameView is deprecated in Unity 5.4 - REMOVING");
+            DestroyImmediate(this);
+        }
+    }
 }
 

@@ -4,11 +4,15 @@
 //
 //=============================================================================
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
+using WorldWizards.SteamVR.InteractionSystem.Hints.Scripts;
+using WorldWizards.SteamVR.Plugins;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class Teleport : MonoBehaviour
@@ -171,7 +175,7 @@ namespace Valve.VR.InteractionSystem
 
 			HidePointer();
 
-			player = InteractionSystem.Player.instance;
+			player = Core.Scripts.Player.instance;
 
 			if ( player == null )
 			{

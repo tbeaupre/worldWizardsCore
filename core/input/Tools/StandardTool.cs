@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
     public class StandardTool : Tool
     {

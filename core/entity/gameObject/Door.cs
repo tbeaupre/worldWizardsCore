@@ -2,6 +2,7 @@
 
 namespace WorldWizards.core.entity.gameObject
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class Door : Interactable
     {
         public Vector3 GetPivot()
@@ -11,17 +12,17 @@ namespace WorldWizards.core.entity.gameObject
 
         public Vector3 GetFacingDirection()
         {
-            return resourceMetaData.doorMetaData.facingDirection;
+            return ResourceMetadata.doorMetadata.facingDirection;
         }
 
         public float GetWidth()
         {
-            return resourceMetaData.doorMetaData.width;
+            return ResourceMetadata.doorMetadata.width;
         }
 
         public float GetHeight()
         {
-            return resourceMetaData.doorMetaData.height;
+            return ResourceMetadata.doorMetadata.height;
         }
     }
 }

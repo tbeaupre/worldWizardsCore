@@ -5,11 +5,14 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
+using WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Longbow.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class ArrowHand : MonoBehaviour

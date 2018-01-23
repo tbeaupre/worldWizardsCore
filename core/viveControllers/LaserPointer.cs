@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.viveControllers
 {

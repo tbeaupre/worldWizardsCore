@@ -5,10 +5,9 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	// Singleton representing the local VR player/user, with methods for getting
@@ -276,7 +275,7 @@ namespace Valve.VR.InteractionSystem
 		{
 			_instance = this;
 
-			if ( SteamVR.instance != null )
+			if ( SteamVR.Scripts.SteamVR.instance != null )
 			{
 				ActivateRig( rigSteamVR );
 			}
@@ -358,7 +357,7 @@ namespace Valve.VR.InteractionSystem
 			if ( !allowToggleTo2D )
 				return;
 
-			if ( !SteamVR.active )
+			if ( !SteamVR.Scripts.SteamVR.active )
 				return;
 
 			int width = 100;

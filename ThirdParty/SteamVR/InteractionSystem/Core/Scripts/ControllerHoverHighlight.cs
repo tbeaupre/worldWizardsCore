@@ -5,9 +5,9 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class ControllerHoverHighlight : MonoBehaviour

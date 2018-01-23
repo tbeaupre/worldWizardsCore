@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace worldWizards.core.input.Desktop
+namespace WorldWizards.core.input.Desktop
 {
     /**
      * Script which rotates the camera when the user moves the mouse to the edge of the screen.

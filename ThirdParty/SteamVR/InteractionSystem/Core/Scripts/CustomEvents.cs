@@ -5,9 +5,8 @@
 //=============================================================================
 
 using UnityEngine.Events;
-using System;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public static class CustomEvents

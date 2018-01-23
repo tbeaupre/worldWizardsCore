@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts
 {
 	//-------------------------------------------------------------------------
 	public abstract class TeleportMarkerBase : MonoBehaviour

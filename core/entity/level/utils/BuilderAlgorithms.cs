@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
-using WorldWizards.core.entity.common;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -15,6 +13,10 @@ using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// 
+    /// </summary>
     public static class BuilderAlgorithms
     {
         public static void BuildPerimeterWalls(string resourceTag, WWObject wwObject)
@@ -45,14 +47,14 @@ namespace WorldWizards.core.entity.level.utils
         private static void BuildWalls(IntVector3 coordIndex, WWWalls wallOpening, string resourceTag)
         {
             WWWalls wallsToFit = ~ wallOpening |
-                                 ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(
+                                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetWallsAtCoordinate(
                                      new Coordinate(coordIndex));
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
@@ -69,7 +71,7 @@ namespace WorldWizards.core.entity.level.utils
             // TODO refactor to only instantiate object if it can fit by looking at ResourceMetaData
             // but, currently this is only called when a fit is possible
             WWObject go = WWObjectFactory.Instantiate(objData);
-            if (!ManagerRegistry.Instance.sceneGraphManager.Add(go))
+            if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(go))
             {
                 Debug.Log("Could not place wall because of collision, deleting temp");
                 Object.Destroy(go.gameObject);
@@ -80,15 +82,15 @@ namespace WorldWizards.core.entity.level.utils
         {
             var result = new List<int>();
             Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, 0);
-            WWWalls wallsToFit = ManagerRegistry.Instance.sceneGraphManager.GetWallsAtCoordinate(coordinate);
+            WWWalls wallsToFit =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
@@ -102,7 +104,7 @@ namespace WorldWizards.core.entity.level.utils
         {
             var wallsToPlace = new Dictionary<IntVector3, WWWalls>();
             var visited = new List<IntVector3>();
-            GetPerimeterWalls(wallsToPlace, visited, curIndex, ManagerRegistry.Instance.sceneGraphManager);
+            GetPerimeterWalls(wallsToPlace, visited, curIndex, ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>());
             return wallsToPlace;
         }
 

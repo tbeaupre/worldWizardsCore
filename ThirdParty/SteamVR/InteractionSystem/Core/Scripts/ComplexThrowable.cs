@@ -5,10 +5,10 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	[RequireComponent( typeof( Interactable ) )]

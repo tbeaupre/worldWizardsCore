@@ -5,9 +5,8 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Longbow.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class SoundBowClick : MonoBehaviour

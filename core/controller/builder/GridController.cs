@@ -5,14 +5,19 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.controller.builder
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// A simple controller for scaling and moving a Grid Collider up and down in the Builder.
+    /// </summary>
     public class GridController : MonoBehaviour
     {
         [SerializeField] private GameObject grid;
-
         private int height;
-
         private GameObject playerReferenceScale;
 
+        /// <summary>
+        /// Basic setup
+        /// </summary>
         private void Awake()
         {
             grid.transform.position = Vector3.zero;
@@ -24,31 +29,26 @@ namespace WorldWizards.core.controller.builder
             playerReferenceScale.transform.localScale = Vector3.one;
         }
 
-        private void Update()
+        /// <summary>
+        /// Get the grid collider.
+        /// </summary>
+        /// <returns> The Grid's Collider</returns>
+        public Collider GetGridCollider()
         {
-            GetInput();
+            return GetComponent<Collider>();
         }
 
-        private void GetInput()
+        /// <summary>
+        /// Refresh the grid position and scale.
+        /// </summary>
+        public void RefreshGrid()
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                StepUp();
-            }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                StepDown();
-            }
-        }
-
-        public void MoveGrid()
-        {
-            float yPos = height * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale;
+            float yPos = height * CoordinateHelper.GetTileScale();
             Vector3 gridPosition = grid.transform.position;
             gridPosition.y = yPos;
             grid.transform.position = gridPosition;
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
-            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.Index.y);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            
 
             // set the scale too
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
@@ -57,16 +57,22 @@ namespace WorldWizards.core.controller.builder
                 0);
         }
 
+        /// <summary>
+        /// Move the grid up one step.
+        /// </summary>
         public void StepUp()
         {
             height++;
-            MoveGrid();
+            RefreshGrid();
         }
 
+        /// <summary>
+        /// Move the grid down one step.
+        /// </summary>
         public void StepDown()
         {
             height--;
-            MoveGrid();
+            RefreshGrid();
         }
     }
 }

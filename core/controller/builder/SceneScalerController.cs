@@ -5,24 +5,25 @@ using WorldWizards.core.manager;
 
 namespace WorldWizards.core.controller.builder
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Simple Controller to adjust the Scene Scale.
+    /// </summary>
     public class SceneScalerController : MonoBehaviour
     {
-        public static readonly float MIN_SCALE = 0.1f;
-        public static readonly float MAX_SCALE = 2f;
+        private static readonly float MIN_SCALE = 0.1f;
+        private static readonly float MAX_SCALE = 2f;
 
         [SerializeField] public Slider _slider;
 
-        public void Awake()
-        {
-            _slider.minValue = MIN_SCALE;
-            _slider.maxValue = MAX_SCALE;
-        }
-
+        /// <summary>
+        /// Called from a UI Event. 
+        /// </summary>
         public void OnSliderChange()
         {
             float newScale = _slider.value;
             CoordinateHelper.tileLengthScale = newScale;
-            ManagerRegistry.Instance.sceneGraphManager.ChangeScale(newScale);
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ChangeScale(newScale);
         }
     }
 }

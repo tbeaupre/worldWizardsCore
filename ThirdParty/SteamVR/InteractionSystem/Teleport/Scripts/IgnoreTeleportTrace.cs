@@ -6,9 +6,8 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class IgnoreTeleportTrace : MonoBehaviour
