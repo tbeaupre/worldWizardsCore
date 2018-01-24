@@ -29,14 +29,14 @@ namespace worldWizardsCore.core.menus
             allButtons = new List<Button>();
             allPanels = new List<GameObject>();
 
-            // Get all panels on this menu
+            /* Get all panels on this menu
             foreach (GameObject o in GetComponents<GameObject>())
             {
                 if (o.CompareTag("UIPanel"))
                 {
                     allPanels.Add(o);
                 }
-            }
+            }*/
         }
         
         /// <summary>

@@ -20,8 +20,7 @@ namespace worldWizards.core.input.Tools
         private static GridController gridController;
         
         // Resources
-        //private static string currentAssetBundle;
-        private static List<string> possibleTiles;
+        private List<string> possibleTiles;
         
         // Object Properties
         private WWObject curObject;
@@ -41,32 +40,18 @@ namespace worldWizards.core.input.Tools
         {
             base.Awake();
             
-            // TODO: Check if this line is needed (really shouldn't be needed)
-            ResourceLoader.LoadResources();
-            
             Debug.Log("Create Object Tool");
 
             gridController = FindObjectOfType<GridController>();
 
-            //if (currentAssetBundle == null)
-            //{
-                //currentAssetBundle = "ww_basic_assets";
-                //var tempTiles = GameObject.Find("AssetBundleMenu").GetComponent<MenuBuilder>().GetPossibleTiles();
-                /*if (tempTiles.Count > 0)
-                {
-                    
-                    possibleTiles = tempTiles;
-                }
-                else
-                {*/
-                    //possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
-                //}
-                possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
-                Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
-            //}
-
             curTileIndex = 0;
             curRotation = 0;
+        }
+
+        protected void Start()
+        {
+            possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
+            Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
         }
 
         public void Update()
@@ -237,6 +222,8 @@ namespace worldWizards.core.input.Tools
                 if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
                 {
                     ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
+                    possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
+                    Debug.Log("Number of objects in object gun: " + possibleTiles.Count);
                 }
                 else
                 {

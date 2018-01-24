@@ -108,7 +108,7 @@ namespace worldWizards.core.input.Tools
         
         
         // Application Menu
-        public override void OnMenuUnclick()
+        /*public override void OnMenuUnclick()
         {
             if (UnityEngine.XR.XRDevice.isPresent)
             {
@@ -128,7 +128,7 @@ namespace worldWizards.core.input.Tools
                 }
             }
             base.OnMenuUnclick();
-        }
+        }*/
 
         
         // Touchpad Press

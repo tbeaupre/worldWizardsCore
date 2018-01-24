@@ -16,6 +16,7 @@ namespace worldWizardsCore.core.menus
     {
         private List<string> assetBundleTags;
         private Button buttonPrefab;
+        private GameObject panel;
 
         private string currentAssetBundle;
         private WWType filterType;
@@ -27,15 +28,19 @@ namespace worldWizardsCore.core.menus
             Setup();
         }
         
-        // TODO: Make sure buttons aren't added every time menu is opened (i.e. more than once)
         protected override void Setup()
         {
             base.Setup();
+
+            // Default value
+            currentAssetBundle = "ww_basic_assets";
             
             buttonPrefab = (Button)Resources.Load("Prefabs/Buttons/AssetBundleButton", typeof(Button));
             assetBundleTags = new List<string>(WWAssetBundleController.GetAllAssetBundles().Keys);
             
-            WWMenuBuilder.BuildMenu(buttonPrefab, assetBundleTags, this);
+            panel = GameObject.FindWithTag("UIPanel");
+            
+            WWMenuBuilder.BuildMenu(buttonPrefab, assetBundleTags, panel, this);
         }
 
         /// <summary>
@@ -114,10 +119,14 @@ namespace worldWizardsCore.core.menus
         ///     Give the WWObjectGunManager the settings from this menu
         /// </summary>
         public void OnDisable()
-        {
-            ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetDoFilter(doFilter);
-            ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetFilterType(filterType);
-            ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetCurrentAssetBundle(currentAssetBundle);
+        { 
+            if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>() != null)
+            {
+                Debug.Log("doFilter: " + doFilter + ", filterType: " + filterType + ", currentAssetBundle: " + currentAssetBundle);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetDoFilter(doFilter);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetFilterType(filterType);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetCurrentAssetBundle(currentAssetBundle);
+            }
         }
     }
 }

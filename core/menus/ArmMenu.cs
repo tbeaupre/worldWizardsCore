@@ -5,29 +5,19 @@ using WorldWizards.core.manager;
 
 namespace worldWizardsCore.core.menus
 {
-    /**
-     * ArmMenu is a VR-only WWMenu that sits on the player's arm and allows them to quickly change controller tools.
-     * Sets up positioning based on left controller position & rotation
-     */
+    /// <summary>
+    ///     ArmMenu is a VR-only WWMenu that sits on the player's arm and allows them to quickly change controller tools.
+    ///     Sets up positioning based on left controller position & rotation
+    /// </summary>
+    
     public class ArmMenu : WWMenu
     { 
         private GameObject popupArmMenu;
         private GameObject controller;
 
-        // Use this for initialization
         private void Start ()
         {
             Debug.Log("ArmMenu Start");
-
-            /*if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("ArmMenu"))
-            {
-                armMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("ArmMenu");
-            }
-
-            if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("PopupArmMenu"))
-            {
-                popupArmMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("PopupArmMenu");
-            }*/
 
             if (UnityEngine.XR.XRDevice.isPresent)
             {
@@ -40,7 +30,6 @@ namespace worldWizardsCore.core.menus
         {
             // Get list of all buttons on this menu.
             allButtons = new List<Button>(gameObject.GetComponents<Button>());
-
             
             // Put arm menu in the right place and parent it to the controller
             transform.rotation = controller.transform.rotation;
@@ -50,16 +39,6 @@ namespace worldWizardsCore.core.menus
                                              transform.position.y + 0.05f,
                                              transform.position.z - 0.35f);
             transform.parent = controller.transform;
-
-            // TODO: Move this logic to PopupMenus own class
-            /* Put the popup menu in the right place and parent it to the arm menu
-            popupArmMenu.transform.rotation = transform.rotation;
-            popupArmMenu.transform.position = transform.position;
-            popupArmMenu.transform.Rotate(0, 0, 90);
-            popupArmMenu.transform.position = new Vector3(popupArmMenu.transform.position.x - 0.2f, popupArmMenu.transform.position.y, popupArmMenu.transform.position.z);
-            popupArmMenu.transform.parent = transform;
-            popupArmMenu.SetActive(false);
-            */
         }
     }
 }
