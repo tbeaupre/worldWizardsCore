@@ -5,9 +5,9 @@
 //=============================================================================
 
 using UnityEngine;
-using System.Collections;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Longbow.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class Arrow : MonoBehaviour
@@ -228,7 +228,7 @@ namespace Valve.VR.InteractionSystem
 
 			// If the hit item has a parent, dock an empty object to that
 			// this fixes an issue with scaling hierarchy. I suspect this is not sustainable for a large object / scaling hierarchy.
-			scaleParentObject = new GameObject( "Arrow Scale Parent" );
+			scaleParentObject = new GameObject( "Arrow Scale SetParent" );
 			Transform parentTransform = collision.collider.transform;
 
 			// Don't do this for weebles because of how it has a fixed joint

@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
-using worldWizards.core.input.Tools;
+using WorldWizards.core.input.Tools;
+using WorldWizards.SteamVR.Extras;
 
-namespace worldWizards.core.input
+namespace WorldWizards.core.input
 {
     public abstract class InputListener : MonoBehaviour
     {

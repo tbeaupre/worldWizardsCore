@@ -3,9 +3,13 @@ using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Helper class for getting the Walls of a Resource's metadata after applying rotation
+    /// </summary>
     public static class WWWallsHelper
     {
-        public static WWWalls GetRotatedWWWalls(WWResourceMetaData metaData, int rotation)
+        public static WWWalls GetRotatedWWWalls(WWResourceMetadata metadata, int rotation)
         {
             int yRotation = rotation % 360 + (rotation < 0 ? 360 : 0);
 
@@ -20,36 +24,36 @@ namespace WorldWizards.core.entity.gameObject.utils
 
             if (yRotation == 0 || yRotation == 360)
             {
-                north = metaData.wwTileMetaData.wwWallMetaData.north;
-                east = metaData.wwTileMetaData.wwWallMetaData.east;
-                south = metaData.wwTileMetaData.wwWallMetaData.south;
-                west = metaData.wwTileMetaData.wwWallMetaData.west;
+                north = metadata.wwTileMetadata.wwWallMetadata.north;
+                east = metadata.wwTileMetadata.wwWallMetadata.east;
+                south = metadata.wwTileMetadata.wwWallMetadata.south;
+                west = metadata.wwTileMetadata.wwWallMetadata.west;
             }
             else if (yRotation == 90)
             {
-                north = metaData.wwTileMetaData.wwWallMetaData.west;
-                east = metaData.wwTileMetaData.wwWallMetaData.north;
-                south = metaData.wwTileMetaData.wwWallMetaData.east;
-                west = metaData.wwTileMetaData.wwWallMetaData.south;
+                north = metadata.wwTileMetadata.wwWallMetadata.west;
+                east = metadata.wwTileMetadata.wwWallMetadata.north;
+                south = metadata.wwTileMetadata.wwWallMetadata.east;
+                west = metadata.wwTileMetadata.wwWallMetadata.south;
             }
             else if (yRotation == 180)
             {
-                north = metaData.wwTileMetaData.wwWallMetaData.south;
-                east = metaData.wwTileMetaData.wwWallMetaData.west;
-                south = metaData.wwTileMetaData.wwWallMetaData.north;
-                west = metaData.wwTileMetaData.wwWallMetaData.east;
+                north = metadata.wwTileMetadata.wwWallMetadata.south;
+                east = metadata.wwTileMetadata.wwWallMetadata.west;
+                south = metadata.wwTileMetadata.wwWallMetadata.north;
+                west = metadata.wwTileMetadata.wwWallMetadata.east;
             }
             else // (yRotation == 270)
             {
-                north = metaData.wwTileMetaData.wwWallMetaData.east;
-                east = metaData.wwTileMetaData.wwWallMetaData.south;
-                south = metaData.wwTileMetaData.wwWallMetaData.west;
-                west = metaData.wwTileMetaData.wwWallMetaData.north;
+                north = metadata.wwTileMetadata.wwWallMetadata.east;
+                east = metadata.wwTileMetadata.wwWallMetadata.south;
+                south = metadata.wwTileMetadata.wwWallMetadata.west;
+                west = metadata.wwTileMetadata.wwWallMetadata.north;
             }
 
-            bool top = metaData.wwTileMetaData.wwWallMetaData.top;
-            bool bottom = metaData.wwTileMetaData.wwWallMetaData.bottom;
-            var rotatedMetaData = new WWWallMetaData(north, east, south, west, top, bottom);
+            bool top = metadata.wwTileMetadata.wwWallMetadata.top;
+            bool bottom = metadata.wwTileMetadata.wwWallMetadata.bottom;
+            var rotatedMetaData = new WWWallMetadata(north, east, south, west, top, bottom);
             WWWalls walls = rotatedMetaData.GetWallsEnum();
 
             return walls;

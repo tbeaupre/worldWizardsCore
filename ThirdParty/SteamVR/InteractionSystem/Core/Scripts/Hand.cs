@@ -4,13 +4,15 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnityEngine;
+using WorldWizards.SteamVR.Plugins;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	// Links with an appropriate SteamVR controller and facilitates
@@ -249,7 +251,7 @@ namespace Valve.VR.InteractionSystem
 			attachedObject.originalParent = objectToAttach.transform.parent != null ? objectToAttach.transform.parent.gameObject : null;
 			if ( ( flags & AttachmentFlags.ParentToHand ) == AttachmentFlags.ParentToHand )
 			{
-				//Parent the object to the hand
+				//SetParent the object to the hand
 				objectToAttach.transform.parent = GetAttachmentTransform( attachmentPoint );
 				attachedObject.isParentedToHand = true;
 			}
@@ -429,10 +431,10 @@ namespace Valve.VR.InteractionSystem
 				{
 					// No left/right relationship. Just wait for a connection
 
-					var vr = SteamVR.instance;
-					for ( int i = 0; i < Valve.VR.OpenVR.k_unMaxTrackedDeviceCount; i++ )
+					var vr = SteamVR.Scripts.SteamVR.instance;
+					for ( int i = 0; i < OpenVR.k_unMaxTrackedDeviceCount; i++ )
 					{
-						if ( vr.hmd.GetTrackedDeviceClass( (uint)i ) != Valve.VR.ETrackedDeviceClass.Controller )
+						if ( vr.hmd.GetTrackedDeviceClass( (uint)i ) != ETrackedDeviceClass.Controller )
 						{
 							//Debug.Log( string.Format( "Hand - device {0} is not a controller", i ) );
 							continue;
@@ -751,13 +753,13 @@ namespace Valve.VR.InteractionSystem
 		{
 			if ( controller != null )
 			{
-				SteamVR vr = SteamVR.instance;
+				SteamVR.Scripts.SteamVR vr = SteamVR.Scripts.SteamVR.instance;
 				if ( vr != null )
 				{
-					var pose = new Valve.VR.TrackedDevicePose_t();
-					var gamePose = new Valve.VR.TrackedDevicePose_t();
+					var pose = new TrackedDevicePose_t();
+					var gamePose = new TrackedDevicePose_t();
 					var err = vr.compositor.GetLastPoseForTrackedDeviceIndex( controller.index, ref pose, ref gamePose );
-					if ( err == Valve.VR.EVRCompositorError.None )
+					if ( err == EVRCompositorError.None )
 					{
 						var t = new SteamVR_Utils.RigidTransform( gamePose.mDeviceToAbsoluteTracking );
 						transform.localPosition = t.pos;

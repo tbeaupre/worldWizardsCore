@@ -2,7 +2,7 @@
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace worldWizardsCore.core.manager
+namespace WorldWizards.core.manager
 {
     /// <summary>
     ///     WWMenuManager holds references to all of the menus used in World Wizards.

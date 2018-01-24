@@ -1,10 +1,7 @@
-﻿using System;
-using NUnit.Framework;
-using UnityEngine;
-using worldWizardsCore.core.manager;
+﻿using UnityEngine;
 using WorldWizards.core.manager;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {
     public class PopupArmMenu : WWMenu
     {

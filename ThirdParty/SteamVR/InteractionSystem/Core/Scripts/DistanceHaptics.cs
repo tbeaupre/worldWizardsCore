@@ -4,10 +4,11 @@
 //
 //=============================================================================
 
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using WorldWizards.SteamVR.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class DistanceHaptics : MonoBehaviour

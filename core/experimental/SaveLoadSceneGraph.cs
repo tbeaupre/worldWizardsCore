@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
+using WorldWizards.core.file.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.experimental
@@ -17,12 +17,12 @@ namespace WorldWizards.core.experimental
 
         public void Save()
         {
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Save();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Save(FileIO.testPath);
         }
 
         public void Load()
         {
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load(FileIO.testPath);
         }
 
         public void CreateMaze()

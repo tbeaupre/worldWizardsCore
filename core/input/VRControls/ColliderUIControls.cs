@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using worldWizards.core.input.Tools;
-using worldWizards.core.input.VRControls;
-using worldWizardsCore.core.input.Tools;
-using worldWizardsCore.core.manager;
+using WorldWizards.core.input.Tools;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Extras;
 
-namespace worldWizardsCore.core.input.VRControls
+namespace WorldWizards.core.input.VRControls
 {
     /**
      * ColliderUIControls is attached to the right hand controller to allow collision with the Arm Menu.

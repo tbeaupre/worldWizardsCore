@@ -5,10 +5,8 @@
 //=============================================================================
 
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Core.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class Interactable : MonoBehaviour

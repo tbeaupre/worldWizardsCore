@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using worldWizards.core.input.Tools;
 using WorldWizards.core.controller.builder;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
-namespace worldWizardsCore.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
@@ -114,7 +113,7 @@ namespace worldWizardsCore.core.input.Tools
                         ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(curObject.GetId());
                         if (!(curObject is Tile))
                         {
-                            Vector3 wwOffset = curObject.objectData.coordinate.Offset / 2 * CoordinateHelper.GetTileScale();
+                            Vector3 wwOffset = curObject.objectData.coordinate.GetOffset() / 2 * CoordinateHelper.GetTileScale();
                             originalOffsets.Add(curObject, wwOffset);
                         }
                     }

@@ -1,13 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using worldWizards.core.input.Tools;
-using worldWizards.core.input.VRControls;
-using worldWizardsCore.core.manager;
-using worldWizardsCore.core.menus;
+using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Extras;
+using WorldWizards.SteamVR.Scripts;
 
-namespace worldWizardsCore.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
 
     /// <summary>

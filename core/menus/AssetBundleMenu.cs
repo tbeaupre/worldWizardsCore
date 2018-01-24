@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using worldWizardsCore.core.manager;
-using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.manager;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {
     /// <summary>
     ///     Sets up and handles input to AssetBundleMenu

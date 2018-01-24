@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Scripts;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {
     /// <summary>
     ///     ArmMenu is a VR-only WWMenu that sits on the player's arm and allows them to quickly change controller tools.

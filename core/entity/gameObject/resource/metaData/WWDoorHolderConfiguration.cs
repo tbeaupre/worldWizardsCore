@@ -1,33 +1,35 @@
-﻿using UnityEngine.WSA;
-
-namespace WorldWizards.core.entity.gameObject.resource.metaData
+﻿namespace WorldWizards.core.entity.gameObject.resource.metaData
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// Metadata necessary for describing a Configuration of Door Holders.
+    /// A World Wizard Tile can have up to four doors, one for each wall.
+    /// </summary>
     public class WWDoorHolderConfiguration
     {
-        public WWDoorHolderMetaData northWWDoorHolderMetaData;
-        public WWDoorHolderMetaData eastWWDoorHolderMetaData;
-        public WWDoorHolderMetaData southWWDoorHolderMetaData;
-        public WWDoorHolderMetaData westWWDoorHolderMetaData;
+        public WWDoorHolderMetadata northWwDoorHolderMetadata;
+        public WWDoorHolderMetadata eastWwDoorHolderMetadata;
+        public WWDoorHolderMetadata southWwDoorHolderMetadata;
+        public WWDoorHolderMetadata westWwDoorHolderMetadata;
 
         public WWDoorHolderConfiguration(Tile tile) : this(
-            tile.resourceMetaData.wwTileMetaData.northWwDoorHolderMetaData,
-            tile.resourceMetaData.wwTileMetaData.eastWwDoorHolderMetaData,
-            tile.resourceMetaData.wwTileMetaData.southWwDoorHolderMetaData,
-            tile.resourceMetaData.wwTileMetaData.westWwDoorHolderMetaData)
+            tile.ResourceMetadata.wwTileMetadata.northWwDoorHolderMetadata,
+            tile.ResourceMetadata.wwTileMetadata.eastWwDoorHolderMetadata,
+            tile.ResourceMetadata.wwTileMetadata.southWwDoorHolderMetadata,
+            tile.ResourceMetadata.wwTileMetadata.westWwDoorHolderMetadata)
         {
         }
 
-
         public WWDoorHolderConfiguration(
-            WWDoorHolderMetaData northWWDoorHolderMetaData,
-            WWDoorHolderMetaData eastWWDoorHolderMetaData,
-            WWDoorHolderMetaData southWWDoorHolderMetaData,
-            WWDoorHolderMetaData westWWDoorHolderMetaData)
+            WWDoorHolderMetadata northWwDoorHolderMetadata,
+            WWDoorHolderMetadata eastWwDoorHolderMetadata,
+            WWDoorHolderMetadata southWwDoorHolderMetadata,
+            WWDoorHolderMetadata westWwDoorHolderMetadata)
         {
-            this.northWWDoorHolderMetaData = northWWDoorHolderMetaData;
-            this.eastWWDoorHolderMetaData = eastWWDoorHolderMetaData;
-            this.southWWDoorHolderMetaData = southWWDoorHolderMetaData;
-            this.westWWDoorHolderMetaData = westWWDoorHolderMetaData;
+            this.northWwDoorHolderMetadata = northWwDoorHolderMetadata;
+            this.eastWwDoorHolderMetadata = eastWwDoorHolderMetadata;
+            this.southWwDoorHolderMetadata = southWwDoorHolderMetadata;
+            this.westWwDoorHolderMetadata = westWwDoorHolderMetadata;
         }
     }
 }

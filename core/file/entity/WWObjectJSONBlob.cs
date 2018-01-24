@@ -6,6 +6,10 @@ using WorldWizards.core.entity.gameObject;
 
 namespace WorldWizards.core.file.entity
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// JSON Blob structure for WWObjects
+    /// </summary>
     [Serializable]
     public class WWObjectJSONBlob
     {
@@ -16,23 +20,29 @@ namespace WorldWizards.core.file.entity
         public string resourceTag;
         public WWType type;
 
+        /// <summary>
+        /// Constructor used by the JSON parser.
+        /// </summary>
         [JsonConstructor]
         public WWObjectJSONBlob()
         {
         }
 
-        public WWObjectJSONBlob(WWObjectData state)
+        /// <summary>
+        /// Constructor that takes in the state of a WWObjectData and constructs a blob.
+        /// </summary>
+        /// <param name="wwObjectData"></param>
+        public WWObjectJSONBlob(WWObjectData wwObjectData)
         {
-            id = state.id;
-            ;
-            coordinate = new CoordinateJSONBlob(state.coordinate);
-            resourceTag = state.resourceTag;
-            if (state.parent != null)
+            id = wwObjectData.id;
+            coordinate = new CoordinateJSONBlob(wwObjectData.coordinate);
+            resourceTag = wwObjectData.resourceTag;
+            if (wwObjectData.parent != null)
             {
-                parent = state.parent.id;
+                parent = wwObjectData.parent.id;
             }
             children = new List<Guid>();
-            foreach (WWObjectData child in state.children) children.Add(child.id);
+            foreach (WWObjectData child in wwObjectData.children) children.Add(child.id);
         }
     }
 }

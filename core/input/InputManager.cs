@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using worldWizards.core.input.Desktop;
-using worldWizards.core.input.Tools;
-using worldWizards.core.input.VRControls;
-using worldWizardsCore.core.input.Tools;
+using WorldWizards.core.input.Desktop;
+using WorldWizards.core.input.Tools;
+using WorldWizards.core.input.VRControls;
+using WorldWizards.SteamVR.Scripts;
 
-namespace worldWizards.core.input
+namespace WorldWizards.core.input
 {
     /**
      * This script is attached to a single object in the scene and handles the creation of InputListeners for either

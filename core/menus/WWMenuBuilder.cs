@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using WorldWizards.core.controller.level;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {
     /// <summary>
     ///     WWMenuBuilder allows buttons to be added at runtime to any menu

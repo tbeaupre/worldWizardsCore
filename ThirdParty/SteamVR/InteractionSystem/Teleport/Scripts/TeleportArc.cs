@@ -5,8 +5,9 @@
 //=============================================================================
 
 using UnityEngine;
+using WorldWizards.SteamVR.InteractionSystem.Core.Scripts;
 
-namespace Valve.VR.InteractionSystem
+namespace WorldWizards.SteamVR.InteractionSystem.Teleport.Scripts
 {
 	//-------------------------------------------------------------------------
 	public class TeleportArc : MonoBehaviour

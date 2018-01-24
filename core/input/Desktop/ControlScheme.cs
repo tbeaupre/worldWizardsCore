@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace worldWizards.core.input.Desktop
+namespace WorldWizards.core.input.Desktop
 {
     // Associates keyboard keys with the buttons on a VR Controller.
     public struct ControlScheme

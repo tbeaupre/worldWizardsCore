@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {   
     /// <summary>
     ///     WWButton holds all the info for a button used in World Wizards.

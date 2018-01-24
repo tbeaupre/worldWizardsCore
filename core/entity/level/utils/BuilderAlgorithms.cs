@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
-using WorldWizards.core.entity.common;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -15,6 +13,10 @@ using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.entity.level.utils
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    /// <summary>
+    /// 
+    /// </summary>
     public static class BuilderAlgorithms
     {
         public static void BuildPerimeterWalls(string resourceTag, WWObject wwObject)
@@ -48,11 +50,11 @@ namespace WorldWizards.core.entity.level.utils
                                  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetWallsAtCoordinate(
                                      new Coordinate(coordIndex));
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {
@@ -84,11 +86,11 @@ namespace WorldWizards.core.entity.level.utils
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            
             WWResource resource = WWResourceController.GetResource(resourceTag);
-            WWResourceMetaData resourceMetaData = resource.GetMetaData();
+            WWResourceMetadata resourceMetadata = resource.GetMetaData();
 
             for (var r = 0; r < 360; r += 90)
             {
-                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetaData, r);
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(resourceMetadata, r);
                 bool doesCollide = Convert.ToBoolean(newWalls & wallsToFit); // should be 0 or False if no collision
                 if (!doesCollide)
                 {

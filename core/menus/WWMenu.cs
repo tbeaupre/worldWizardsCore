@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace worldWizardsCore.core.menus
+namespace WorldWizards.core.menus
 {
     /// <summary>
     ///     WWMenu holds info for menus used in World Wizards.

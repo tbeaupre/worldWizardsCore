@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using WorldWizards.core.controller.level;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
 
-namespace worldWizardsCore.core.manager
+namespace WorldWizards.core.manager
 {
     /// <summary>
     ///     Controls what is in the object gun when the player is placing new objects in the scene

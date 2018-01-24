@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
+using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.experimental;
+using WorldWizards.core.file.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.UnitTests.Editor
@@ -72,10 +74,10 @@ namespace WorldWizards.core.UnitTests.Editor
         public static void SaveLoadSceneGraph()
         {
             CreateMaze();
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Save();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Save(FileIO.testPath);
             int objectCountBeforeSave = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().SceneSize();
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ClearAll();
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load();
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load(FileIO.testPath);
             int objectCountAfterSave = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().SceneSize();
             Assert.AreEqual(objectCountAfterSave, objectCountBeforeSave);
         }

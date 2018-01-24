@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using worldWizards.core.input.VRControls;
-using worldWizardsCore.core.input.Tools;
-using worldWizardsCore.core.manager;
 using WorldWizards.core.controller.builder;
-using WorldWizards.core.controller.level;
-using WorldWizards.core.controller.level.utils;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Scripts;
 
-namespace worldWizards.core.input.Tools
+namespace WorldWizards.core.input.Tools
 {
     public class CreateObjectTool : Tool
     {
@@ -41,6 +39,7 @@ namespace worldWizards.core.input.Tools
             base.Awake();
             
             Debug.Log("Create Object Tool");
+
 
             gridController = FindObjectOfType<GridController>();
 
