@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel.Design;
+using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.manager;
@@ -12,68 +13,64 @@ namespace WorldWizards.core.controller.builder
     public class GridController : MonoBehaviour
     {
         [SerializeField] private GameObject grid;
-        private int height;
+        private int height = 0;
         private GameObject playerReferenceScale;
+        [SerializeField] private Material gridMat;
+        private readonly string gridMatMainTexture = "_MainTex";
+        private readonly string gridMatViewDistance = "_ViewDistance";
+
+
+        private float viewDistance = 10; // the amount of coordinate spaces the user can see
+        private float scaleMultiplier = 1000;
 
         /// <summary>
         /// Basic setup
         /// </summary>
-        private void Awake()
+        private void Start()
         {
-            grid.transform.position = Vector3.zero;
-            grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
-
             playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
+            RefreshGrid();
+        }
 
-            playerReferenceScale.transform.position = Vector3.zero;
-            playerReferenceScale.transform.localScale = Vector3.one;
+
+        private void SetGridScale()
+        {
+            var tileLengthScale = CoordinateHelper.tileLengthScale;
+            var baseTileLenghtScale = CoordinateHelper.baseTileLength;
+            var textureScale = scaleMultiplier * baseTileLenghtScale;
+            var scale = Vector3.one * tileLengthScale * scaleMultiplier;
+            scale.y = 1;
+            grid.transform.localScale = scale;
+            gridMat.SetTextureScale(gridMatMainTexture, new Vector2(textureScale, textureScale));
+            // adjust the material's view distance as well based on the world scale
+            var viewDistanceScaled = viewDistance * CoordinateHelper.GetTileScale();
+            gridMat.SetFloat(gridMatViewDistance, viewDistanceScaled);
+
         }
 
         /// <summary>
         /// Get the grid collider.
         /// </summary>
         /// <returns> The Grid's Collider</returns>
-
         public Collider GetGridCollider()
         {
             return GetComponent<Collider>();
         }
 
-//        private void Update()
-//        {
-//            GetInput();
-//        }
-//
-//        private void GetInput()
-//        {
-//            if (Input.GetKeyDown(KeyCode.UpArrow))
-//            {
-//                StepUp();
-//            }
-//            else if (Input.GetKeyDown(KeyCode.DownArrow))
-//            {
-//                StepDown();
-//            }
-//        }
 
         /// <summary>
         /// Refresh the grid position and scale.
         /// </summary>
         public void RefreshGrid()
         {
-            float yPos = height * CoordinateHelper.GetTileScale();
-            Vector3 gridPosition = grid.transform.position;
-            gridPosition.y = yPos;
-            grid.transform.position = gridPosition;
+            float yPos = (height - 0.5f) * CoordinateHelper.GetTileScale();
+            grid.transform.position = new Vector3(0, yPos, 0);
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
-
-//            ManagerRegistry.Instance.sceneGraphManager.HideObjectsAbove(c.Index.y);
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);
-
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            
             // set the scale too
-            grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
+            SetGridScale();            
             playerReferenceScale.transform.position = new Vector3(0,
-                yPos - 0.5f * CoordinateHelper.baseTileLength * CoordinateHelper.tileLengthScale,
+                yPos,
                 0);
         }
 

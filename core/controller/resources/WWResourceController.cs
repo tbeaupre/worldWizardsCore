@@ -16,7 +16,7 @@ namespace WorldWizards.core.controller.resources
         /// <param name="assetBundleTag">Asset bundle tag.</param>
         public static List<string> GetResourceKeysByAssetBundle(string assetBundleTag)
         {
-            Debug.Log(bundles.Keys);
+            Debug.Log(bundles.Keys.Count);
             var filteredKeys = new List<string>();
             foreach (KeyValuePair<string, WWResource> kvp in bundles)
                 if (kvp.Value.assetBundleTag.Equals(assetBundleTag))

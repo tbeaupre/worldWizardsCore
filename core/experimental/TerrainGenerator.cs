@@ -25,18 +25,6 @@ namespace WorldWizards.core.experimental
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(parentObj);
                 
 
-                //					// prop
-                //					IntVector3 intVector3 = new IntVector3(x,height+1,y);
-                //					Vector3 offset = new Vector3(UnityEngine.Random.Range(-1,1), 0,UnityEngine.Random.Range(-1,1));
-                //					Coordinate propCoordinate = new Coordinate(intVector3, offset, 0);
-                //					WWObjectData propData = WWObjectFactory.MockCreateProp(propCoordinate, "tree");
-                //					WWObject propObj = WWObjectFactory.Instantiate(propData);
-                //					sceneGraphController.Add(propObj);
-                //
-                //					List<WWObject> propChildren = new List<WWObject> ();
-                //					propChildren.Add (propObj);
-                //					parentObj.AddChildren (propChildren);
-
                 while (height > 0)
                 {
                     height--;

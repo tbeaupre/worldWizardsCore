@@ -27,7 +27,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
 
         public override void OnInspectorGUI()
         {
-
             var script = target as WWResourceMetadata;
             script.wwObjectMetadata.type =
                 (WWType) EditorGUILayout.EnumPopup("Asset Type", script.wwObjectMetadata.type);
@@ -89,7 +88,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
             if (GUILayout.Button("Get Door Dimensions and Pivot"))
             {
-
                 GetDoorDimensions(doorMetadata, baseTileSize);
             }
         }
@@ -121,7 +119,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
         private void CreateDoorHelpers()
         {
             var script = target as WWResourceMetadata;
-
             Vector3 spawnPos = script.transform.position;
             Vector3 widthOffset = Vector3.zero;
             Vector3 extents = CalculateLocalBounds(script.gameObject);
@@ -244,7 +241,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
             float width = Vector3.Distance(x1.transform.position, x2.transform.position) / baseTileSize;
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y) / baseTileSize;
-
             wwDoorHolderMetadata.width = width;
             wwDoorHolderMetadata.height = height;
             wwDoorHolderMetadata.pivot = pivot.transform.position / baseTileSize * 2f;
@@ -259,7 +255,6 @@ namespace WorldWizards.core.entity.gameObject.resource.metaData.Editor
             }
             float width = Vector3.Distance(x1.transform.position, x2.transform.position);
             float height = Math.Abs(y.transform.position.y - x1.transform.position.y);
-
             doorMetadata.width = width;
             doorMetadata.height = height;
             var script = target as WWResourceMetadata;

@@ -64,7 +64,6 @@ namespace WorldWizards.core.entity.coordinate.utils
         public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
         {
             // Move origin to bottom left corner.
-
             float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
             float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
             float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
