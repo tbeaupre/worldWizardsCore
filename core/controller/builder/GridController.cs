@@ -44,7 +44,7 @@ namespace WorldWizards.core.controller.builder
         /// </summary>
         public void RefreshGrid()
         {
-            float yPos = height * CoordinateHelper.GetTileScale();
+            float yPos = height * CoordinateHelper.GetTileScale() - (CoordinateHelper.GetTileScale() * 0.5f);
             Vector3 gridPosition = grid.transform.position;
             gridPosition.y = yPos;
             grid.transform.position = gridPosition;
