@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.gameObject.resource;
 
 namespace WorldWizards.core.controller.resources
@@ -15,6 +16,7 @@ namespace WorldWizards.core.controller.resources
         /// <param name="assetBundleTag">Asset bundle tag.</param>
         public static List<string> GetResourceKeysByAssetBundle(string assetBundleTag)
         {
+            Debug.Log(bundles.Keys);
             var filteredKeys = new List<string>();
             foreach (KeyValuePair<string, WWResource> kvp in bundles)
                 if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
@@ -23,8 +25,26 @@ namespace WorldWizards.core.controller.resources
                 }
             return filteredKeys;
         }
-      
-        
+
+        /// <summary>
+        ///     Gets the resource keys by asset bundle tag and filter by WWType
+        /// </summary>
+        /// <param name="assetBundleTag"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<string> GetResourceKeysByAssetBundleFiltered(string assetBundleTag, WWType type)
+        {
+            var filteredKeys = new List<string>();
+            foreach (KeyValuePair<string, WWResource> kvp in bundles)
+                if (kvp.Value.assetBundleTag.Equals(assetBundleTag))
+                {
+                    if (kvp.Value.GetMetaData().wwObjectMetadata.type.Equals(type))
+                    {
+                        filteredKeys.Add(kvp.Key);
+                    }
+                }
+            return filteredKeys;
+        }
 
         public static void LoadResource(string tag, string assetBundleTag, string path)
         {

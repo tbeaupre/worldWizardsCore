@@ -38,6 +38,7 @@ namespace WorldWizards.core.controller.builder
             return GetComponent<Collider>();
         }
 
+
         /// <summary>
         /// Refresh the grid position and scale.
         /// </summary>
@@ -49,7 +50,6 @@ namespace WorldWizards.core.controller.builder
             grid.transform.position = gridPosition;
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            
-
             // set the scale too
             grid.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             playerReferenceScale.transform.position = new Vector3(0,

@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using WorldWizards.core.manager;
 
 namespace WorldWizards.core.input.Tools
 {
@@ -104,10 +105,27 @@ namespace WorldWizards.core.input.Tools
         
         
         // Application Menu
-        public override void OnMenuUnclick()
+        /*public override void OnMenuUnclick()
         {
-            // Menu Logic.
-        }
+            if (UnityEngine.XR.XRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+            }
+            else
+            {
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+                }
+            }
+            base.OnMenuUnclick();
+        }*/
 
         
         // Touchpad Press

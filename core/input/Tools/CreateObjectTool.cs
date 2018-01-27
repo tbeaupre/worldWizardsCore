@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WorldWizards.core.controller.resources;
+using WorldWizards.core.controller.builder;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
 {
     public class CreateObjectTool : Tool
     {
+        // Prefabs
+        private static GridController gridController;
+        
         // Resources
-        private static string currentAssetBundle;
-        private static List<string> possibleTiles;
+        private List<string> possibleTiles;
         
         // Object Properties
         private WWObject curObject;
@@ -33,22 +37,27 @@ namespace WorldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
+            
+            Debug.Log("Create Object Tool");
 
-            if (currentAssetBundle == null)
-            {
-                currentAssetBundle = "ww_basic_assets";
-                possibleTiles = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
-                Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
-            }
+
+            gridController = FindObjectOfType<GridController>();
 
             curTileIndex = 0;
             curRotation = 0;
+        }
+
+        protected void Start()
+        {
+            possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
+            Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
         }
 
         public void Update()
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
+
             if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
                 validTarget = true;
@@ -197,6 +206,30 @@ namespace WorldWizards.core.input.Tools
                     ReplaceObject(hitPoint);
                 }
             }
+        }
+
+        public override void OnMenuUnclick()
+        {
+            if (UnityEngine.XR.XRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+            }
+            else
+            {
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
+                    possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
+                    Debug.Log("Number of objects in object gun: " + possibleTiles.Count);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+                }
+            }
+            base.OnMenuUnclick();
         }
         
         private float CalculateSwipe(float x)

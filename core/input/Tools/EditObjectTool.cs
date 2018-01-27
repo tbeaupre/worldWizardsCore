@@ -28,6 +28,8 @@ namespace WorldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
+            
+            Debug.Log("Edit Object Tool");
 
             originalOffsets = new Dictionary<WWObject, Vector3>();
         }

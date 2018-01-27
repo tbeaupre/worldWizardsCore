@@ -7,7 +7,8 @@ namespace WorldWizards.core.input
 {
     public abstract class InputListener : MonoBehaviour
     {
-        protected Tool tool; // The tool which is currently attached to this controller.
+        protected Tool tool;             // The tool which is currently attached to this controller.
+        protected Tool previousTool;     // The tool that was on the controller before the current tool
         protected bool canChangeTools = true;
         
         protected bool Trigger { get; private set; } // True while the trigger is held down.
@@ -52,9 +53,17 @@ namespace WorldWizards.core.input
         {
             if (canChangeTools)
             {
+                Debug.Log("Tool changed to " + newToolType);
+                previousTool = tool;
                 Destroy(tool);
                 tool = gameObject.AddComponent(newToolType) as Tool;
             }
+        }
+
+        // Allows for going back to the previous tool the user had on the controller
+        public void ChangeToPreviousTool()
+        {
+            ChangeTool(previousTool.GetType());
         }
         
         // For retrieving data which is different in VR and desktop modes.
