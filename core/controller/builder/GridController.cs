@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel.Design;
+using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.manager;
@@ -16,8 +17,10 @@ namespace WorldWizards.core.controller.builder
         private GameObject playerReferenceScale;
         [SerializeField] private Material gridMat;
         private readonly string gridMatMainTexture = "_MainTex";
+        private readonly string gridMatViewDistance = "_ViewDistance";
 
 
+        private float viewDistance = 10; // the amount of coordinate spaces the user can see
         private float scaleMultiplier = 1000;
 
         /// <summary>
@@ -35,13 +38,14 @@ namespace WorldWizards.core.controller.builder
             var tileLengthScale = CoordinateHelper.tileLengthScale;
             var baseTileLenghtScale = CoordinateHelper.baseTileLength;
             var textureScale = scaleMultiplier * baseTileLenghtScale;
-//            var textureOffset = textureScale * 0.05f; // (baseTileLenghtScale / (baseTileLenghtScale * tileLengthScale)) * 0.5f;
-            var textureOffset = 0f;
             var scale = Vector3.one * tileLengthScale * scaleMultiplier;
             scale.y = 1;
             grid.transform.localScale = scale;
-            gridMat.SetTextureOffset(gridMatMainTexture, new Vector2(textureOffset, textureOffset));
             gridMat.SetTextureScale(gridMatMainTexture, new Vector2(textureScale, textureScale));
+            // adjust the material's view distance as well based on the world scale
+            var viewDistanceScaled = viewDistance * CoordinateHelper.GetTileScale();
+            gridMat.SetFloat(gridMatViewDistance, viewDistanceScaled);
+
         }
 
         /// <summary>
