@@ -33,6 +33,11 @@ namespace WorldWizards.core.entity.gameObject
             tileFader.On();
         }
 
+        public List<Renderer> GetAllRenderers()
+        {
+            return tileFader.GetAllRenderers();
+        }
+
         /// <summary>
         /// Visually show that the WWObject is deselected.
         /// </summary>

@@ -18,6 +18,23 @@ namespace WorldWizards.core.controller.builder
         private readonly List<Material[]> skinnedMaterials;
         private readonly SkinnedMeshRenderer[] skinnedRenderers;
 
+
+
+        public List<Renderer> GetAllRenderers()
+        {
+            var renderers = new List<Renderer>();
+            foreach (var mr in meshRenderers)
+            {
+                renderers.Add(mr);
+            }
+            foreach (var sr in skinnedRenderers)
+            {
+                renderers.Add(sr);
+            }
+
+            return renderers;
+        }
+
         /// <summary>
         /// Constructor that searches the entire GameObject hierarchy and
         /// determines the original regular materials.
