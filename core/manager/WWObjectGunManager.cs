@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
 
@@ -13,28 +14,13 @@ namespace WorldWizards.core.manager
     
     public class WWObjectGunManager : Manager
     {
-        private List<string> possibleObjects;
-        private string currentAssetBundle = "ww_basic_assets";
         private bool doFilter;
         private WWType filterType;
-
-        /// <summary>
-        ///     Set the asset bundle for use in object gun
-        /// </summary>
-        /// <param name="assetBundleTag">The asset bundle chosen</param>
-        public void SetCurrentAssetBundle(string assetBundleTag)
-        {
-            currentAssetBundle = assetBundleTag;
-        }
-
-        /// <summary>
-        ///     Sets whether the object gun should use filtering or not
-        /// </summary>
-        /// <param name="filter">True if filtering, false if no filtering</param>
-        public void SetDoFilter(bool filter)
-        {
-            doFilter = filter;
-        }
+        private string assetBundleTag = "ww_basic_assets";
+        
+        // The list of objects for the object gun
+        // Default is all the objects in ww_basic_assets
+        private List<string> possibleObjects = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
 
         /// <summary>
         ///     Gets whether the object gun should be filtered
@@ -43,15 +29,6 @@ namespace WorldWizards.core.manager
         public bool GetDoFilter()
         {
             return doFilter;
-        }
-
-        /// <summary>
-        ///     Set the type of object we are filtering for
-        /// </summary>
-        /// <param name="type">The type of object we want to filter for</param>
-        public void SetFilterType(WWType type)
-        {
-            filterType = type;
         }
 
         /// <summary>
@@ -64,21 +41,50 @@ namespace WorldWizards.core.manager
         }
         
         /// <summary>
-        ///     Get possible objects for object gun based on filter and selected asset bundle
+        ///     Returns the list of possible objects for object gun
         /// </summary>
         /// <returns>List of all objects that should be in object gun</returns>
         public List<string> GetPossibleObjectKeys()
         {
+            return possibleObjects;
+        }
+
+        /// <summary>
+        ///     Gets the list of possible objects for the object gun based on 
+        /// </summary>
+        /// <param name="doFilter"></param>
+        /// <param name="filterType"></param>
+        public void SetPossibleObjectKeys(bool doFilter, WWType filterType)
+        {
             if (doFilter)
             {
-                possibleObjects = WWResourceController.GetResourceKeysByAssetBundleFiltered(currentAssetBundle, filterType);
+                possibleObjects = WWResourceController.GetResourceKeysByAssetBundleFiltered(assetBundleTag, filterType);
             }
             else
             {
-                possibleObjects = WWResourceController.GetResourceKeysByAssetBundle(currentAssetBundle);
+                possibleObjects = WWResourceController.GetResourceKeysByAssetBundle(assetBundleTag);
             }
 
-            return possibleObjects;
+            this.doFilter = doFilter;
+            this.filterType = filterType;
+            
+            Debug.Log("doFilter: " + doFilter + ", filterType: " + filterType + ", currentAssetBundle: " + assetBundleTag);
+        }
+
+        public void SetPossibleObjectKeys(string assetBundleTag)
+        {
+            if (doFilter)
+            {
+                possibleObjects = WWResourceController.GetResourceKeysByAssetBundleFiltered(assetBundleTag, filterType);
+            }
+            else
+            {
+                possibleObjects = WWResourceController.GetResourceKeysByAssetBundle(assetBundleTag);
+            }
+
+            this.assetBundleTag = assetBundleTag;
+            
+            Debug.Log("doFilter: " + doFilter + ", filterType: " + filterType + ", currentAssetBundle: " + assetBundleTag);
         }
     }
 }
