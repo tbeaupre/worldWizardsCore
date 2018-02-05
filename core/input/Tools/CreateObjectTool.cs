@@ -63,9 +63,13 @@ namespace WorldWizards.core.input.Tools
         private void CreateObject(Vector3 position)
         {
             Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
-            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, 
-                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys()[curTileIndex]);
-            curObject = WWObjectFactory.Instantiate(objData);
+            if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+            {
+                WWObjectData objData = WWObjectFactory.CreateNew(coordinate,
+                    ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys()[curTileIndex]);
+                curObject = WWObjectFactory.Instantiate(objData);
+            }
+            
         }
 
         private void ReplaceObject(Vector3 position)
@@ -169,14 +173,22 @@ namespace WorldWizards.core.input.Tools
             {
                 if (lastPadPos.y > DEADZONE_SIZE)
                 {
-                    curTileIndex = (curTileIndex + 1) % ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
-                    ReplaceObject(hitPoint);
+                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+                    {
+                        curTileIndex = (curTileIndex + 1) % ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
+                        ReplaceObject(hitPoint);
+                    }
                 }
                 if (lastPadPos.y < -DEADZONE_SIZE)
                 {
-                    curTileIndex = (curTileIndex - 1 + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count) % 
-                                    ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
-                    ReplaceObject(hitPoint);
+                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+                    {
+                        curTileIndex = (curTileIndex - 1 + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
+                                            .GetPossibleObjectKeys().Count) %
+                                       ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
+                                           .GetPossibleObjectKeys().Count;
+                        ReplaceObject(hitPoint);
+                    }
                 }
             }
         }

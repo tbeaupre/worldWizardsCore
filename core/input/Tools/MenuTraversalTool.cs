@@ -37,6 +37,7 @@ namespace WorldWizards.core.input.Tools
             laserPointer.PointerOut += HandlePointerOut;
 
             laserPointer.active = true;
+            Debug.Log(laserPointer.active);
         }
 
         /// <summary>
@@ -61,6 +62,8 @@ namespace WorldWizards.core.input.Tools
             if (assetBundleMenu.activeSelf)
             {   
                 assetBundleMenu.SetActive(false);
+                laserPointer.active = false;
+                Debug.Log(laserPointer.active);
                 
                 // Go back to tool we were using before
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();

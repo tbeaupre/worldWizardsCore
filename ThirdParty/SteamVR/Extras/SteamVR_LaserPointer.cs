@@ -86,6 +86,7 @@ namespace WorldWizards.SteamVR.Extras
                 isActive = true;
                 this.transform.GetChild(0).gameObject.SetActive(true);
             }
+            
 
             float dist = 100f;
 
