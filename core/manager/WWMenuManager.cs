@@ -13,8 +13,6 @@ namespace WorldWizards.core.manager
  
     public class WWMenuManager : Manager
     {
-        private Camera desktopCamera;
-        private Camera VRCamera;
         private UnityEngine.Object[] allMenusArray;
         private readonly Dictionary<string, GameObject> allMenus;
 
@@ -90,19 +88,11 @@ namespace WorldWizards.core.manager
             if (allMenus.TryGetValue(menuName, out menu))
             {
                 Debug.Log(menu.GetComponent<WWMenu>().inFrontOfCamera);
+                
                 if (menu.GetComponent<WWMenu>().inFrontOfCamera)
                 {
-                    if (UnityEngine.XR.XRDevice.isPresent)
-                    {
-                        // TODO: Get reference to VR camera
-                        menu.transform.position = VRCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 5.0f));
-                    }
-                    else
-                    {
-                        desktopCamera = Camera.main;
-                        menu.transform.position = desktopCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 5.0f));
-                    }
-                    
+                    //TODO: Test that this works in Desktop mode and VR mode
+                    menu.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 5.0f));
                 }
                 menu.SetActive(active);
             }
