@@ -24,12 +24,12 @@ namespace WorldWizards.core.entity.coordinate.utils
             return baseTileLength * tileLengthScale;
         }
 
-        public static Vector3 GetTileCenter(Vector3 position)
-        {
-            Coordinate coord = UnityCoordToWWCoord(position, 0);
-            coord.SnapToGrid();
-            return WWCoordToUnityCoord(coord);
-        }
+//        public static Vector3 GetTileCenter(Vector3 position)
+//        {
+//            Coordinate coord = UnityCoordToWWCoord(position, 0);
+//            coord.SnapToGrid();
+//            return WWCoordToUnityCoord(coord);
+//        }
 
         /// <see cref="UnityCoordToWWCoord(Vector3, int)"/>
         public static Coordinate UnityCoordToWWCoord(Vector3 position)

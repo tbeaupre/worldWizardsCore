@@ -7,9 +7,9 @@ namespace WorldWizards.core.entity.gameObject
     {
         private InteractionType interactionType;
         
-        protected override Vector3 GetPositionOffset()
-        {
-            return Vector3.zero;
-        }
+//        protected override Vector3 GetPositionOffset()
+//        {
+//            return Vector3.zero;
+//        }
     }
 }

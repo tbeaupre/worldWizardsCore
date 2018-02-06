@@ -102,7 +102,7 @@ namespace WorldWizards.core.input
             availableToolTypes = new List<Type>();
             availableToolTypes.Add(typeof(EditObjectTool));
             availableToolTypes.Add(typeof(CreateObjectTool));
-            availableToolTypes.Add(typeof(SelectionTool));
+//            availableToolTypes.Add(typeof(SelectionTool));
         }
 
         private Type GetCurrentTool()

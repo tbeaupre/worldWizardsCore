@@ -189,9 +189,9 @@ namespace WorldWizards.core.entity.gameObject
         /// </summary>
         /// <param name="position">The position to set in Unity's coordinate space.</param>
         /// <param name="snapToGrid">A flag for whether or not the position should have an offset from the grid or not.</param>
-        public virtual void SetPosition(Vector3 position, bool snapToGrid)
+        public virtual void SetPosition(Vector3 position)
         {
-            transform.position = position + GetPositionOffset();
+            transform.position = position;// + GetPositionOffset();
             objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.Rotation);
         }
 
@@ -201,14 +201,15 @@ namespace WorldWizards.core.entity.gameObject
         /// <param name="coordinate">The coordinate to set</param>
         public void SetPosition(Coordinate coordinate)
         {
-            SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate), false);
+            coordinate.SnapToGrid();
+            SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate));
             SetRotation(coordinate.Rotation);
         }
-
-        /// <summary>
-        /// Gets the offset for this WWObject.
-        /// </summary>
-        /// <returns>The offset for this WWObject.</returns>
-        protected abstract Vector3 GetPositionOffset();
+//
+//        /// <summary>
+//        /// Gets the offset for this WWObject.
+//        /// </summary>
+//        /// <returns>The offset for this WWObject.</returns>
+//        protected abstract Vector3 GetPositionOffset();
     }
 }

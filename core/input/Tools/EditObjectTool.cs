@@ -14,6 +14,7 @@ namespace WorldWizards.core.input.Tools
         
         // Raycast Information
         private Vector3 hitPoint;
+        private Vector3 hitPointOffset;
         
         // Swipe
         private bool trackingSwipe = false;
@@ -46,7 +47,19 @@ namespace WorldWizards.core.input.Tools
         {
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
-                kvp.Key.SetPosition(position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), true);
+                kvp.Key.SetPosition(position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
+            }
+        }
+        
+        
+        private void PlaceObjects(Vector3 position)
+        {
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                var rememberRot = kvp.Value.Rotation;
+                var coord = CoordinateHelper.UnityCoordToWWCoord(
+                    position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), rememberRot);
+                kvp.Key.SetPosition(coord);
             }
         }
 
@@ -55,8 +68,8 @@ namespace WorldWizards.core.input.Tools
         public override void OnTriggerUnclick()
         {
             onTriggerDown = false;
-            var target = CoordinateHelper.GetTileCenter(hitPoint);
-            MoveObjects(target);
+//            var target = CoordinateHelper.GetTileCenter(hitPoint);
+            PlaceObjects(hitPoint - hitPointOffset);
             if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().DoesNotCollide(
                 new List<WWObject>(wwObjectToOrigCoordinates.Keys))){
                 foreach (var kvp in wwObjectToOrigCoordinates)
@@ -69,11 +82,16 @@ namespace WorldWizards.core.input.Tools
                 // TODO rotation will be lost with this cooordinate conversion
                 foreach (var kvp in wwObjectToOrigCoordinates)
                 {
-                    kvp.Key.SetPosition(CoordinateHelper.WWCoordToUnityCoord(kvp.Value),false);
+                    kvp.Key.SetPosition(kvp.Value);
                 }
             }
             wwObjectToOrigCoordinates.Clear();
             _highlightsFx.objectRenderers.Clear();
+        }
+
+        private void SetHitPointOffset()
+        {
+            hitPointOffset = hitPoint;
         }
 
         public override void UpdateTrigger()
@@ -81,12 +99,13 @@ namespace WorldWizards.core.input.Tools
             if (!onTriggerDown) 
             {   // runs only once per event
                 onTriggerDown = true;
+                SetHitPointOffset();
                 foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
                 {
                     ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
                 }
             }
-            MoveObjects(hitPoint);
+            MoveObjects(hitPoint - hitPointOffset);
         }
 
         // Touchpad Press
@@ -160,7 +179,7 @@ namespace WorldWizards.core.input.Tools
             backupRect.height = 0;
             marqueeSize = Vector2.zero;
         }
-
+        
         public override void UpdateGrip()
         {
             if (!justClicked)
@@ -216,7 +235,7 @@ namespace WorldWizards.core.input.Tools
                 foreach (WWObject wwObject in SelectableUnits)
                 {
                     //Convert the world position of the unit to a screen position and then to a GUI point
-                    Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.transform.position);
+                    Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
                     var _screenPoint = new Vector2(_screenPos.x, Screen.height - _screenPos.y);
                     //Ensure that any units not within the marquee are currently unselected
                     if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
