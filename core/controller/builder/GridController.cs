@@ -67,7 +67,7 @@ namespace WorldWizards.core.controller.builder
             float yPos = height * CoordinateHelper.GetTileScale();;
             grid.transform.position = new Vector3(0, yPos, 0);
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
-            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            
+//            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            
             // set the scale too
             SetGridScale();            
             playerReferenceScale.transform.position = new Vector3(0,

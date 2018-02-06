@@ -94,7 +94,7 @@ namespace WorldWizards.core.input.Tools
                 if (curObject != null)
                 {
 //                    curObject.SetPosition(hitPoint, true);
-                    curObject.SetPosition(hitPoint);
+                    curObject.SetPosition( CoordinateHelper.UnityCoordToWWCoord(hitPoint));
                     if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                     {
                         Destroy(curObject.gameObject); // If the object collided with another, destroy it.

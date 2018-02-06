@@ -17,10 +17,9 @@ namespace WorldWizards.core.input.Tools
         private Vector3 hitPointOffset;
         
         // Swipe
-        private bool trackingSwipe = false;
-        private Vector2 swipeStartPosition;
-        
-        
+//        private bool trackingSwipe = false;
+//        private Vector2 swipeStartPosition;
+//        
         protected override void Awake()
         {
             base.Awake();
@@ -68,7 +67,6 @@ namespace WorldWizards.core.input.Tools
         public override void OnTriggerUnclick()
         {
             onTriggerDown = false;
-//            var target = CoordinateHelper.GetTileCenter(hitPoint);
             PlaceObjects(hitPoint - hitPointOffset);
             if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().DoesNotCollide(
                 new List<WWObject>(wwObjectToOrigCoordinates.Keys))){
@@ -79,7 +77,6 @@ namespace WorldWizards.core.input.Tools
             }
             else
             {   // snap back failed to place objects because the collided with scene graph
-                // TODO rotation will be lost with this cooordinate conversion
                 foreach (var kvp in wwObjectToOrigCoordinates)
                 {
                     kvp.Key.SetPosition(kvp.Value);

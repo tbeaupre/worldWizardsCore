@@ -192,6 +192,12 @@ namespace WorldWizards.core.entity.gameObject
         public virtual void SetPosition(Vector3 position)
         {
             transform.position = position;// + GetPositionOffset();
+//
+//            if (ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
+//            {
+//                transform.position -= transform.TransformPoint()
+//            }
+
             objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.Rotation);
         }
 
@@ -199,9 +205,12 @@ namespace WorldWizards.core.entity.gameObject
         /// Set the position of this WWObject and update the coordinate.
         /// </summary>
         /// <param name="coordinate">The coordinate to set</param>
-        public void SetPosition(Coordinate coordinate)
+        public virtual void SetPosition(Coordinate coordinate)
         {
-            coordinate.SnapToGrid();
+            if (ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
+            {
+                coordinate.SnapToGrid();
+            }
             SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate));
             SetRotation(coordinate.Rotation);
         }
