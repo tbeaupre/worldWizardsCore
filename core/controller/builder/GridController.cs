@@ -63,7 +63,8 @@ namespace WorldWizards.core.controller.builder
         /// </summary>
         public void RefreshGrid()
         {
-            float yPos = (height - 0.5f) * CoordinateHelper.GetTileScale();
+//            float yPos = (height - 0.5f) * CoordinateHelper.GetTileScale();
+            float yPos = height * CoordinateHelper.GetTileScale();;
             grid.transform.position = new Vector3(0, yPos, 0);
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().HideObjectsAbove(c.Index.y);            

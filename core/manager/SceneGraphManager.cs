@@ -88,5 +88,12 @@ namespace WorldWizards.core.manager
         /// Clears all the objects in the scene graph.
         /// </summary>
         void ClearAll();
+                
+        /// <summary>
+        /// Consumes a list of of World Wizard Objects and returns whether or not ALL
+        /// objects in the list can fit into the scene graph without colliding with existing objects.
+        /// </summary>
+        /// <returns></returns>
+        bool DoesNotCollide(List<WWObject> wwObjects);
     }
 }

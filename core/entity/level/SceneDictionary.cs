@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
@@ -137,6 +138,18 @@ namespace WorldWizards.core.entity.level
                 return doesCollide;
             }
             return false;
+        }
+        
+        public bool DoesNotCollide(List<WWObject> wwObjects)
+        {
+            foreach (var wwObject in wwObjects)
+            {
+                if (Collides(wwObject))
+                {
+                    return false;
+                }
+            }
+            return true; // nothing collides
         }
 
         /// <summary>

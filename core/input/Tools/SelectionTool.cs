@@ -36,7 +36,7 @@ namespace WorldWizards.core.input.Tools
             GUI.DrawTexture(marqueeRect, marqueeGraphics);
         }
         
-        public override void OnTriggerUnclick()
+        public override void OnUngrip()
         {
             Debug.Log("OnTriggerUp");
             // reset state
@@ -48,7 +48,7 @@ namespace WorldWizards.core.input.Tools
             marqueeSize = Vector2.zero;
         }
 
-        public override void UpdateTrigger()
+        public override void UpdateGrip()
         {
             if (!justClicked)
             {

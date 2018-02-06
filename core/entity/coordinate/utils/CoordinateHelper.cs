@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using WorldWizards.core.entity.common;
+using WorldWizards.SteamVR.Plugins;
 
 namespace WorldWizards.core.entity.coordinate.utils
 {
@@ -35,7 +36,17 @@ namespace WorldWizards.core.entity.coordinate.utils
         {
             return UnityCoordToWWCoord(position, 0);
         }
-        
+
+
+
+        public static Vector3 GetOffset(Coordinate coordinate)
+        {
+            float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
+            float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
+            float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
+            return new Vector3(offsetX,offsetY, offsetZ);
+        }
+
         /// <summary>
         /// Convert a Unity Space position to a WWCoordinate.
         /// </summary>
@@ -64,11 +75,12 @@ namespace WorldWizards.core.entity.coordinate.utils
         public static Vector3 WWCoordToUnityCoord(Coordinate coordinate)
         {
             // Move origin to bottom left corner.
-            float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
-            float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
-            float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
+//            float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
+//            float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
+//            float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
             
-            var offset = new Vector3(offsetX, offsetY, offsetZ);
+//            var offset = new Vector3(offsetX, offsetY, offsetZ);
+            var offset = GetOffset(coordinate);
             Vector3 index = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z);
             return (index + offset) * GetTileScale();
         }
