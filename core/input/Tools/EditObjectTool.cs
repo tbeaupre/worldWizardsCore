@@ -82,8 +82,15 @@ namespace WorldWizards.core.input.Tools
                     kvp.Key.SetPosition(kvp.Value);
                 }
             }
-            wwObjectToOrigCoordinates.Clear();
-            _highlightsFx.objectRenderers.Clear();
+            // update the origin coordaintes to new coordaintes, and do not deselect current selection
+            var temp = new List<WWObject>(wwObjectToOrigCoordinates.Keys);
+            foreach (var wwObject in temp)
+            {
+                wwObjectToOrigCoordinates[wwObject] = wwObject.GetCoordinate();
+            }
+// method to deselect
+//            wwObjectToOrigCoordinates.Clear();
+//            _highlightsFx.objectRenderers.Clear();
         }
 
         private void SetHitPointOffset()
