@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.menus;
 using Object = UnityEngine.Object;
 
 namespace WorldWizards.core.manager
@@ -12,7 +13,6 @@ namespace WorldWizards.core.manager
  
     public class WWMenuManager : Manager
     {
-
         private UnityEngine.Object[] allMenusArray;
         private readonly Dictionary<string, GameObject> allMenus;
 
@@ -87,6 +87,13 @@ namespace WorldWizards.core.manager
             GameObject menu;
             if (allMenus.TryGetValue(menuName, out menu))
             {
+                Debug.Log(menu.GetComponent<WWMenu>().inFrontOfCamera);
+                
+                if (menu.GetComponent<WWMenu>().inFrontOfCamera)
+                {
+                    //TODO: Test that this works in Desktop mode and VR mode
+                    menu.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 5.0f));
+                }
                 menu.SetActive(active);
             }
             else

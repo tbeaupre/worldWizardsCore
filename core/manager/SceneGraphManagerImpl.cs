@@ -82,10 +82,9 @@ namespace WorldWizards.core.manager
             List<WWObject> allObjects = sceneDictionary.GetAllObjects();
             foreach (WWObject obj in allObjects)
             {
-                // TODO Look into why this +0.5f is neccassary and why the - 0.5f is neccassary
-                // TODO in the gridController.RefreshGrid() implementation
+
                 var newPos = CoordinateHelper.WWCoordToUnityCoord(obj.GetCoordinate());
-//                newPos.y += (0.5f * CoordinateHelper.GetTileScale());
+
                 obj.transform.position = newPos;
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }

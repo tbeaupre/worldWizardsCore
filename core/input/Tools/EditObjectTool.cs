@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;

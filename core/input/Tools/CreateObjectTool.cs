@@ -19,9 +19,6 @@ namespace WorldWizards.core.input.Tools
         // Prefabs
         private static GridController gridController;
         
-        // Resources
-        private List<string> possibleTiles;
-        
         // Object Properties
         private WWObject curObject;
         private int curRotation;
@@ -48,12 +45,6 @@ namespace WorldWizards.core.input.Tools
             curRotation = 0;
         }
 
-        protected void Start()
-        {
-            possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
-            Debug.Log("CreateObjectTool::Init(): " + possibleTiles.Count + " Assets Loaded.");
-        }
-
         public void Update()
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
@@ -76,8 +67,13 @@ namespace WorldWizards.core.input.Tools
         private void CreateObject(Vector3 position)
         {
             Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
-            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, possibleTiles[curTileIndex]);
-            curObject = WWObjectFactory.Instantiate(objData);
+            if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+            {
+                WWObjectData objData = WWObjectFactory.CreateNew(coordinate,
+                    ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys()[curTileIndex]);
+                curObject = WWObjectFactory.Instantiate(objData);
+            }
+            
         }
 
         private void ReplaceObject(Vector3 position)
@@ -214,13 +210,22 @@ namespace WorldWizards.core.input.Tools
             {
                 if (lastPadPos.y > DEADZONE_SIZE)
                 {
-                    curTileIndex = (curTileIndex + 1) % possibleTiles.Count;
-                    ReplaceObject(hitPoint);
+                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+                    {
+                        curTileIndex = (curTileIndex + 1) % ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
+                        ReplaceObject(hitPoint);
+                    }
                 }
                 if (lastPadPos.y < -DEADZONE_SIZE)
                 {
-                    curTileIndex = (curTileIndex - 1 + possibleTiles.Count) % possibleTiles.Count;
-                    ReplaceObject(hitPoint);
+                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
+                    {
+                        curTileIndex = (curTileIndex - 1 + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
+                                            .GetPossibleObjectKeys().Count) %
+                                       ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
+                                           .GetPossibleObjectKeys().Count;
+                        ReplaceObject(hitPoint);
+                    }
                 }
             }
         }
@@ -235,31 +240,35 @@ namespace WorldWizards.core.input.Tools
                     swipeStartPosition = padPos;
                 }
                 
-                var offset = (int)(possibleTiles.Count * CalculateSwipe(padPos.x));
+                var offset = (int)(ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count * CalculateSwipe(padPos.x));
                 if (offset != 0)
                 {
                     swipeStartPosition = padPos;
-                    curTileIndex = (curTileIndex + offset + possibleTiles.Count) % possibleTiles.Count;
+                    curTileIndex = (curTileIndex + offset + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count) % 
+                                    ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
                     ReplaceObject(hitPoint);
                 }
             }
         }
 
+        /// <summary>
+        ///     Handle menu button click.
+        /// </summary>
         public override void OnMenuUnclick()
         {
+            // If a VR device is present, switch controller's tool to MenuTraversalTool and set the AssetBundleMenu active
             if (UnityEngine.XR.XRDevice.isPresent)
             {
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
                 controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
                 ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
             }
+            // Else if desktop controls, decide whether we need to activate or deactivate the AssetBundleMenu based on its status
             else
             {
                 if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
                 {
                     ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
-                    possibleTiles = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
-                    Debug.Log("Number of objects in object gun: " + possibleTiles.Count);
                 }
                 else
                 {

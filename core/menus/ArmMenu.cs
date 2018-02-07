@@ -29,7 +29,7 @@ namespace WorldWizards.core.menus
         protected override void Setup()
         {
             // Get list of all buttons on this menu.
-            allButtons = new List<Button>(gameObject.GetComponents<Button>());
+            //allButtons = new List<Button>(gameObject.GetComponents<Button>());
             
             // Put arm menu in the right place and parent it to the controller
             transform.rotation = controller.transform.rotation;

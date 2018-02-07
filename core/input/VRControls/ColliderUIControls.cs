@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using WorldWizards.core.input.Tools;
 using WorldWizards.core.manager;
+using WorldWizards.core.menus;
 using WorldWizards.SteamVR.Extras;
 
 namespace WorldWizards.core.input.VRControls
@@ -25,7 +26,6 @@ namespace WorldWizards.core.input.VRControls
             }
             
             controller = GetComponent<SteamVR_TrackedController>();
-
         }
     
         /**
@@ -41,10 +41,12 @@ namespace WorldWizards.core.input.VRControls
                 case "OpenPopupButton":
                     if (popupArmMenu.activeSelf)
                     {
+                        Debug.Log("Popup Menu inactive");
                         popupArmMenu.SetActive(false);
                     }
                     else
                     {
+                        Debug.Log("Popup Menu active");
                         popupArmMenu.SetActive(true);
                     }
                     break;

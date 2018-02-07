@@ -31,6 +31,7 @@ namespace WorldWizards.core.menus
         /// </summary>
         /// <param name="bundleTag">The string representing the asset bundle to be put on the button</param>
         /// <param name="buttonPrefab">The button prefab to be instantiated</param>
+        /// <param name="panel">The panel in the menu that the button is being added to</param>
         /// <param name="menu">The menu the button is being added to</param>
         private static void AddButton(string bundleTag, Button buttonPrefab, GameObject panel, WWMenu menu)
         {
