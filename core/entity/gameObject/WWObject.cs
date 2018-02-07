@@ -189,7 +189,7 @@ namespace WorldWizards.core.entity.gameObject
         /// </summary>
         /// <param name="position">The position to set in Unity's coordinate space.</param>
         /// <param name="snapToGrid">A flag for whether or not the position should have an offset from the grid or not.</param>
-        public virtual void SetPosition(Vector3 position)
+        public void SetPosition(Vector3 position)
         {
             transform.position = position;// + GetPositionOffset();
 //

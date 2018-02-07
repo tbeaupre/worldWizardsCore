@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -17,9 +18,7 @@ namespace WorldWizards.core.input.Tools
         private Vector3 hitPointOffset;
         
         // Swipe
-//        private bool trackingSwipe = false;
-//        private Vector2 swipeStartPosition;
-//        
+
         protected override void Awake()
         {
             base.Awake();
@@ -29,7 +28,6 @@ namespace WorldWizards.core.input.Tools
             wwObjectToOrigCoordinates = new Dictionary<WWObject, Coordinate>();
             SelectionAwake();
         }
-
         
         public void Update()
         {
@@ -53,11 +51,29 @@ namespace WorldWizards.core.input.Tools
         
         private void PlaceObjects(Vector3 position)
         {
+            var delta = Vector3.zero;
+            // if object list contains a tile, change the position to be the snapped position for the tile
+            // so props get the same snap.
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                if (kvp.Key.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
+                {
+          
+                    var coord = CoordinateHelper.UnityCoordToWWCoord(
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), 0);
+                    var original = CoordinateHelper.WWCoordToUnityCoord(coord);
+                    coord.SnapToGrid();
+                    var afterSnap = CoordinateHelper.WWCoordToUnityCoord(coord);
+                    delta = afterSnap - original;
+                    break;
+                }
+            }
+            
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 var rememberRot = kvp.Value.Rotation;
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
-                    position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), rememberRot);
+                    position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
                 kvp.Key.SetPosition(coord);
             }
         }
@@ -69,7 +85,8 @@ namespace WorldWizards.core.input.Tools
             onTriggerDown = false;
             PlaceObjects(hitPoint - hitPointOffset);
             if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().DoesNotCollide(
-                new List<WWObject>(wwObjectToOrigCoordinates.Keys))){
+                new List<WWObject>(wwObjectToOrigCoordinates.Keys)))
+            {
                 foreach (var kvp in wwObjectToOrigCoordinates)
                 {
                     ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(kvp.Key);
@@ -113,25 +130,21 @@ namespace WorldWizards.core.input.Tools
         }
 
         // Touchpad Press
-        public override void OnPadUnclick(Vector2 lastPadPos)
-        {
-            // Rotation
-//            if (curObjects != null)
+//        public override void OnPadUnclick(Vector2 lastPadPos)
+//        {
+//            if (lastPadPos.x < -DEADZONE_SIZE)
 //            {
-//                if (lastPadPos.x < -DEADZONE_SIZE)
-//                {
-//                    RotateObjects(-90);
-//                }
-//                if (lastPadPos.x > DEADZONE_SIZE)
-//                {
-//                    RotateObjects(90);
-//                }
+//                RotateObjects(-90);
 //            }
-        }
-
-        private void RotateObjects(int rotation)
-        {
-//            foreach (WWObject curObject in curObjects)
+//            if (lastPadPos.x > DEADZONE_SIZE)
+//            {
+//                RotateObjects(90);
+//            }
+//        }
+//
+//        private void RotateObjects(int rotation)
+//        {
+//            foreach (WWObject kvp in curObjects)
 //            {
 //                curObject.SetRotation(curObject.GetCoordinate().Rotation + rotation);
 //                if (originalOffsets.ContainsKey(curObject))
@@ -141,9 +154,7 @@ namespace WorldWizards.core.input.Tools
 //                    originalOffsets[curObject] = temp;
 //                }
 //            }
-        }
-        
-        
+//        }
         
         // Selection Code
         // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
@@ -238,32 +249,38 @@ namespace WorldWizards.core.input.Tools
                 List<Renderer> objectRenderers = new List<Renderer>();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
-                    //Convert the world position of the unit to a screen position and then to a GUI point
-                    Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
-                    var _screenPoint = new Vector2(_screenPos.x, Screen.height - _screenPos.y);
-                    //Ensure that any units not within the marquee are currently unselected
-                    if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
+                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
+                        wwObject.ResourceMetadata.wwObjectMetadata.type)
                     {
-//                        wwObject.Deselect();
-                        if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
+                        //Convert the world position of the unit to a screen position and then to a GUI point
+                        Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
+                        var _screenPoint = new Vector2(_screenPos.x, Screen.height - _screenPos.y);
+                        //Ensure that any units not within the marquee are currently unselected
+                        if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
                         {
-                            wwObjectToOrigCoordinates.Remove(wwObject);
+                            //                        wwObject.Deselect();
+                            if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
+                            {
+                                wwObjectToOrigCoordinates.Remove(wwObject);
+                            }
+                        }
+
+                        if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
+                        {
+                            //                        wwObject.Select();
+                            wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
+                            foreach (var r in wwObject.GetAllRenderers())
+                            {
+                                objectRenderers.Add(r);
+                            }
                         }
                     }
-                    if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
+
+                    _highlightsFx.objectRenderers.Clear();
+                    foreach (var r in objectRenderers)
                     {
-//                        wwObject.Select();
-                        wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate() );
-                        foreach (var r in wwObject.GetAllRenderers())
-                        {
-                            objectRenderers.Add(r);
-                        }
+                        _highlightsFx.objectRenderers.Add(r);
                     }
-                }
-                _highlightsFx.objectRenderers.Clear();
-                foreach (var r in  objectRenderers)
-                {
-                    _highlightsFx.objectRenderers.Add(r);
                 }
             }
         }

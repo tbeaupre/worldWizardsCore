@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -26,7 +28,7 @@ namespace WorldWizards.core.input.Tools
         private int curTileIndex;
 
         // Raycast Information
-        private bool validTarget = false;
+//        private bool validTarget = false;
         private Vector3 hitPoint;
         
         // Swipe
@@ -39,7 +41,6 @@ namespace WorldWizards.core.input.Tools
             base.Awake();
             
             Debug.Log("Create Object Tool");
-
 
             gridController = FindObjectOfType<GridController>();
 
@@ -57,16 +58,19 @@ namespace WorldWizards.core.input.Tools
         {
             Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
             RaycastHit raycastHit;
-
+            
             if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
             {
-                validTarget = true;
                 hitPoint = raycastHit.point;
+                hitPoint.y += CoordinateHelper.GetTileScale() * 0.0001f; // ensure placement in space above ontop of the grid
             }
-            else
-            {
-                validTarget = false;
-            }
+
+//            if (curObject != null && curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
+//            {
+//                
+//            }
+
+            Debug.DrawLine(Vector3.zero, hitPoint, Color.red);
         }
         
         private void CreateObject(Vector3 position)
@@ -85,39 +89,70 @@ namespace WorldWizards.core.input.Tools
             CreateObject(position);
         }
 
-        
+
+        void MoveObject()
+        {
+            var coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint);
+            Debug.Log(coord.ToString());
+            curObject.SetPosition(coord);
+            
+        }
+
+
+        public void PlaceObject()
+        {
+            if (curObject != null)
+            {
+                MoveObject();
+                if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
+                {
+                    Destroy(curObject.gameObject); // If the object collided with another, destroy it.
+                }
+                curObject = null;
+            }
+//            if (validTarget)
+//            {
+//                if (curObject != null)
+//                {
+//                    curObject.SetPosition( CoordinateHelper.UnityCoordToWWCoord(hitPoint));
+//                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
+//                    {
+//                        Destroy(curObject.gameObject); // If the object collided with another, destroy it.
+//                    }
+//                    curObject = null;
+//                }
+//            }
+        }
+
+
         // Trigger
         public override void OnTriggerUnclick() // Add the object to the SceneGraph.
         {
-            if (validTarget)
-            {
-                if (curObject != null)
-                {
-//                    curObject.SetPosition(hitPoint, true);
-                    curObject.SetPosition( CoordinateHelper.UnityCoordToWWCoord(hitPoint));
-                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
-                    {
-                        Destroy(curObject.gameObject); // If the object collided with another, destroy it.
-                    }
-                    curObject = null;
-                }
-            }
+            PlaceObject();
+            onUpdatTriggerDown = false;
         }
 
+        private bool onUpdatTriggerDown;
         public override void UpdateTrigger() // Move the object to where the controller is pointed.
         {
-            if (validTarget)
+            if (!onUpdatTriggerDown)
             {
-                if (curObject == null)
-                {
-                    CreateObject(hitPoint);
-                }
-                else
-                {
-//                    curObject.SetPosition(hitPoint, false);
-                    curObject.SetPosition(hitPoint);
-                }
+                onUpdatTriggerDown = true;
+                CreateObject(hitPoint);
             }
+            MoveObject();
+
+//            if (validTarget)
+//            {
+//                if (curObject == null)
+//                {
+//                    CreateObject(hitPoint);
+//                }
+//                else
+//                {
+//                    curObject.SetPosition(hitPoint);
+//                }
+//            }
         }
 
         
@@ -143,7 +178,7 @@ namespace WorldWizards.core.input.Tools
         public override void OnPadUnclick(Vector2 lastPadPos)
         {
             // Rotation
-            if (validTarget && curObject != null)
+            if (curObject != null)
             {
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
