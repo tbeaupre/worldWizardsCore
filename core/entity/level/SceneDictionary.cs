@@ -269,5 +269,24 @@ namespace WorldWizards.core.entity.level
             // not implemented yet
             return null;
         }
+
+        public List<Collider> GetColliders(WWType wwType)
+        {
+            List<Collider> result = new List<Collider>();
+            foreach (var wwObject in objects.Values)
+            {
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type == wwType)
+                {
+                    var colliders = wwObject.GetComponentsInChildren<Collider>();
+                    foreach (var c  in colliders)
+                    {
+                        result.Add(c);
+                    }
+                }
+            }
+            return result;
+        }
+
+
     }
 }

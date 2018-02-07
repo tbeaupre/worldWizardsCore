@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -222,6 +223,12 @@ namespace WorldWizards.core.manager
         
         private static Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles) {
             return Quaternion.Euler(angles) * (point - pivot) + pivot;
+        }
+
+
+        public List<Collider> GetAllColliders(WWType wwType)
+        {
+            return sceneDictionary.GetColliders(wwType);
         }
 
         private WWObject RemoveObject(Guid id)

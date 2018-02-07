@@ -55,13 +55,27 @@ namespace WorldWizards.core.input.Tools
                 hitPoint = raycastHit.point;
                 hitPoint.y += CoordinateHelper.GetTileScale() * 0.0001f; // ensure placement in space above ontop of the grid
             }
+            
+            // if we are placing a prop
+            if (curObject != null && curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
+            { // raycast against all tiles and ignore the grid
+                var minDistance = float.MaxValue;
+                var colliders = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetAllColliders(WWType.Tile);
+                foreach (var c in colliders)
+                {
+                    if (c.Raycast(ray, out raycastHit, 100))
+                    {
+                        var dist = Vector3.Distance(input.GetControllerPoint(), raycastHit.point);
+                        if (dist < minDistance)
+                        {
+                            minDistance = dist;
+                            hitPoint = raycastHit.point;
+                        }
+                    }
+                }
+            }
 
-//            if (curObject != null && curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
-//            {
-//                
-//            }
-
-            Debug.DrawLine(Vector3.zero, hitPoint, Color.red);
+//            Debug.DrawLine(Vector3.zero, hitPoint, Color.red);
         }
         
         private void CreateObject(Vector3 position)

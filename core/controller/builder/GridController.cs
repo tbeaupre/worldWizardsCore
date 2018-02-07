@@ -31,8 +31,8 @@ namespace WorldWizards.core.controller.builder
             playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
             RefreshGrid();
         }
-
-
+        
+        
         private void SetGridScale()
         {
             var tileLengthScale = CoordinateHelper.tileLengthScale;

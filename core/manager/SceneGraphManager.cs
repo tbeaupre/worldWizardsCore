@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.gameObject;
 
@@ -95,5 +96,12 @@ namespace WorldWizards.core.manager
         /// </summary>
         /// <returns></returns>
         bool DoesNotCollide(List<WWObject> wwObjects);
+
+        /// <summary>
+        /// Get a list of all colliders in the Scene Graph that belong to WWObjects of the specified type.
+        /// </summary>
+        /// <param name="wwType"></param>
+        /// <returns></returns>
+        List<Collider> GetAllColliders(WWType wwType);
     }
 }

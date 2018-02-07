@@ -4,7 +4,9 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
 {
@@ -37,6 +39,34 @@ namespace WorldWizards.core.input.Tools
                 hitPoint = raycastHit.point;
                 hitPoint.y = 0; // IGNORE Y
             }
+            
+            // if we are just moving props, lets use raycast agains mesh
+            if (OnlyMovingProps()) // raycast against all tiles and ignore the grid
+            {
+                var minDistance = float.MaxValue;
+                var colliders = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetAllColliders(WWType.Tile);
+                foreach (var c in colliders)
+                {
+                    if (c.Raycast(ray, out raycastHit, 100))
+                    {
+                        var dist = Vector3.Distance(input.GetControllerPoint(), raycastHit.point);
+                        if (dist < minDistance)
+                        {
+                            minDistance = dist;
+                            hitPoint = raycastHit.point;
+                        }
+                    }
+                }
+            }
+        }
+        
+        private bool OnlyMovingProps()
+        {
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type != WWType.Prop)       return false;
+            }
+            return true;
         }
 
         private void MoveObjects(Vector3 position)
@@ -129,21 +159,37 @@ namespace WorldWizards.core.input.Tools
         }
 
         // Touchpad Press
-//        public override void OnPadUnclick(Vector2 lastPadPos)
-//        {
-//            if (lastPadPos.x < -DEADZONE_SIZE)
-//            {
-//                RotateObjects(-90);
-//            }
-//            if (lastPadPos.x > DEADZONE_SIZE)
-//            {
-//                RotateObjects(90);
-//            }
-//        }
-//
-//        private void RotateObjects(int rotation)
-//        {
-//            foreach (WWObject kvp in curObjects)
+        public override void OnPadUnclick(Vector2 lastPadPos)
+        {
+            if (lastPadPos.x < -DEADZONE_SIZE)
+            {
+                RotateObjects(-90);
+            }
+            if (lastPadPos.x > DEADZONE_SIZE)
+            {
+                RotateObjects(90);
+            }
+        }
+
+        private void RotateObjects(int rotation)
+        {
+            var centerPivot = Vector3.zero;
+            int count = 0;
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                centerPivot += wwObject.transform.position;
+                count++;
+            }
+            if (count != 0)
+            {
+                centerPivot /= count;
+            }
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                wwObject.transform.RotateAround(centerPivot, Vector3.up, rotation);
+            }
+
+            //            foreach (WWObject kvp in curObjects)
 //            {
 //                curObject.SetRotation(curObject.GetCoordinate().Rotation + rotation);
 //                if (originalOffsets.ContainsKey(curObject))
@@ -153,7 +199,34 @@ namespace WorldWizards.core.input.Tools
 //                    originalOffsets[curObject] = temp;
 //                }
 //            }
-//        }
+        }
+        
+        /// <summary>
+        ///     Handle menu button click.
+        /// </summary>
+        public override void OnMenuUnclick()
+        {
+            // If a VR device is present, switch controller's tool to MenuTraversalTool and set the AssetBundleMenu active
+            if (UnityEngine.XR.XRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+            }
+            // Else if desktop controls, decide whether we need to activate or deactivate the AssetBundleMenu based on its status
+            else
+            {
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+                }
+            }
+            base.OnMenuUnclick();
+        }
         
         // Selection Code
         // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
@@ -248,7 +321,8 @@ namespace WorldWizards.core.input.Tools
                 List<Renderer> objectRenderers = new List<Renderer>();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
-                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
+                    if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
+                        || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
                         wwObject.ResourceMetadata.wwObjectMetadata.type)
                     {
                         //Convert the world position of the unit to a screen position and then to a GUI point
