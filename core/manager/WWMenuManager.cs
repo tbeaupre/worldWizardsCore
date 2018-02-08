@@ -86,14 +86,19 @@ namespace WorldWizards.core.manager
         {
             GameObject menu;
             if (allMenus.TryGetValue(menuName, out menu))
-            {
-                Debug.Log(menu.GetComponent<WWMenu>().inFrontOfCamera);
-                
+            {   
                 if (menu.GetComponent<WWMenu>().inFrontOfCamera)
                 {
-                    //TODO: Test that this works in Desktop mode and VR mode
+                    // Put menu in front of camera
                     menu.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 5.0f));
+                    
+                    // Rotate menu to show the front to the camera
+                    Vector3 v = Camera.main.transform.position - menu.transform.position;
+                    v.x = v.z = 0.0f;
+                    menu.transform.LookAt(Camera.main.transform.position - v); 
+                    menu.transform.Rotate(0,180,0);
                 }
+                
                 menu.SetActive(active);
             }
             else

@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using WorldWizards.core.controller.resources;
 using WorldWizards.core.entity.common;
+using WorldWizards.core.file.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.menus
@@ -15,6 +18,10 @@ namespace WorldWizards.core.menus
         private List<string> assetBundleTags;
         private Button buttonPrefab;
         private GameObject panel;
+        // TODO: Make color changing not stupid after Alphafest
+        public Button propFilter, tileFilter, interactableFilter;
+        private Color normalColor = new Color32(0x5D, 0x7F, 0xFD, 0xFF);
+        private Color pressedColor = new Color32(0x2E, 0xFF, 0x41, 0xFF);
         
         void Start()
         {
@@ -27,7 +34,7 @@ namespace WorldWizards.core.menus
             inFrontOfCamera = true;
             Debug.Log("AssetBundleMenu Awake: inFrontOfCamera = " + inFrontOfCamera);
         }
-        
+
         protected override void Setup()
         {
             base.Setup();
@@ -41,7 +48,8 @@ namespace WorldWizards.core.menus
             
             panel = GameObject.FindWithTag("UIPanel");
             
-            WWMenuBuilder.BuildMenu(buttonPrefab, assetBundleTags, panel, this);
+            // TODO: Turn this back on after Alphafest
+            //WWMenuBuilder.BuildMenu(buttonPrefab, assetBundleTags, panel, this);
         }
 
         /// <summary>
@@ -72,12 +80,24 @@ namespace WorldWizards.core.menus
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter() && 
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() == WWType.Tile)
             {
-                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.Tile);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.None);
+                var tileFilterColors = tileFilter.colors;
+                tileFilterColors.normalColor = normalColor;
+                tileFilter.colors = tileFilterColors;
             }
             else
             {
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(true, WWType.Tile);
+                var tileFilterColors = tileFilter.colors;
+                tileFilterColors.normalColor = pressedColor;
+                tileFilter.colors = tileFilterColors;
+                
+                var propFilterColors = propFilter.colors;
+                propFilterColors.normalColor = normalColor;
+                propFilter.colors = propFilterColors;
             }
+            
+            EventSystem.current.SetSelectedGameObject(null);
         }
 
         /// <summary>
@@ -88,12 +108,24 @@ namespace WorldWizards.core.menus
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter() && 
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() == WWType.Prop)
             {
-                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.Prop);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.None);
+                var propFilterColors = propFilter.colors;
+                propFilterColors.normalColor = normalColor;
+                propFilter.colors = propFilterColors;
             }
             else
             {
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(true, WWType.Prop);
+                var propFilterColors = propFilter.colors;
+                propFilterColors.normalColor = pressedColor;
+                propFilter.colors = propFilterColors;
+                
+                var tileFilterColors = tileFilter.colors;
+                tileFilterColors.normalColor = normalColor;
+                tileFilter.colors = tileFilterColors;
             }
+            
+            EventSystem.current.SetSelectedGameObject(null);
         }
 
         /// <summary>
@@ -104,12 +136,23 @@ namespace WorldWizards.core.menus
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter() && 
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() == WWType.Interactable)
             {
-                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.Interactable);
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(false, WWType.None);
             }
             else
             {
                 ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().SetPossibleObjectKeys(true, WWType.Interactable);
             }
+        }
+        
+        // TODO: Delete/move after Alphafest
+        public void Load()
+        {
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load(FileIO.testPath);
+        }
+
+        public void DeleteObjects()
+        {
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ClearAll();
         }
     }
 }

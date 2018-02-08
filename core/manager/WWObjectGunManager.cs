@@ -15,7 +15,7 @@ namespace WorldWizards.core.manager
     public class WWObjectGunManager : Manager
     {
         private bool doFilter;
-        private WWType filterType;
+        private WWType filterType = WWType.None;
         private string assetBundleTag = "ww_basic_assets";
         
         // The list of objects for the object gun

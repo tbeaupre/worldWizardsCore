@@ -11,7 +11,8 @@ namespace WorldWizards.core.entity.common
         Tile,
         Prop,
         Interactable,
-        Door
+        Door,
+        None
     }
 
     /// <summary>

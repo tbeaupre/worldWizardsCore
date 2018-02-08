@@ -13,9 +13,6 @@ namespace WorldWizards.core.menus
    
     public abstract class WWMenu : MonoBehaviour
     {
-        // TODO: Implement follow camera script
-
-        public bool followCamera;            // Whether or not the menu should follow the camera
         public bool inFrontOfCamera;         // Whether or not the menu shows up directly in front of the camera
         public List<GameObject> allPanels;   // Reference to all panels the menu has
         public List<Button> allButtons;      // List of all buttons the menu has
