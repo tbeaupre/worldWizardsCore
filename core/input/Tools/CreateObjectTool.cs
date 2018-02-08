@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using WorldWizards.core.controller.builder;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
@@ -15,6 +13,7 @@ using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class CreateObjectTool : Tool
     {
         // Prefabs

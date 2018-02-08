@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.Design;
+using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.XR.WSA.Persistence;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.manager;
@@ -13,13 +15,11 @@ namespace WorldWizards.core.controller.builder
     public class GridController : MonoBehaviour
     {
         [SerializeField] private GameObject grid;
-        private int height = 0;
+        private int height;
         private GameObject playerReferenceScale;
         [SerializeField] private Material gridMat;
         private readonly string gridMatMainTexture = "_MainTex";
         private readonly string gridMatViewDistance = "_ViewDistance";
-
-
         private float viewDistance = 10; // the amount of coordinate spaces the user can see
         private float scaleMultiplier = 1000;
 
@@ -31,7 +31,6 @@ namespace WorldWizards.core.controller.builder
             playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
             RefreshGrid();
         }
-        
         
         private void SetGridScale()
         {
@@ -63,7 +62,7 @@ namespace WorldWizards.core.controller.builder
         /// </summary>
         public void RefreshGrid()
         {
-            float yPos = height * CoordinateHelper.GetTileScale();;
+            float yPos = height * CoordinateHelper.GetTileScale();
             grid.transform.position = new Vector3(0, yPos, 0);
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
             // set the scale too

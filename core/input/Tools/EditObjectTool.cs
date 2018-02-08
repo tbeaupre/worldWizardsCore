@@ -9,9 +9,9 @@ using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
 using WorldWizards.SteamVR.Scripts;
 
-// @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
 namespace WorldWizards.core.input.Tools
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
@@ -50,7 +50,10 @@ namespace WorldWizards.core.input.Tools
         {
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
-                if (wwObject.ResourceMetadata.wwObjectMetadata.type != WWType.Prop) return false;
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type != WWType.Prop)
+                {
+                    return false;
+                }
             }
             return true;
         }
@@ -98,14 +101,14 @@ namespace WorldWizards.core.input.Tools
             }
         }
 
-        private void ResetSelection()
+        private void ReverSelectedPositions()
         {
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 kvp.Key.SetPosition(kvp.Value);
                 if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(kvp.Key))
                 {
-                    Debug.LogError("ResetSelection : Failed to add selection back to Scene Graph");
+                    Debug.LogError("ReverSelectedPositions : Failed to add selection back to Scene Graph");
                 }
             }
         }
@@ -120,7 +123,6 @@ namespace WorldWizards.core.input.Tools
             }
         }
 
-
         private void CompleteEdit()
         {
             if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().DoesNotCollide(
@@ -133,7 +135,7 @@ namespace WorldWizards.core.input.Tools
             }
             else
             {
-                ResetSelection();
+                ReverSelectedPositions();
             }
         }
 
@@ -184,12 +186,37 @@ namespace WorldWizards.core.input.Tools
             {
                 RotateObjects(90);
             }
+            
+            // Move Grid
+            if (lastPadPos.y > DEADZONE_SIZE)
+            {
+                MoveVertically(1);
+            }
+            if (lastPadPos.y < -DEADZONE_SIZE)
+            {
+                MoveVertically(-1);
+            }
+        }
+
+        private void MoveVertically(int height)
+        {
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
+                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
+                var newPos = wwObject.transform.position;
+                newPos.y += height * CoordinateHelper.GetTileScale();
+                var coord = CoordinateHelper.UnityCoordToWWCoord(newPos, rememberRot);
+                wwObject.SetPosition(coord);
+            }
+            CompleteEdit();
+            UpdateOffsets();
         }
 
         private void RotateObjects(int rotation)
         {
             if (wwObjectToOrigCoordinates.Count == 0) return;
-            // take the objects out
+      
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
@@ -206,7 +233,6 @@ namespace WorldWizards.core.input.Tools
             {
                 centerPivot /= count;
             }
-            
             Bounds bounds = new Bounds (centerPivot, Vector3.one);
             Renderer[] renderers = GetComponentsInChildren<Renderer> ();
             foreach (Renderer renderer in renderers)
@@ -214,15 +240,12 @@ namespace WorldWizards.core.input.Tools
                 bounds.Encapsulate (renderer.bounds);
             }
             centerPivot = bounds.center;
-            
-            
+
             List<Vector3> before = new List<Vector3>();
-//            List<Vector3> after = new List<Vector3>();
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
                 before.Add(wwObject.transform.position);
                 wwObject.transform.RotateAround(centerPivot, Vector3.up, rotation);
-//                after.Add(wwObject.transform.position);
             }
 
             Vector3 deltaSnap = Vector3.zero;

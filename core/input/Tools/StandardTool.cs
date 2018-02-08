@@ -2,10 +2,10 @@
 using UnityEngine;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.input.Tools.utils;
-using WorldWizards.core.manager;
 
 namespace WorldWizards.core.input.Tools
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class StandardTool : Tool
     {
         private const float RETICLE_OFFSET = 0.001f; // The reticle offset from the floor
