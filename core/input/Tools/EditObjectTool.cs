@@ -4,15 +4,18 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
 using WorldWizards.SteamVR.Scripts;
 
+// @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
 namespace WorldWizards.core.input.Tools
 {
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
+        private List<Renderer> objectRenderers;
         
         // Raycast Information
         private Vector3 hitPoint;
@@ -27,44 +30,27 @@ namespace WorldWizards.core.input.Tools
             Debug.Log("Edit Object Tool");
 
             wwObjectToOrigCoordinates = new Dictionary<WWObject, Coordinate>();
+            objectRenderers = new List<Renderer>();
             SelectionAwake();
         }
         
         public void Update()
         {
-            Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-            RaycastHit raycastHit;
-            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
+            hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
+                input.GetControllerDirection(), gridController.GetGridCollider(), 200);
+            if (OnlyMovingProps())
             {
-                hitPoint = raycastHit.point;
-                hitPoint.y = 0; // IGNORE Y
-            }
-            
-            // if we are just moving props, lets use raycast agains mesh
-            if (OnlyMovingProps()) // raycast against all tiles and ignore the grid
-            {
-                var minDistance = float.MaxValue;
-                var colliders = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetAllColliders(WWType.Tile);
-                foreach (var c in colliders)
-                {
-                    if (c.Raycast(ray, out raycastHit, 100))
-                    {
-                        var dist = Vector3.Distance(input.GetControllerPoint(), raycastHit.point);
-                        if (dist < minDistance)
-                        {
-                            minDistance = dist;
-                            hitPoint = raycastHit.point;
-                        }
-                    }
-                }
+                hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
+                    input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
             }
         }
+
         
         private bool OnlyMovingProps()
         {
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
-                if (wwObject.ResourceMetadata.wwObjectMetadata.type != WWType.Prop)       return false;
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type != WWType.Prop) return false;
             }
             return true;
         }
@@ -76,13 +62,11 @@ namespace WorldWizards.core.input.Tools
                 kvp.Key.SetPosition(position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
             }
         }
-        
-        
-        private void PlaceObjects(Vector3 position)
+
+
+        private Vector3 GetDeltaSnap(Vector3 position)
         {
-            var delta = Vector3.zero;
-            // if object list contains a tile, change the position to be the snapped position for the tile
-            // so props get the same snap.
+            Vector3 deltaSnap = Vector3.zero;
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 if (kvp.Key.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
@@ -93,26 +77,52 @@ namespace WorldWizards.core.input.Tools
                     var original = CoordinateHelper.WWCoordToUnityCoord(coord);
                     coord.SnapToGrid();
                     var afterSnap = CoordinateHelper.WWCoordToUnityCoord(coord);
-                    delta = afterSnap - original;
+                    deltaSnap = afterSnap - original;
                     break;
                 }
             }
+            return deltaSnap;
+        }
+
+        private void PlaceObjects(Vector3 position)
+        {
+            var delta = GetDeltaSnap(position);
             
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
-                var rememberRot = kvp.Value.Rotation;
+//                var rememberRot = kvp.Value.Rotation;
+                var rememberRot = (int )kvp.Key.transform.rotation.eulerAngles.y;
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
                     position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
                 kvp.Key.SetPosition(coord);
             }
         }
 
-        private bool onTriggerDown;
-        // Trigger
-        public override void OnTriggerUnclick()
+        private void ResetSelection()
         {
-            onTriggerDown = false;
-            PlaceObjects(hitPoint - hitPointOffset);
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                kvp.Key.SetPosition(kvp.Value);
+                if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(kvp.Key))
+                {
+                    Debug.LogError("ResetSelection : Failed to add selection back to Scene Graph");
+                }
+            }
+        }
+
+        private void UpdateOffsets()
+        {
+            // update the origin coordinates to new coordaintes, and do not deselect current selection
+            var temp = new List<WWObject>(wwObjectToOrigCoordinates.Keys);
+            foreach (var wwObject in temp)
+            {
+                wwObjectToOrigCoordinates[wwObject] = wwObject.GetCoordinate();
+            }
+        }
+
+
+        private void CompleteEdit()
+        {
             if (ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().DoesNotCollide(
                 new List<WWObject>(wwObjectToOrigCoordinates.Keys)))
             {
@@ -122,21 +132,26 @@ namespace WorldWizards.core.input.Tools
                 }
             }
             else
-            {   // snap back failed to place objects because the collided with scene graph
-                foreach (var kvp in wwObjectToOrigCoordinates)
-                {
-                    kvp.Key.SetPosition(kvp.Value);
-                }
-            }
-            // update the origin coordaintes to new coordaintes, and do not deselect current selection
-            var temp = new List<WWObject>(wwObjectToOrigCoordinates.Keys);
-            foreach (var wwObject in temp)
             {
-                wwObjectToOrigCoordinates[wwObject] = wwObject.GetCoordinate();
+                ResetSelection();
             }
-// method to deselect
-//            wwObjectToOrigCoordinates.Clear();
-//            _highlightsFx.objectRenderers.Clear();
+        }
+
+        private bool onTriggerDown;
+        // Trigger
+        public override void OnTriggerUnclick()
+        {
+            onTriggerDown = false;
+            PlaceObjects(hitPoint - hitPointOffset);
+            CompleteEdit();
+
+            UpdateOffsets();
+        }
+
+        private void DeselectAll()
+        {
+            wwObjectToOrigCoordinates.Clear();
+            _highlightsFx.objectRenderers.Clear();
         }
 
         private void SetHitPointOffset()
@@ -173,6 +188,13 @@ namespace WorldWizards.core.input.Tools
 
         private void RotateObjects(int rotation)
         {
+            if (wwObjectToOrigCoordinates.Count == 0) return;
+            // take the objects out
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
+            }
+            
             var centerPivot = Vector3.zero;
             int count = 0;
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
@@ -184,21 +206,49 @@ namespace WorldWizards.core.input.Tools
             {
                 centerPivot /= count;
             }
+            
+            Bounds bounds = new Bounds (centerPivot, Vector3.one);
+            Renderer[] renderers = GetComponentsInChildren<Renderer> ();
+            foreach (Renderer renderer in renderers)
+            {
+                bounds.Encapsulate (renderer.bounds);
+            }
+            centerPivot = bounds.center;
+            
+            
+            List<Vector3> before = new List<Vector3>();
+//            List<Vector3> after = new List<Vector3>();
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
+                before.Add(wwObject.transform.position);
                 wwObject.transform.RotateAround(centerPivot, Vector3.up, rotation);
+//                after.Add(wwObject.transform.position);
             }
 
-            //            foreach (WWObject kvp in curObjects)
-//            {
-//                curObject.SetRotation(curObject.GetCoordinate().Rotation + rotation);
-//                if (originalOffsets.ContainsKey(curObject))
-//                {
-//                    Vector3 offset = originalOffsets[curObject];
-//                    Vector3 temp = new Vector3(offset.z * Math.Sign(rotation), offset.y, offset.x * -Math.Sign(rotation));
-//                    originalOffsets[curObject] = temp;
-//                }
-//            }
+            Vector3 deltaSnap = Vector3.zero;
+            int i = 0;
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {            
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
+                {
+                    var afterCoord = CoordinateHelper.UnityCoordToWWCoord(wwObject.transform.position, 0);
+                    afterCoord.SnapToGrid();
+                    var afterSnap = CoordinateHelper.WWCoordToUnityCoord(afterCoord);
+                    deltaSnap = afterSnap - before[i];
+                    break;
+                }
+                i++;
+            }
+            
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
+                var coord = CoordinateHelper.UnityCoordToWWCoord(
+                    wwObject.transform.position + deltaSnap, rememberRot);
+                wwObject.SetPosition(coord);
+            }
+            CompleteEdit();
+            UpdateOffsets();
         }
         
         /// <summary>
@@ -318,7 +368,7 @@ namespace WorldWizards.core.input.Tools
                         Mathf.Abs(marqueeRect.height));
                 }
 
-                List<Renderer> objectRenderers = new List<Renderer>();
+                objectRenderers.Clear();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
                     if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()

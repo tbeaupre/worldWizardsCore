@@ -198,7 +198,7 @@ namespace WorldWizards.core.entity.gameObject
 //                transform.position -= transform.TransformPoint()
 //            }
 
-            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, objectData.coordinate.Rotation);
+            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, (int) transform.rotation.eulerAngles.y);
         }
 
         /// <summary>

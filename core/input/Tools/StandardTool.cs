@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using WorldWizards.core.entity.common;
+using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.manager;
 
 namespace WorldWizards.core.input.Tools
@@ -42,13 +44,12 @@ namespace WorldWizards.core.input.Tools
 
         public override void UpdateGrip() // Update laser position.
         {
-            RaycastHit hit;
-            // Shoot ray from controller, if it hits something store the point where it hit and show laser
-            if (Physics.Raycast(input.GetControllerPoint(), input.GetControllerDirection(), out hit, 100))
+            hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
+                input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
+            if (hitPoint != Vector3.zero)
             {
-                // Found valid teleport location
-                DrawLaser(hit);
-                hitPoint = hit.point;
+                var distance = Vector3.Distance(hitPoint, input.GetControllerPoint());
+                DrawLaser(distance);
                 shouldTeleport = true;
             }
             else
@@ -77,22 +78,22 @@ namespace WorldWizards.core.input.Tools
         }
 
         // Draws the laser and reticle.
-        private void DrawLaser(RaycastHit hit)
+        private void DrawLaser(float hitDistance)
         {
             // Show laser and Reticle
             ActivateLaser();
             
             // Put laser between controller and where raycast hits
-            laser.transform.position = Vector3.Lerp(input.GetControllerPoint(), hit.point, .5f);
+            laser.transform.position = Vector3.Lerp(input.GetControllerPoint(), hitPoint, .5f);
 
             // Point laser at position where raycast hit
-            laser.transform.LookAt(hit.point);
+            laser.transform.LookAt(hitPoint);
 
             // Scale laser so it fits between the two positions
-            laser.transform.localScale = new Vector3(laser.transform.localScale.x, laser.transform.localScale.y, hit.distance);
+            laser.transform.localScale = new Vector3(laser.transform.localScale.x, laser.transform.localScale.y, hitDistance);
             
             // Move the reticle to where the raycast hit, with an offset to avoid z-fighting
-            reticle.transform.position = hit.point + new Vector3(0, 0, RETICLE_OFFSET);
+            reticle.transform.position = hitPoint + new Vector3(0, 0, RETICLE_OFFSET);
         }
         
         // Teleports the player to the target location.

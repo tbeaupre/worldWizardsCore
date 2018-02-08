@@ -8,6 +8,7 @@ using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
 using WorldWizards.SteamVR.Scripts;
@@ -25,7 +26,6 @@ namespace WorldWizards.core.input.Tools
         private int curTileIndex;
 
         // Raycast Information
-//        private bool validTarget = false;
         private Vector3 hitPoint;
         
         // Swipe
@@ -47,34 +47,15 @@ namespace WorldWizards.core.input.Tools
 
         public void Update()
         {
-            Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-            RaycastHit raycastHit;
-            
-            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
-            {
-                hitPoint = raycastHit.point;
-                hitPoint.y += CoordinateHelper.GetTileScale() * 0.0001f; // ensure placement in space above ontop of the grid
-            }
+            hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
+                input.GetControllerDirection(), gridController.GetGridCollider(), 200);  
             
             // if we are placing a prop
             if (curObject != null && curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
             { // raycast against all tiles and ignore the grid
-                var minDistance = float.MaxValue;
-                var colliders = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetAllColliders(WWType.Tile);
-                foreach (var c in colliders)
-                {
-                    if (c.Raycast(ray, out raycastHit, 100))
-                    {
-                        var dist = Vector3.Distance(input.GetControllerPoint(), raycastHit.point);
-                        if (dist < minDistance)
-                        {
-                            minDistance = dist;
-                            hitPoint = raycastHit.point;
-                        }
-                    }
-                }
+                hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
+                    input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
             }
-
 //            Debug.DrawLine(Vector3.zero, hitPoint, Color.red);
         }
         
@@ -103,7 +84,6 @@ namespace WorldWizards.core.input.Tools
         void MoveObject()
         {
             var coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint);
-            Debug.Log(coord.ToString());
             curObject.SetPosition(coord);
             
         }
@@ -120,18 +100,6 @@ namespace WorldWizards.core.input.Tools
                 }
                 curObject = null;
             }
-//            if (validTarget)
-//            {
-//                if (curObject != null)
-//                {
-//                    curObject.SetPosition( CoordinateHelper.UnityCoordToWWCoord(hitPoint));
-//                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
-//                    {
-//                        Destroy(curObject.gameObject); // If the object collided with another, destroy it.
-//                    }
-//                    curObject = null;
-//                }
-//            }
         }
 
 
@@ -151,18 +119,6 @@ namespace WorldWizards.core.input.Tools
                 CreateObject(hitPoint);
             }
             MoveObject();
-
-//            if (validTarget)
-//            {
-//                if (curObject == null)
-//                {
-//                    CreateObject(hitPoint);
-//                }
-//                else
-//                {
-//                    curObject.SetPosition(hitPoint);
-//                }
-//            }
         }
 
         
