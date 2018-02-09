@@ -20,8 +20,6 @@ namespace WorldWizards.core.input.Tools
         // Raycast Information
         private Vector3 hitPoint;
         private Vector3 hitPointOffset;
-        
-        // Swipe
 
         protected override void Awake()
         {
