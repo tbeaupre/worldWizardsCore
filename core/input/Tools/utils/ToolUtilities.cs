@@ -23,7 +23,13 @@ namespace WorldWizards.core.input.Tools.utils
                 resultingHitpoint = raycastHit.point;
                 resultingHitpoint.y = 0; // IGNORE Y
             }
-            resultingHitpoint.y += CoordinateHelper.GetTileScale() * 0.0001f; // ensure placement in space above ontop of the grid
+
+            if (resultingHitpoint.x != 0f && resultingHitpoint.z != 0)
+            {
+                resultingHitpoint.y +=
+                    CoordinateHelper.GetTileScale() * 0.0001f; // ensure placement in space above ontop of the grid
+            }
+
             return resultingHitpoint;
         }
         

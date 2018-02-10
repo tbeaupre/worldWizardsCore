@@ -59,14 +59,6 @@ namespace WorldWizards.core.input.Tools
             }
         }
          
-        
-//        private string GetResourceTag()
-//        {
-//            int tileIndex = Mathf.Abs(curTileIndex) %
-//                            ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
-//            return ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys()[tileIndex];
-//        }
-        
         private void CreateObject(Vector3 position)
         {
             if (curObject != null)
@@ -84,26 +76,6 @@ namespace WorldWizards.core.input.Tools
             
         }  
         
-//        private void CreateObject(Vector3 position)
-//        {
-//            List<int> possibleConfigurations =
-//                BuilderAlgorithms.GetPossibleRotations(position, GetResourceTag());
-//
-//            if (possibleConfigurations.Count == 0)
-//            {
-//                return;
-//            }
-//            int theRot = possibleConfigurations[0];
-//            if (possibleConfigurations.Contains(curRotation))
-//            {
-//                theRot = curRotation;
-//            }
-//            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
-//            WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
-//            WWObject go = WWObjectFactory.Instantiate(objData);
-//            curObject = go;
-//            //            return go;
-//        }
 
         
 
@@ -125,8 +97,6 @@ namespace WorldWizards.core.input.Tools
                 position.y += 0.5f * CoordinateHelper.GetTileScale();
             }
             curObject.SetPosition(position);
-//            var coord = CoordinateHelper.UnityCoordToWWCoord(position);
-//            curObject.SetPosition(coord);
         }
 
 

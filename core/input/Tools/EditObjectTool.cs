@@ -4,6 +4,7 @@ using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.experimental;
 using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
@@ -12,6 +13,7 @@ using WorldWizards.SteamVR.Scripts;
 namespace WorldWizards.core.input.Tools
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
+    // TODO Refactor this entire tool, especially the selection part
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
@@ -34,12 +36,17 @@ namespace WorldWizards.core.input.Tools
         
         public void Update()
         {
+            var lastHitPoint = hitPoint;
             hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
                 input.GetControllerDirection(), gridController.GetGridCollider(), 200);
             if (OnlyMovingProps())
             {
                 hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
                     input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
+            }
+            if (hitPoint.Equals(Vector3.zero))
+            {
+                hitPoint = lastHitPoint;
             }
         }
 
@@ -91,7 +98,6 @@ namespace WorldWizards.core.input.Tools
             
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
-//                var rememberRot = kvp.Value.Rotation;
                 var rememberRot = (int )kvp.Key.transform.rotation.eulerAngles.y;
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
                     position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
@@ -272,33 +278,6 @@ namespace WorldWizards.core.input.Tools
             UpdateOffsets();
         }
         
-        /// <summary>
-        ///     Handle menu button click.
-        /// </summary>
-        public override void OnMenuUnclick()
-        {
-            // If a VR device is present, switch controller's tool to MenuTraversalTool and set the AssetBundleMenu active
-            if (UnityEngine.XR.XRDevice.isPresent)
-            {
-                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
-                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
-                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
-            }
-            // Else if desktop controls, decide whether we need to activate or deactivate the AssetBundleMenu based on its status
-            else
-            {
-                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
-                {
-                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
-                }
-                else
-                {
-                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
-                }
-            }
-            base.OnMenuUnclick();
-        }
-        
         // Selection Code
         // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
         
@@ -402,7 +381,6 @@ namespace WorldWizards.core.input.Tools
                         //Ensure that any units not within the marquee are currently unselected
                         if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
                         {
-                            //                        wwObject.Deselect();
                             if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
                             {
                                 wwObjectToOrigCoordinates.Remove(wwObject);
@@ -411,7 +389,6 @@ namespace WorldWizards.core.input.Tools
 
                         if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
                         {
-                            //                        wwObject.Select();
                             wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
                             foreach (var r in wwObject.GetAllRenderers())
                             {
@@ -428,7 +405,6 @@ namespace WorldWizards.core.input.Tools
                 }
             }
         }
-
 
         private void OnDestroy()
         {
