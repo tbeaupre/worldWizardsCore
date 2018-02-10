@@ -69,6 +69,11 @@ namespace WorldWizards.core.input.Tools
         
         private void CreateObject(Vector3 position)
         {
+            if (curObject != null)
+            {
+                Destroy(curObject.gameObject);
+            }
+
             Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
             {
@@ -114,9 +119,7 @@ namespace WorldWizards.core.input.Tools
 
         void MoveObject()
         {
-            var position = hitPoint;
-            
-          
+            var position = hitPoint;          
             if (curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
             {
                 position.y += 0.5f * CoordinateHelper.GetTileScale();

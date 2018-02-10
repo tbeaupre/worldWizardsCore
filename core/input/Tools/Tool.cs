@@ -35,5 +35,6 @@ namespace WorldWizards.core.input.Tools
         {
             return GetType().Name;
         }
+        
     }
 }

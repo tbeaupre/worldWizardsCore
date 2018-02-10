@@ -428,6 +428,11 @@ namespace WorldWizards.core.input.Tools
                 }
             }
         }
-        
+
+
+        private void OnDestroy()
+        {
+            _highlightsFx.objectRenderers.Clear();
+        }
     }
 }

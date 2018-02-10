@@ -139,7 +139,7 @@ namespace WorldWizards.core.input.Tools
             if (padPos.y < -DEADZONE_SIZE)
             {
                 input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
-            }
+            }         
         }
 
         
