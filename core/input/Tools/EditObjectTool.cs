@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
@@ -48,6 +49,7 @@ namespace WorldWizards.core.input.Tools
             {
                 hitPoint = lastHitPoint;
             }
+            Debug.DrawLine(Vector3.zero, hitPoint, Color.red);
         }
 
         
@@ -65,9 +67,25 @@ namespace WorldWizards.core.input.Tools
 
         private void MoveObjects(Vector3 position)
         {
-            foreach (var kvp in wwObjectToOrigCoordinates)
+            if (OnlyMovingProps())
             {
-                kvp.Key.SetPosition(position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
+                foreach (var kvp in wwObjectToOrigCoordinates)
+                {
+                    var origOffset = CoordinateHelper.WWCoordToUnityCoord(kvp.Value);
+                    var y = input.GetControllerPoint().y;
+                    var origin = new Vector3(position.x + origOffset.x, y, position.z + origOffset.z);
+                    var stuckPoint = ToolUtilities.RaycastGridThenCustom(origin, Vector3.down,
+                        gridController.GetGridCollider(), WWType.Tile, 200f);                    
+                    kvp.Key.SetPosition(stuckPoint);
+                }   
+            }
+
+            else
+            {
+                foreach (var kvp in wwObjectToOrigCoordinates)
+                {
+                    kvp.Key.SetPosition(position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
+                }
             }
         }
 
@@ -94,14 +112,30 @@ namespace WorldWizards.core.input.Tools
 
         private void PlaceObjects(Vector3 position)
         {
-            var delta = GetDeltaSnap(position);
-            
-            foreach (var kvp in wwObjectToOrigCoordinates)
+            if (OnlyMovingProps())
             {
-                var rememberRot = (int )kvp.Key.transform.rotation.eulerAngles.y;
-                var coord = CoordinateHelper.UnityCoordToWWCoord(
-                    position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
-                kvp.Key.SetPosition(coord);
+                foreach (var kvp in wwObjectToOrigCoordinates)
+                {
+                    var origOffset = CoordinateHelper.WWCoordToUnityCoord(kvp.Value);
+                    var y = input.GetControllerPoint().y;
+                    var origin = new Vector3(position.x + origOffset.x, y, position.z + origOffset.z);
+                    var stuckPoint = ToolUtilities.RaycastGridThenCustom(origin, Vector3.down,
+                        gridController.GetGridCollider(), WWType.Tile, 200f);                    
+                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
+                    var coord = CoordinateHelper.UnityCoordToWWCoord(stuckPoint, rememberRot);
+                    kvp.Key.SetPosition(coord);
+                }      
+            }
+            else
+            {
+                var delta = GetDeltaSnap(position);
+                foreach (var kvp in wwObjectToOrigCoordinates)
+                {
+                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
+                    var coord = CoordinateHelper.UnityCoordToWWCoord(
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
+                    kvp.Key.SetPosition(coord);
+                }
             }
         }
 
@@ -377,6 +411,7 @@ namespace WorldWizards.core.input.Tools
                     {
                         //Convert the world position of the unit to a screen position and then to a GUI point
                         Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
+                        if (_screenPos.z <= 0) continue; // skip because the object is behind the camera
                         var _screenPoint = new Vector2(_screenPos.x, Screen.height - _screenPos.y);
                         //Ensure that any units not within the marquee are currently unselected
                         if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
