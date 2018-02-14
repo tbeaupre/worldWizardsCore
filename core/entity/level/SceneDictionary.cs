@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
@@ -138,6 +139,18 @@ namespace WorldWizards.core.entity.level
             }
             return false;
         }
+        
+        public bool DoesNotCollide(List<WWObject> wwObjects)
+        {
+            foreach (var wwObject in wwObjects)
+            {
+                if (Collides(wwObject))
+                {
+                    return false;
+                }
+            }
+            return true; // nothing collides
+        }
 
         /// <summary>
         /// Attempt to Add a WWObject to the data structure.
@@ -256,5 +269,24 @@ namespace WorldWizards.core.entity.level
             // not implemented yet
             return null;
         }
+
+        public List<Collider> GetColliders(WWType wwType)
+        {
+            List<Collider> result = new List<Collider>();
+            foreach (var wwObject in objects.Values)
+            {
+                if (wwObject.ResourceMetadata.wwObjectMetadata.type == wwType)
+                {
+                    var colliders = wwObject.GetComponentsInChildren<Collider>();
+                    foreach (var c  in colliders)
+                    {
+                        result.Add(c);
+                    }
+                }
+            }
+            return result;
+        }
+
+
     }
 }

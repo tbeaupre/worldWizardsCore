@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using WorldWizards.core.entity.common;
 
 namespace WorldWizards.core.entity.coordinate.utils
 {
@@ -23,19 +22,29 @@ namespace WorldWizards.core.entity.coordinate.utils
             return baseTileLength * tileLengthScale;
         }
 
-        public static Vector3 GetTileCenter(Vector3 position)
-        {
-            Coordinate coord = UnityCoordToWWCoord(position, 0);
-            coord.SnapToGrid();
-            return WWCoordToUnityCoord(coord);
-        }
+//        public static Vector3 GetTileCenter(Vector3 position)
+//        {
+//            Coordinate coord = UnityCoordToWWCoord(position, 0);
+//            coord.SnapToGrid();
+//            return WWCoordToUnityCoord(coord);
+//        }
 
         /// <see cref="UnityCoordToWWCoord(Vector3, int)"/>
         public static Coordinate UnityCoordToWWCoord(Vector3 position)
         {
             return UnityCoordToWWCoord(position, 0);
         }
-        
+
+
+
+        public static Vector3 GetOffset(Coordinate coordinate)
+        {
+            float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
+            float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
+            float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
+            return new Vector3(offsetX,offsetY, offsetZ);
+        }
+
         /// <summary>
         /// Convert a Unity Space position to a WWCoordinate.
         /// </summary>
@@ -67,8 +76,8 @@ namespace WorldWizards.core.entity.coordinate.utils
             float offsetX = coordinate.GetOffset().x / 2 + 0.5f;
             float offsetY = coordinate.GetOffset().y / 2 + 0.5f;
             float offsetZ = coordinate.GetOffset().z / 2 + 0.5f;
-            
-            var offset = new Vector3(offsetX, offsetY, offsetZ);
+
+            var offset = GetOffset(coordinate);
             Vector3 index = new Vector3(coordinate.Index.x, coordinate.Index.y, coordinate.Index.z);
             return (index + offset) * GetTileScale();
         }

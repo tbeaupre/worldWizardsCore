@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.entity.gameObject;
+using WorldWizards.core.experimental;
 
 namespace WorldWizards.core.input.Tools
 {
@@ -21,9 +22,12 @@ namespace WorldWizards.core.input.Tools
         private Vector2 marqueeSize;
         private List<WWObject> SelectableUnits;
 
+        private HighlightsFX _highlightsFx;
+
         void Awake()
         {
-            marqueeGraphics = new Texture2D(2, 2, TextureFormat.ARGB32, false); 
+            marqueeGraphics = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+            _highlightsFx = FindObjectOfType<HighlightsFX>();
         }
 
         private void OnGUI()
@@ -33,7 +37,7 @@ namespace WorldWizards.core.input.Tools
             GUI.DrawTexture(marqueeRect, marqueeGraphics);
         }
         
-        public override void OnTriggerUnclick()
+        public override void OnUngrip()
         {
             Debug.Log("OnTriggerUp");
             // reset state
@@ -45,7 +49,7 @@ namespace WorldWizards.core.input.Tools
             marqueeSize = Vector2.zero;
         }
 
-        public override void UpdateTrigger()
+        public override void UpdateGrip()
         {
             if (!justClicked)
             {
@@ -95,6 +99,8 @@ namespace WorldWizards.core.input.Tools
                         marqueeRect.y - Mathf.Abs(marqueeRect.height), Mathf.Abs(marqueeRect.width),
                         Mathf.Abs(marqueeRect.height));
                 }
+
+                List<Renderer> objectRenderers = new List<Renderer>();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
                     //Convert the world position of the unit to a screen position and then to a GUI point
@@ -103,12 +109,22 @@ namespace WorldWizards.core.input.Tools
                     //Ensure that any units not within the marquee are currently unselected
                     if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
                     {
-                        wwObject.Deselect();
+//                        wwObject.Deselect();
                     }
                     if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
                     {
-                        wwObject.Select();
+//                        wwObject.Select();
+                        foreach (var r in wwObject.GetAllRenderers())
+                        {
+                            objectRenderers.Add(r);
+                        }
                     }
+                }
+                _highlightsFx.objectRenderers.Clear();
+                foreach (var r in  objectRenderers)
+                {
+                    _highlightsFx.objectRenderers.Add(r);
+                    
                 }
             }
         }

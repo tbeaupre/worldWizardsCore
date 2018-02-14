@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WorldWizards.core.experimental;
 using WorldWizards.core.input.Desktop;
 using WorldWizards.core.input.Tools;
 using WorldWizards.core.input.VRControls;
@@ -32,6 +33,7 @@ namespace WorldWizards.core.input
                 // Change the current camera to the VR rig's headCamera.
                 desktopCamera.gameObject.SetActive(false);
                 headCamera.gameObject.SetActive(true);
+                ConfigureHighlightsFX(headCamera.gameObject.AddComponent<HighlightsFX>());
                 
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
                 
@@ -51,6 +53,8 @@ namespace WorldWizards.core.input
                 // Change the current camera to the desktop Camera.
                 headCamera.gameObject.SetActive(false);
                 desktopCamera.gameObject.SetActive(true);
+                ConfigureHighlightsFX(desktopCamera.gameObject.AddComponent<HighlightsFX>());
+                
                 
                 // Create the ControlScheme struct for the left desktop controller.
                 ControlScheme leftControlScheme = new ControlScheme(KeyCode.E, KeyCode.Q, KeyCode.Alpha2,
@@ -69,7 +73,16 @@ namespace WorldWizards.core.input
                 right = rightListener;
             }
         }
-        
+
+
+        private void ConfigureHighlightsFX(HighlightsFX fx)
+        {
+            fx.m_highlightColor = Color.yellow;
+            fx.m_fillType = HighlightsFX.FillType.Outline;
+            fx.m_selectionType = HighlightsFX.HighlightType.Glow;
+            fx.m_sortingType = HighlightsFX.SortingType.Overlay;
+        }
+
         // This is just for debugging the new EditObject Tool.
         public  void Update()
         {
@@ -90,7 +103,7 @@ namespace WorldWizards.core.input
             availableToolTypes = new List<Type>();
             availableToolTypes.Add(typeof(EditObjectTool));
             availableToolTypes.Add(typeof(CreateObjectTool));
-            availableToolTypes.Add(typeof(SelectionTool));
+//            availableToolTypes.Add(typeof(SelectionTool));
         }
 
         private Type GetCurrentTool()

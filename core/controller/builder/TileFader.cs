@@ -18,6 +18,42 @@ namespace WorldWizards.core.controller.builder
         private readonly List<Material[]> skinnedMaterials;
         private readonly SkinnedMeshRenderer[] skinnedRenderers;
 
+
+
+        public List<Renderer> GetAllRenderers()
+        {
+            var renderers = new List<Renderer>();
+            foreach (var mr in meshRenderers)
+            {
+                renderers.Add(mr);
+            }
+            foreach (var sr in skinnedRenderers)
+            {
+                renderers.Add(sr);
+            }
+
+            return renderers;
+        }
+
+
+        public Vector3 GetMeshCenter()
+        {
+            Vector3 result = Vector3.zero;
+
+            var allRenderers = GetAllRenderers();
+            foreach (var rend in allRenderers)
+            {
+                result += rend.bounds.center;
+            }
+
+            if (allRenderers.Count > 0)
+            {
+                result = result / (float) allRenderers.Count;
+            }
+
+            return result;
+        }
+
         /// <summary>
         /// Constructor that searches the entire GameObject hierarchy and
         /// determines the original regular materials.

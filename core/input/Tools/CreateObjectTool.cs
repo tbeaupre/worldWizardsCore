@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.entity.gameObject.utils;
+using WorldWizards.core.entity.level.utils;
+using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
 using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
 {
+    // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     public class CreateObjectTool : Tool
     {
         // Prefabs
@@ -23,7 +27,6 @@ namespace WorldWizards.core.input.Tools
         private int curTileIndex;
 
         // Raycast Information
-        private bool validTarget = false;
         private Vector3 hitPoint;
         
         // Swipe
@@ -37,7 +40,6 @@ namespace WorldWizards.core.input.Tools
             
             Debug.Log("Create Object Tool");
 
-
             gridController = FindObjectOfType<GridController>();
 
             curTileIndex = 0;
@@ -46,22 +48,24 @@ namespace WorldWizards.core.input.Tools
 
         public void Update()
         {
-            Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-            RaycastHit raycastHit;
-
-            if (gridController.GetGridCollider().Raycast(ray, out raycastHit, 100))
-            {
-                validTarget = true;
-                hitPoint = raycastHit.point;
-            }
-            else
-            {
-                validTarget = false;
+            hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
+                input.GetControllerDirection(), gridController.GetGridCollider(), 200);  
+            
+            // if we are placing a prop
+            if (curObject != null && curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
+            { // raycast against all tiles and ignore the grid
+                hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
+                    input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
             }
         }
-        
+         
         private void CreateObject(Vector3 position)
         {
+            if (curObject != null)
+            {
+                Destroy(curObject.gameObject);
+            }
+
             Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
             {
@@ -70,7 +74,10 @@ namespace WorldWizards.core.input.Tools
                 curObject = WWObjectFactory.Instantiate(objData);
             }
             
-        }
+        }  
+        
+
+        
 
         private void ReplaceObject(Vector3 position)
         {
@@ -81,37 +88,50 @@ namespace WorldWizards.core.input.Tools
             CreateObject(position);
         }
 
-        
-        // Trigger
-        public override void OnTriggerUnclick() // Add the object to the SceneGraph.
+
+        void MoveObject()
         {
-            if (validTarget)
+            var position = hitPoint;          
+            if (curObject.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
             {
-                if (curObject != null)
+                position.y += 0.5f * CoordinateHelper.GetTileScale();
+            }
+            curObject.SetPosition(position);
+        }
+
+
+        public void PlaceObject()
+        {
+            if (curObject != null)
+            {
+                var tempRot = (int) curObject.transform.rotation.eulerAngles.y;
+                MoveObject();
+                curObject.SetPosition(CoordinateHelper.UnityCoordToWWCoord(curObject.transform.position, tempRot));
+                if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                 {
-                    curObject.SetPosition(hitPoint, true);
-                    if (! ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
-                    {
-                        Destroy(curObject.gameObject); // If the object collided with another, destroy it.
-                    }
-                    curObject = null;
+                    Destroy(curObject.gameObject); // If the object collided with another, destroy it.
                 }
+                curObject = null;
             }
         }
 
+
+        // Trigger
+        public override void OnTriggerUnclick() // Add the object to the SceneGraph.
+        {
+            PlaceObject();
+            onUpdatTriggerDown = false;
+        }
+
+        private bool onUpdatTriggerDown;
         public override void UpdateTrigger() // Move the object to where the controller is pointed.
         {
-            if (validTarget)
+            if (!onUpdatTriggerDown)
             {
-                if (curObject == null)
-                {
-                    CreateObject(hitPoint);
-                }
-                else
-                {
-                    curObject.SetPosition(hitPoint, false);
-                }
+                onUpdatTriggerDown = true;
+                CreateObject(hitPoint);
             }
+            MoveObject();
         }
 
         
@@ -137,7 +157,7 @@ namespace WorldWizards.core.input.Tools
         public override void OnPadUnclick(Vector2 lastPadPos)
         {
             // Rotation
-            if (validTarget && curObject != null)
+            if (curObject != null)
             {
                 if (lastPadPos.x < -DEADZONE_SIZE)
                 {
@@ -167,34 +187,30 @@ namespace WorldWizards.core.input.Tools
         public override void OnPadUntouch(Vector2 lastPadPos)
         {
             trackingSwipe = false;
+            var availableObjects = ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
 
             // Check for presses on the top or bottom of the pad.
-            if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2)
+            if (Math.Abs(lastPadPos.x) < DEADZONE_SIZE / 2 && availableObjects.Count > 0)
             {
                 if (lastPadPos.y > DEADZONE_SIZE)
                 {
-                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
-                    {
-                        curTileIndex = (curTileIndex + 1) % ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
-                        ReplaceObject(hitPoint);
-                    }
+                    // increment and wrap around
+                    curTileIndex = (curTileIndex + 1) % availableObjects.Count;
+                    ReplaceObject(hitPoint);  
                 }
-                if (lastPadPos.y < -DEADZONE_SIZE)
+                else if (lastPadPos.y < -DEADZONE_SIZE)
                 {
-                    if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
-                    {
-                        curTileIndex = (curTileIndex - 1 + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
-                                            .GetPossibleObjectKeys().Count) %
-                                       ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>()
-                                           .GetPossibleObjectKeys().Count;
-                        ReplaceObject(hitPoint);
-                    }
+                    // decrement and wrap around
+                    curTileIndex = (curTileIndex - 1 + availableObjects.Count) % availableObjects.Count;
+                    ReplaceObject(hitPoint);   
                 }
             }
         }
         
         public override void UpdateTouch(Vector2 padPos) // Swipe to change objects.
         {
+            var possibleObjectKeys =
+                ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys();
             if (curObject != null) // Only swipe if there is currently an object in 'hand'.
             {
                 if (!trackingSwipe)
@@ -203,12 +219,11 @@ namespace WorldWizards.core.input.Tools
                     swipeStartPosition = padPos;
                 }
                 
-                var offset = (int)(ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count * CalculateSwipe(padPos.x));
+                var offset = (int)(possibleObjectKeys.Count * CalculateSwipe(padPos.x));
                 if (offset != 0)
                 {
                     swipeStartPosition = padPos;
-                    curTileIndex = (curTileIndex + offset + ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count) % 
-                                    ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count;
+                    curTileIndex = (curTileIndex + offset + possibleObjectKeys.Count) % possibleObjectKeys.Count;
                     ReplaceObject(hitPoint);
                 }
             }
@@ -219,23 +234,24 @@ namespace WorldWizards.core.input.Tools
         /// </summary>
         public override void OnMenuUnclick()
         {
+            string ASSET_BUNDLES_MENU = "AssetBundlesMenu";
             // If a VR device is present, switch controller's tool to MenuTraversalTool and set the AssetBundleMenu active
             if (UnityEngine.XR.XRDevice.isPresent)
             {
                 SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
                 controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
-                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, true);
             }
             // Else if desktop controls, decide whether we need to activate or deactivate the AssetBundleMenu based on its status
             else
             {
-                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("AssetBundlesMenu").activeSelf)
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference(ASSET_BUNDLES_MENU).activeSelf)
                 {
-                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", false);
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, false);
                 }
                 else
                 {
-                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive("AssetBundlesMenu", true);
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, true);
                 }
             }
             base.OnMenuUnclick();

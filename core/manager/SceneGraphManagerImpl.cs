@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using WorldWizards.core.controller.builder;
+using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
@@ -82,10 +83,9 @@ namespace WorldWizards.core.manager
             List<WWObject> allObjects = sceneDictionary.GetAllObjects();
             foreach (WWObject obj in allObjects)
             {
-                // TODO Look into why this +0.5f is neccassary and why the - 0.5f is neccassary
-                // TODO in the gridController.RefreshGrid() implementation
+
                 var newPos = CoordinateHelper.WWCoordToUnityCoord(obj.GetCoordinate());
-                newPos.y += (0.5f * CoordinateHelper.GetTileScale());
+
                 obj.transform.position = newPos;
                 obj.transform.localScale = Vector3.one * CoordinateHelper.tileLengthScale;
             }
@@ -225,6 +225,12 @@ namespace WorldWizards.core.manager
             return Quaternion.Euler(angles) * (point - pivot) + pivot;
         }
 
+
+        public List<Collider> GetAllColliders(WWType wwType)
+        {
+            return sceneDictionary.GetColliders(wwType);
+        }
+
         private WWObject RemoveObject(Guid id)
         {
             return sceneDictionary.Remove(id);
@@ -242,6 +248,12 @@ namespace WorldWizards.core.manager
         private WWObject Get(Guid id)
         {
             return sceneDictionary.Get(id);
+        }
+
+        /// <see cref="SceneGraphManager.DoesNotCollide"/>
+        public bool DoesNotCollide(List<WWObject> wwObjects)
+        {
+            return sceneDictionary.DoesNotCollide(wwObjects);
         }
     }
 }
