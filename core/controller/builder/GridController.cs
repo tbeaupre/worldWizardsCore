@@ -1,10 +1,6 @@
-﻿using System.ComponentModel.Design;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.XR.WSA.Persistence;
+﻿using UnityEngine;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
-using WorldWizards.core.manager;
 
 namespace WorldWizards.core.controller.builder
 {

@@ -190,6 +190,10 @@ namespace WorldWizards.core.input.Tools
 
         private void DeselectAll()
         {
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                kvp.Key.Deselect();
+            }
             wwObjectToOrigCoordinates.Clear();
             _highlightsFx.objectRenderers.Clear();
         }
@@ -218,11 +222,11 @@ namespace WorldWizards.core.input.Tools
         {
             if (lastPadPos.x < -DEADZONE_SIZE)
             {
-                RotateObjects(-90);
+               // RotateObjects(-90);
             }
             if (lastPadPos.x > DEADZONE_SIZE)
             {
-                RotateObjects(90);
+             //   RotateObjects(90);
             }
             
             // Move Grid
@@ -251,6 +255,7 @@ namespace WorldWizards.core.input.Tools
             UpdateOffsets();
         }
 
+        
         private void RotateObjects(int rotation)
         {
             if (wwObjectToOrigCoordinates.Count == 0) return;
@@ -353,6 +358,18 @@ namespace WorldWizards.core.input.Tools
         
         public override void UpdateGrip()
         {
+            Vector3 pointerPos;
+
+            if (UnityEngine.XR.XRDevice.isPresent)
+            {
+                Vector3 pointerOffset =  input.GetControllerPoint() + (input.GetControllerDirection().normalized * 200f);
+                pointerPos = Camera.main.WorldToScreenPoint(pointerOffset);
+            }
+            else
+            {
+                pointerPos = Input.mousePosition;
+            }
+            
             if (!justClicked)
             {
                 Debug.Log("OnTriggerPressed");
@@ -361,12 +378,21 @@ namespace WorldWizards.core.input.Tools
 
                 SelectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
 
-                float _invertedY = Screen.height - Input.mousePosition.y;
-                marqueeOrigin = new Vector2(Input.mousePosition.x, _invertedY);
+
+              
+
+                float _invertedY = Screen.height - pointerPos.y;
+                marqueeOrigin = new Vector2(pointerPos.x, _invertedY);
+
+               
+             
+                
 
                 //Check if the player just wants to select a single unit opposed to 
                 // drawing a marquee and selecting a range of units
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                //Ray ray = Camera.main.ScreenPointToRay(pointerPos);
+                
+                Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
@@ -381,8 +407,8 @@ namespace WorldWizards.core.input.Tools
             else
             {
                 Debug.Log("OnTriggerDown");
-                float _invertedY = Screen.height - Input.mousePosition.y;
-                marqueeSize = new Vector2(Input.mousePosition.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
+                float _invertedY = Screen.height - pointerPos.y;
+                marqueeSize = new Vector2(pointerPos.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
                 
                 //FIX FOR RECT.CONTAINS NOT ACCEPTING NEGATIVE VALUES
                 if (marqueeRect.width < 0)
@@ -418,6 +444,7 @@ namespace WorldWizards.core.input.Tools
                         {
                             if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
                             {
+                                wwObject.Deselect();
                                 wwObjectToOrigCoordinates.Remove(wwObject);
                             }
                         }
@@ -429,14 +456,16 @@ namespace WorldWizards.core.input.Tools
                             {
                                 objectRenderers.Add(r);
                             }
+                            wwObject.Select();
+
                         }
                     }
 
-                    _highlightsFx.objectRenderers.Clear();
+                   /* _highlightsFx.objectRenderers.Clear();
                     foreach (var r in objectRenderers)
                     {
                         _highlightsFx.objectRenderers.Add(r);
-                    }
+                    }*/
                 }
             }
         }

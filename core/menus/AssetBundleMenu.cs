@@ -147,6 +147,7 @@ namespace WorldWizards.core.menus
         // TODO: Delete/move after Alphafest
         public void Load()
         {
+            DeleteObjects();
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Load(FileIO.testPath);
         }
 
