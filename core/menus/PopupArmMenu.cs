@@ -23,18 +23,5 @@ namespace WorldWizards.core.menus
 
             allButtons = new List<Button>(gameObject.GetComponents<Button>());
         }
-
-        protected override void Setup()
-        {
-            base.Setup();
-            
-            // Put the popup menu in the right place and parent it to the arm menu
-            transform.rotation = armMenu.transform.rotation;
-            transform.position = armMenu.transform.position;
-            transform.Rotate(0, 0, 90);
-            transform.position = new Vector3(transform.position.x - 0.2f, transform.position.y, transform.position.z);
-            transform.parent = armMenu.transform;
-            
-        }
     }
 }

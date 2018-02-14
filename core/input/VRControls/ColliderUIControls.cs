@@ -11,20 +11,19 @@ namespace WorldWizards.core.input.VRControls
      * ColliderUIControls is attached to the right hand controller to allow collision with the Arm Menu.
      * 
      */
-    public class ColliderUIControls : MonoBehaviour {
-    
+    public class ColliderUIControls : MonoBehaviour
+    {
+
         public GameObject popupArmMenu;
+        public GameObject armMenu;
         private SteamVR_TrackedController controller;
         public Button objPlaceButton;
         public Button objEditButton;
+        private Color normalColor = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+        private Color pressedColor = new Color32(0x2E, 0xFF, 0x41, 0xFF);
 
-        void Awake()
+        void Start()
         {
-            if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuExists("PopupArmMenu"))
-            {
-                popupArmMenu = ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference("PopupArmMenu");
-            }
-            
             controller = GetComponent<SteamVR_TrackedController>();
         }
     
@@ -35,6 +34,24 @@ namespace WorldWizards.core.input.VRControls
         void OnTriggerEnter (Collider col)
         {
             Debug.Log("Collision");
+
+            if (popupArmMenu == null)
+            {
+                popupArmMenu = GameObject.Find("PopupArmMenu");
+            }
+
+            if (armMenu == null)
+            {
+                armMenu = GameObject.Find("ArmMenu(Clone)");
+
+                if (armMenu != null)
+                {
+                    Debug.Log("ArmMenu found");
+                    objEditButton = armMenu.GetComponent<ArmMenu>().objEditButton;
+                    objPlaceButton = armMenu.GetComponent<ArmMenu>().objPlaceButton;
+                }
+
+            }
 
             switch (col.gameObject.name)
             {
@@ -58,7 +75,7 @@ namespace WorldWizards.core.input.VRControls
                     break;
             }
         }
-
+        
         /**
          * Called when the Object Placement button is hit.
          * Changes the tool on the controller to CreateObjectTool.
@@ -66,8 +83,14 @@ namespace WorldWizards.core.input.VRControls
         public void OnClickObjectPlacement()
         {
             controller.GetComponent<VRListener>().ChangeTool(typeof(CreateObjectTool));
-            // TODO: Check that you actually have to select (maybe use click listener instead??)
-            objPlaceButton.Select();
+            
+            var objPlaceColors = objPlaceButton.colors;
+            objPlaceColors.normalColor = pressedColor;
+            objPlaceButton.colors = objPlaceColors;
+                
+            var objEditColors = objEditButton.colors;
+            objEditColors.normalColor = normalColor;
+            objEditButton.colors = objEditColors;
         }
 
         /**
@@ -77,8 +100,14 @@ namespace WorldWizards.core.input.VRControls
         public void OnClickObjectEdit()
         {
             controller.GetComponent<VRListener>().ChangeTool(typeof(EditObjectTool));
-            // TODO: Check that you actually have to select (maybe use click listener instead??)
-            objEditButton.Select();
+            
+            var objEditColors = objEditButton.colors;
+            objEditColors.normalColor = pressedColor;
+            objEditButton.colors = objEditColors;
+            
+            var objPlaceColors = objPlaceButton.colors;
+            objPlaceColors.normalColor = normalColor;
+            objPlaceButton.colors = objPlaceColors;
         }
     }
 }

@@ -154,5 +154,10 @@ namespace WorldWizards.core.menus
         {
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ClearAll();
         }
+
+        public void ShowControls()
+        {
+            Debug.Log("Controls");
+        }
     }
 }
