@@ -25,5 +25,12 @@ namespace WorldWizards.core.controller.builder
             CoordinateHelper.tileLengthScale = newScale;
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ChangeScale(newScale);
         }
+
+
+     /*   private void Start()
+        {
+            ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().ChangeScale(0.1f);
+
+        }*/
     }
 }

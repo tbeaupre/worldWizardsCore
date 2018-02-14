@@ -11,7 +11,7 @@ namespace WorldWizards.core.entity.coordinate.utils
     {
         // TODO baseTileLength can be replaced as all WWResourceMetadatas will have their own scale.
         public static float baseTileLength = 10f; // the base size of what a tile should be
-        public static float tileLengthScale = 1f; // how much to scale up the base size
+        public static float tileLengthScale = 0.5f; // how much to scale up the base size
 
         /// <summary>
         /// Gets the tile scale. Takes into account original scale of tiles (baseTileLength) and a multiplier (tileLengthScale).

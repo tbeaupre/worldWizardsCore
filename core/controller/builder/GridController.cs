@@ -24,7 +24,7 @@ namespace WorldWizards.core.controller.builder
         /// </summary>
         private void Start()
         {
-            playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
+           // playerReferenceScale = Instantiate(Resources.Load("Prefabs/PlayerScale")) as GameObject;
             RefreshGrid();
         }
         
@@ -63,9 +63,9 @@ namespace WorldWizards.core.controller.builder
             Coordinate c = CoordinateHelper.UnityCoordToWWCoord(grid.transform.position, 0);
             // set the scale too
             SetGridScale();            
-            playerReferenceScale.transform.position = new Vector3(0,
+           /* playerReferenceScale.transform.position = new Vector3(0,
                 yPos,
-                0);
+                0);*/
         }
 
         /// <summary>

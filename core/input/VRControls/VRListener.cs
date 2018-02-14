@@ -49,8 +49,10 @@ namespace WorldWizards.core.input.VRControls
 
         public override Vector3 GetHeadOffset()
         {
-            Vector3 offset = cameraRigTransform.position - headTransform.position;
-            offset.y = 0; // Without this, the player's head will be in the ground when teleporting.
+            Vector3 offset =  headTransform.position - cameraRigTransform.position ;
+            offset *= 0.5f;
+            //Vector3 offset = cameraRigTransform.position - headTransform.position;
+            //offset.y = 0; // Without this, the player's head will be in the ground when teleporting.
             return offset;
         }
 
