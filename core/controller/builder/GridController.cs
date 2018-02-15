@@ -67,7 +67,16 @@ namespace WorldWizards.core.controller.builder
                 yPos,
                 0);*/
         }
-
+        
+        /// <summary>
+        /// Set the height to a specific index and refresh.
+        /// </summary>
+        public void SetHeightAndRefresh(int height)
+        {
+            this.height = height;
+            RefreshGrid();
+        }
+        
         /// <summary>
         /// Move the grid up one step.
         /// </summary>

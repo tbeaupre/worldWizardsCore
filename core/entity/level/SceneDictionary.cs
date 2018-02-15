@@ -285,6 +285,20 @@ namespace WorldWizards.core.entity.level
             }
             return result;
         }
+        
+        public List<Collider> GetAllColliders()
+        {
+            List<Collider> result = new List<Collider>();
+            foreach (var wwObject in objects.Values)
+            {
+                var colliders = wwObject.GetComponentsInChildren<Collider>();
+                foreach (var c  in colliders)
+                {
+                    result.Add(c);
+                }
+            }
+            return result;
+        }
 
 
     }

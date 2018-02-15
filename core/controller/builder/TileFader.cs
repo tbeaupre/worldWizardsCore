@@ -10,15 +10,13 @@ namespace WorldWizards.core.controller.builder
     /// </summary>
     public class TileFader
     {
-        private readonly Material[] fadeMatList; // the material to toggle
-
         // handle materials for both mesh and skinned renderers
         private readonly List<Material[]> meshMaterials;
         private readonly MeshRenderer[] meshRenderers;
         private readonly List<Material[]> skinnedMaterials;
-        private readonly SkinnedMeshRenderer[] skinnedRenderers;
-
-
+        private readonly SkinnedMeshRenderer[] skinnedRenderers;   
+        private readonly List<Material[]> meshFadeMaterials;
+        private readonly List<Material[]> skinnedFadeMaterials;
 
         public List<Renderer> GetAllRenderers()
         {
@@ -61,39 +59,58 @@ namespace WorldWizards.core.controller.builder
         /// <param name="gameObject"></param>
         public TileFader(GameObject gameObject)
         {
-            fadeMatList = new Material[1];
-            fadeMatList[0] = Resources.Load("Materials/TileFadeMat") as Material;
+            var fadeMaterial = Resources.Load("Materials/TileFadeMat") as Material;
             meshMaterials = new List<Material[]>();
             skinnedMaterials = new List<Material[]>();
+            meshFadeMaterials = new List<Material[]>();
+            skinnedFadeMaterials = new List<Material[]>();
 
             meshRenderers = gameObject.GetComponentsInChildren<MeshRenderer>();
             foreach (MeshRenderer mesh in meshRenderers)
+            {
                 meshMaterials.Add(mesh.materials);
+                var fadeMatArray = new Material[mesh.materials.Length];
+                for (int i = 0; i < mesh.materials.Length; i++)
+                {
+                    fadeMatArray[i] = fadeMaterial;
+                }
+                meshFadeMaterials.Add(fadeMatArray);
+            }
+
             skinnedRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
             foreach (SkinnedMeshRenderer skin in skinnedRenderers)
+            {
                 skinnedMaterials.Add(skin.materials);
-        }
+                var fadeMatArray = new Material[skin.materials.Length];
+                for (int i = 0; i < skin.materials.Length; i++)
+                {
+                    fadeMatArray[i] = fadeMaterial;
+                }
+                meshFadeMaterials.Add(fadeMatArray);
+            }
 
-        /// <summary>
-        /// Turn the original regular materials on.
-        /// </summary>
-        public void On()
-        {
-            for (var i = 0; i < meshRenderers.Length; i++)
-                meshRenderers[i].materials = meshMaterials[i];
-            for (var i = 0; i < skinnedRenderers.Length; i++)
-                skinnedRenderers[i].materials = skinnedMaterials[i];
         }
 
         /// <summary>
         /// Turn the materials off by setting materials to the faded material.
         /// </summary>
+        public void On()
+        {
+            for (var i = 0; i < meshRenderers.Length; i++)
+                meshRenderers[i].materials = meshFadeMaterials[i];
+            for (var i = 0; i < skinnedRenderers.Length; i++)
+                skinnedRenderers[i].materials = skinnedFadeMaterials[i];
+        }
+
+        /// <summary>
+        /// Turn the original regular materials on.
+        /// </summary>
         public void Off()
         {
             for (var i = 0; i < meshRenderers.Length; i++)
-                meshRenderers[i].materials = fadeMatList;
+                meshRenderers[i].materials = meshMaterials[i];
             for (var i = 0; i < skinnedRenderers.Length; i++)
-                skinnedRenderers[i].materials = fadeMatList;
+                skinnedRenderers[i].materials = skinnedMaterials[i];
         }
     }
 }

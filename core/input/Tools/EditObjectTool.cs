@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
@@ -9,6 +10,7 @@ using WorldWizards.core.experimental;
 using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
+using WorldWizards.SteamVR.Plugins;
 using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
@@ -18,7 +20,6 @@ namespace WorldWizards.core.input.Tools
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
-        private List<Renderer> objectRenderers;
         
         // Raycast Information
         private Vector3 hitPoint;
@@ -31,7 +32,6 @@ namespace WorldWizards.core.input.Tools
             Debug.Log("Edit Object Tool");
 
             wwObjectToOrigCoordinates = new Dictionary<WWObject, Coordinate>();
-            objectRenderers = new List<Renderer>();
             SelectionAwake();
         }
         
@@ -198,9 +198,43 @@ namespace WorldWizards.core.input.Tools
             _highlightsFx.objectRenderers.Clear();
         }
 
+
+        private Vector3 GetCenterPoint()
+        {
+            var centerPivot = Vector3.zero;
+            int count = 0;
+            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
+            {
+                centerPivot += wwObject.transform.position;
+                count++;
+            }
+            if (count != 0)
+            {
+                centerPivot /= count;
+            }    
+            Bounds bounds = new Bounds (centerPivot, Vector3.one);
+
+            List<Renderer> renderers = new List<Renderer>();
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                var objectsRenderers = kvp.Key.GetAllRenderers();
+                foreach (var objRenderer in objectsRenderers)
+                {
+                    renderers.Add(objRenderer);
+                }
+            }
+            foreach (Renderer renderer in renderers)
+            {
+                bounds.Encapsulate (renderer.bounds);
+            }
+            centerPivot = bounds.center;
+            return centerPivot;
+        }
+
         private void SetHitPointOffset()
         {
-            hitPointOffset = hitPoint;
+            hitPointOffset = GetCenterPoint();
+            hitPointOffset.y = hitPoint.y;
         }
 
         public override void UpdateTrigger()
@@ -222,11 +256,11 @@ namespace WorldWizards.core.input.Tools
         {
             if (lastPadPos.x < -DEADZONE_SIZE)
             {
-               // RotateObjects(-90);
+                RotateObjects(-90);
             }
             if (lastPadPos.x > DEADZONE_SIZE)
             {
-             //   RotateObjects(90);
+                RotateObjects(90);
             }
             
             // Move Grid
@@ -264,25 +298,8 @@ namespace WorldWizards.core.input.Tools
             {
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
             }
-            
-            var centerPivot = Vector3.zero;
-            int count = 0;
-            foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
-            {
-                centerPivot += wwObject.transform.position;
-                count++;
-            }
-            if (count != 0)
-            {
-                centerPivot /= count;
-            }
-            Bounds bounds = new Bounds (centerPivot, Vector3.one);
-            Renderer[] renderers = GetComponentsInChildren<Renderer> ();
-            foreach (Renderer renderer in renderers)
-            {
-                bounds.Encapsulate (renderer.bounds);
-            }
-            centerPivot = bounds.center;
+
+            var centerPivot = GetCenterPoint();
 
             List<Vector3> before = new List<Vector3>();
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
@@ -328,6 +345,8 @@ namespace WorldWizards.core.input.Tools
         private Rect marqueeRect;
         private Vector2 marqueeSize;
         private List<WWObject> SelectableUnits;
+        private List<Renderer> objectRenderers;
+
 
         private HighlightsFX _highlightsFx;
 
@@ -335,6 +354,7 @@ namespace WorldWizards.core.input.Tools
         {
             marqueeGraphics = new Texture2D(2, 2, TextureFormat.ARGB32, false);
             _highlightsFx = FindObjectOfType<HighlightsFX>();
+            objectRenderers = new List<Renderer>();
         }
 
         private void OnGUI()
@@ -346,7 +366,7 @@ namespace WorldWizards.core.input.Tools
         
         public override void OnUngrip()
         {
-            Debug.Log("OnTriggerUp");
+            Debug.Log("OnGripUp");
             // reset state
             justClicked = false;
             marqueeRect.width = 0;
@@ -358,57 +378,67 @@ namespace WorldWizards.core.input.Tools
         
         public override void UpdateGrip()
         {
-            Vector3 pointerPos;
+            Vector3 pointerPosAsScreenPos;
 
             if (UnityEngine.XR.XRDevice.isPresent)
             {
                 Vector3 pointerOffset =  input.GetControllerPoint() + (input.GetControllerDirection().normalized * 200f);
-                pointerPos = Camera.main.WorldToScreenPoint(pointerOffset);
+                pointerPosAsScreenPos = Camera.main.WorldToScreenPoint(pointerOffset);
             }
-            else
+            else // desktop controlls
             {
-                pointerPos = Input.mousePosition;
+                pointerPosAsScreenPos = Input.mousePosition;
             }
             
             if (!justClicked)
             {
-                Debug.Log("OnTriggerPressed");
+                Debug.Log("OnGripUp");
                 justClicked = true;
                 // treat this as OnPress
 
                 SelectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
 
 
-              
-
-                float _invertedY = Screen.height - pointerPos.y;
-                marqueeOrigin = new Vector2(pointerPos.x, _invertedY);
-
-               
-             
-                
+                float _invertedY = Screen.height - pointerPosAsScreenPos.y;
+                marqueeOrigin = new Vector2(pointerPosAsScreenPos.x, _invertedY);
 
                 //Check if the player just wants to select a single unit opposed to 
                 // drawing a marquee and selecting a range of units
-                //Ray ray = Camera.main.ScreenPointToRay(pointerPos);
+
+                var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);
                 
-                Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit))
+                if (hitWWObject != null)
                 {
-                    var hitWWObject = hit.transform.gameObject.GetComponent<WWObject>();
-                    if (hitWWObject != null)
+                    SelectableUnits.Remove(hitWWObject);
+                    if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
                     {
-                        SelectableUnits.Remove(hitWWObject);
+                        wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
                         hitWWObject.Select();
                     }
                 }
+
+                //Ray ray = Camera.main.ScreenPointToRay(pointerPos);
+//                Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
+//                RaycastHit hit;
+//                if (Physics.Raycast(ray, out hit))
+//                {
+//                    var hitWWObject = hit.transform.gameObject.GetComponent<WWObject>();
+//                    if (hitWWObject != null)
+//                    {
+//                        SelectableUnits.Remove(hitWWObject);
+//                        if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
+//                        {
+//                            wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
+//                            hitWWObject.Select();
+//                        }
+//                    }
+//                }
             }
             else
             {
                 Debug.Log("OnTriggerDown");
-                float _invertedY = Screen.height - pointerPos.y;
-                marqueeSize = new Vector2(pointerPos.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
+                float _invertedY = Screen.height - pointerPosAsScreenPos.y;
+                marqueeSize = new Vector2(pointerPosAsScreenPos.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
                 
                 //FIX FOR RECT.CONTAINS NOT ACCEPTING NEGATIVE VALUES
                 if (marqueeRect.width < 0)
@@ -428,7 +458,7 @@ namespace WorldWizards.core.input.Tools
                         Mathf.Abs(marqueeRect.height));
                 }
 
-                objectRenderers.Clear();
+//                objectRenderers.Clear();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
                     if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
@@ -452,12 +482,11 @@ namespace WorldWizards.core.input.Tools
                         if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
                         {
                             wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
-                            foreach (var r in wwObject.GetAllRenderers())
-                            {
-                                objectRenderers.Add(r);
-                            }
+//                            foreach (var r in wwObject.GetAllRenderers())
+//                            {
+//                                objectRenderers.Add(r);
+//                            }
                             wwObject.Select();
-
                         }
                     }
 

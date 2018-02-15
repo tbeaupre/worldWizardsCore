@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using WorldWizards.core.entity.common;
+using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.input.Tools.utils;
 
 namespace WorldWizards.core.input.Tools
@@ -101,7 +102,10 @@ namespace WorldWizards.core.input.Tools
         {
             shouldTeleport = false;
             
-            input.GetCameraRigTransform().position = target + input.GetHeadOffset();
+            var newPosition = target + input.GetHeadOffset();
+            
+            input.GetCameraRigTransform().position = newPosition;
+            gridController.SetHeightAndRefresh(CoordinateHelper.UnityCoordToWWCoord(newPosition).Index.y);
         }
         
         

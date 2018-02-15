@@ -103,5 +103,12 @@ namespace WorldWizards.core.manager
         /// <param name="wwType"></param>
         /// <returns></returns>
         List<Collider> GetAllColliders(WWType wwType);
+        
+        /// <summary>
+        /// Get a list of all colliders in the Scene Graph that belong to WWObjects of all types.
+        /// </summary>
+        /// <param name="wwType"></param>
+        /// <returns></returns>
+        List<Collider> GetAllColliders();
     }
 }

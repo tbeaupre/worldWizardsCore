@@ -230,6 +230,11 @@ namespace WorldWizards.core.manager
         {
             return sceneDictionary.GetColliders(wwType);
         }
+        
+        public List<Collider> GetAllColliders()
+        {
+            return sceneDictionary.GetAllColliders();
+        }
 
         private WWObject RemoveObject(Guid id)
         {

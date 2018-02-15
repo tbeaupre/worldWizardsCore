@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate.utils;
+using WorldWizards.core.entity.gameObject;
 using WorldWizards.core.manager;
 
 // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
@@ -21,7 +24,7 @@ namespace WorldWizards.core.input.Tools.utils
             if (gridCollider.Raycast(ray, out raycastHit, rayDistance))
             {
                 resultingHitpoint = raycastHit.point;
-                resultingHitpoint.y = 0; // IGNORE Y
+//                resultingHitpoint.y = 0; // IGNORE Y
             }
 
             if (resultingHitpoint.x != 0f && resultingHitpoint.z != 0)
@@ -54,6 +57,30 @@ namespace WorldWizards.core.input.Tools.utils
                 }
             }
             return resultingHitpoint;
+        }
+        
+        public static WWObject RaycastNoGrid(Vector3 origin, Vector3 direction, float rayDistance)
+        {
+            WWObject resultWwObject = null;
+            var minDistance = float.MaxValue;
+            var colliders = ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetAllColliders();
+
+
+            Ray ray = new Ray(origin, direction);
+            foreach (var c in colliders)
+            {
+                RaycastHit raycastHit;
+                if (c.Raycast(ray, out raycastHit, rayDistance))
+                {
+                    var dist = Vector3.Distance(origin, raycastHit.point);
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        resultWwObject =  raycastHit.transform.gameObject.GetComponent<WWObject>();
+                    }
+                }
+            }
+            return resultWwObject;
         }
 
         public static Vector3 RaycastGridThenCustom(Vector3 origin, Vector3 direction, Collider gridCollider,
