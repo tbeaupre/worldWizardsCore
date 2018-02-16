@@ -24,15 +24,8 @@ namespace WorldWizards.core.input.Tools
         private Vector3 hitPoint; // Hit point of the laser raycast
 
         
-        // Trigger
-        public override void OnTriggerUnclick()
-        {
-            // Selection Logic.
-        }
-        
-        
         // Grip
-        public override void OnUngrip() // Teleport to laser location.
+        public override void OnTriggerUnclick() // Teleport to laser location.
         {
             // Hide laser and reticle when button is released.
             DeactivateLaser();
@@ -43,7 +36,7 @@ namespace WorldWizards.core.input.Tools
             }
         }
 
-        public override void UpdateGrip() // Update laser position.
+        public override void UpdateTrigger() // Update laser position.
         {
             hitPoint = ToolUtilities.RaycastGridThenCustom(input.GetControllerPoint(),
                 input.GetControllerDirection(), gridController.GetGridCollider(), WWType.Tile, 200);
@@ -138,11 +131,11 @@ namespace WorldWizards.core.input.Tools
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
             }         
         }
 

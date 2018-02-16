@@ -498,9 +498,41 @@ namespace WorldWizards.core.input.Tools
                 }
             }
         }
+        
+        /// <summary>
+        ///     Handle menu button click.
+        /// </summary>
+        public override void OnMenuUnclick()
+        {
+            string ASSET_BUNDLES_MENU = "AssetBundlesMenu";
+            // If a VR device is present, switch controller's tool to MenuTraversalTool and set the AssetBundleMenu active
+            if (UnityEngine.XR.XRDevice.isPresent)
+            {
+                SteamVR_ControllerManager controllerManager = FindObjectOfType<SteamVR_ControllerManager>();
+                controllerManager.right.GetComponent<VRListener>().ChangeTool(typeof(MenuTraversalTool));
+                ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, true);
+            }
+            // Else if desktop controls, decide whether we need to activate or deactivate the AssetBundleMenu based on its status
+            else
+            {
+                if (ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().GetMenuReference(ASSET_BUNDLES_MENU).activeSelf)
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, false);
+                }
+                else
+                {
+                    ManagerRegistry.Instance.GetAnInstance<WWMenuManager>().SetMenuActive(ASSET_BUNDLES_MENU, true);
+                }
+            }
+            base.OnMenuUnclick();
+        }
 
         private void OnDestroy()
         {
+            foreach (var kvp in wwObjectToOrigCoordinates)
+            {
+                kvp.Key.Deselect();
+            }
             _highlightsFx.objectRenderers.Clear();
         }
     }
