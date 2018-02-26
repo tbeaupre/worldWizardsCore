@@ -12,10 +12,6 @@ namespace WorldWizards.core.input.Tools
         private const float RETICLE_OFFSET = 0.001f; // The reticle offset from the floor
         private const float MOVE_OFFSET = 0.15f; // The distance the player moves per frame.
         
-        // Prefabs
-        public GameObject laserPrefab;
-        public GameObject reticlePrefab; // Teleport reticle prefab
-        
         // Prefab Instances
         private GameObject laser; // Stores reference to an instance of a laser
         private GameObject reticle; // Instance of reticle
@@ -66,8 +62,8 @@ namespace WorldWizards.core.input.Tools
         {
             if (laser == null)
             {
-                laser = Instantiate(laserPrefab);
-                reticle = Instantiate(reticlePrefab);
+                laser = Instantiate(Resources.Load("Prefabs/Laser")) as GameObject;
+                reticle = Instantiate(Resources.Load("Prefabs/TeleportReticle")) as GameObject;
             }
         }
 
