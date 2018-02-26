@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
-using UnityEngine.UI;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
@@ -416,23 +414,6 @@ namespace WorldWizards.core.input.Tools
                         hitWWObject.Select();
                     }
                 }
-
-                //Ray ray = Camera.main.ScreenPointToRay(pointerPos);
-//                Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-//                RaycastHit hit;
-//                if (Physics.Raycast(ray, out hit))
-//                {
-//                    var hitWWObject = hit.transform.gameObject.GetComponent<WWObject>();
-//                    if (hitWWObject != null)
-//                    {
-//                        SelectableUnits.Remove(hitWWObject);
-//                        if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
-//                        {
-//                            wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
-//                            hitWWObject.Select();
-//                        }
-//                    }
-//                }
             }
             else
             {
@@ -458,7 +439,6 @@ namespace WorldWizards.core.input.Tools
                         Mathf.Abs(marqueeRect.height));
                 }
 
-//                objectRenderers.Clear();
                 foreach (WWObject wwObject in SelectableUnits)
                 {
                     if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
@@ -482,19 +462,9 @@ namespace WorldWizards.core.input.Tools
                         if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
                         {
                             wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
-//                            foreach (var r in wwObject.GetAllRenderers())
-//                            {
-//                                objectRenderers.Add(r);
-//                            }
                             wwObject.Select();
                         }
                     }
-
-                   /* _highlightsFx.objectRenderers.Clear();
-                    foreach (var r in objectRenderers)
-                    {
-                        _highlightsFx.objectRenderers.Add(r);
-                    }*/
                 }
             }
         }
