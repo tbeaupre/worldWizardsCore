@@ -9,7 +9,7 @@ namespace WorldWizards.core.file.utils
     /// </summary>
     public static class FileIO
     {
-        public static string testPath = Application.dataPath + "/SaveFiles/test.json";
+        public static string testPath = Application.dataPath + "/../SaveFiles/test.json";
 
         public static void SaveJsonToFile(string json, string filePath)
         {
