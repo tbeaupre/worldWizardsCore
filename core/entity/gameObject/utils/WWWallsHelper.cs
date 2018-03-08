@@ -1,4 +1,4 @@
-﻿using UnityEngine.Assertions;
+﻿using UnityEngine;
 using WorldWizards.core.entity.gameObject.resource.metaData;
 
 namespace WorldWizards.core.entity.gameObject.utils
@@ -14,8 +14,12 @@ namespace WorldWizards.core.entity.gameObject.utils
             int yRotation = rotation % 360 + (rotation < 0 ? 360 : 0);
 
             // rotation should only be 1 of 4 discrete values, 0, 90, 180, and 270
-            Assert.IsTrue(yRotation == 0 || yRotation == 90 || yRotation == 180 || yRotation == 270 ||
-                          yRotation == 360);
+            bool isvalidRotation = yRotation == 0 || yRotation == 90 || yRotation == 180 || yRotation == 270 ||
+                                   yRotation == 360;
+            if (!isvalidRotation)
+            {
+                Debug.LogError(string.Format("WWWallsHelper : {0} is an invalid rotation.", yRotation));
+            }
 
             bool north;
             bool east;

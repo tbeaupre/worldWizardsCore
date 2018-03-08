@@ -19,11 +19,12 @@ namespace WorldWizards.core.entity.gameObject
         /// <param name="parent">The parent WWObjectData. Can be null</param>
         /// <param name="children">The list of children this WWObjectData is a parent of.</param>
         /// <param name="resourceTag">The resource tag</param>
-        public WWObjectData(Guid id, Coordinate coordinate,
+        public WWObjectData(Guid id, WWTransform wwTransform,
             WWObjectData parent, List<WWObjectData> children, string resourceTag)
         {
             this.id = id;
-            this.coordinate = coordinate;
+            this.wwTransform = wwTransform;
+            //this.coordinate = coordinate;
             this.parent = parent;
             this.children = children;
             this.resourceTag = resourceTag;
@@ -36,7 +37,7 @@ namespace WorldWizards.core.entity.gameObject
         public WWObjectData(WWObjectJSONBlob b)
         {
             id = b.id;
-            coordinate = new Coordinate(b.coordinate);
+            wwTransform = new WWTransform(b.wwTransform);
             resourceTag = b.resourceTag;
 
             // Note parent and children relationships are re-linked in the SceneGraphController during the Load
@@ -52,7 +53,12 @@ namespace WorldWizards.core.entity.gameObject
         /// <summary>
         /// The coordinate of this WWObjectData
         /// </summary>
-        public Coordinate coordinate { get; set; }
+        //        public Coordinate coordinate { get; set; }
+
+        /// <summary>
+        /// The transform for this WWObjectData
+        /// </summary>
+        public WWTransform wwTransform { get; set; }
 
         /// <summary>
         /// The parent of this WWObjectData. Null if there is no parent.

@@ -19,8 +19,10 @@ namespace WorldWizards.core.experimental
                 var height = (int) (heightmap.GetPixel(x, y).r * maxHeight);
                 var c = new Coordinate(x, height, y);
                 coordinates.Add(c);
+                
+                var wwTransform = new WWTransform(c, 0);
 
-                WWObjectData parentData = WWObjectFactory.CreateNew(c, "white");
+                WWObjectData parentData = WWObjectFactory.CreateNew(wwTransform, "white");
                 WWObject parentObj = WWObjectFactory.Instantiate(parentData);
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(parentObj);
                 
@@ -30,8 +32,9 @@ namespace WorldWizards.core.experimental
                     height--;
                     c = new Coordinate(x, height, y);
                     coordinates.Add(c);
-
-                    WWObjectData childData = WWObjectFactory.CreateNew(c, "white");
+                    wwTransform = new WWTransform(c, 0);
+                    
+                    WWObjectData childData = WWObjectFactory.CreateNew(wwTransform, "white");
 
                     WWObject childObj = WWObjectFactory.Instantiate(childData);
                     ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(childObj);

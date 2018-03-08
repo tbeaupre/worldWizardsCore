@@ -73,7 +73,7 @@ namespace WorldWizards.core.experimental
         private void TryPlaceDoor(Vector3 hitPoint)
         {
             Debug.Log("TryPlaceDoor called.");
-            Coordinate coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint, 0);
+            Coordinate coord = CoordinateHelper.UnityCoordToWWCoord(hitPoint);
             List<WWObject> objects =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetObjectsInCoordinateIndex(coord);
             Debug.Log("objects count " + objects.Count);
 
@@ -241,8 +241,9 @@ namespace WorldWizards.core.experimental
         private WWObject ForceRotateAndPlaceObject(Vector3 position)
         {
             int theRot = curRotation;
-            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
-            WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
+            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position);
+            var wwTransform = new WWTransform(coordRotated, theRot);
+            WWObjectData objData = WWObjectFactory.CreateNew(wwTransform, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }
@@ -261,8 +262,9 @@ namespace WorldWizards.core.experimental
             {
                 theRot = curRotation;
             }
-            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position, theRot);
-            WWObjectData objData = WWObjectFactory.CreateNew(coordRotated, GetResourceTag());
+            Coordinate coordRotated = CoordinateHelper.UnityCoordToWWCoord(position);
+            var wwTransform = new WWTransform(coordRotated, theRot);
+            WWObjectData objData = WWObjectFactory.CreateNew(wwTransform, GetResourceTag());
             WWObject go = WWObjectFactory.Instantiate(objData);
             return go;
         }

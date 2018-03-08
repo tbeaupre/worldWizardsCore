@@ -92,7 +92,7 @@ namespace WorldWizards.core.input.Tools
                 {
           
                     var coord = CoordinateHelper.UnityCoordToWWCoord(
-                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), 0);
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
                     var original = CoordinateHelper.WWCoordToUnityCoord(coord);
                     coord.SnapToGrid();
                     var afterSnap = CoordinateHelper.WWCoordToUnityCoord(coord);
@@ -114,8 +114,7 @@ namespace WorldWizards.core.input.Tools
                     var origin = new Vector3(position.x + origOffset.x, y, position.z + origOffset.z);
                     var stuckPoint = ToolUtilities.RaycastGridThenCustom(origin, Vector3.down,
                         gridController.GetGridCollider(), WWType.Tile, 200f);                    
-                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
-                    var coord = CoordinateHelper.UnityCoordToWWCoord(stuckPoint, rememberRot);
+                    var coord = CoordinateHelper.UnityCoordToWWCoord(stuckPoint);
                     kvp.Key.SetPosition(coord);
                 }      
             }
@@ -124,9 +123,8 @@ namespace WorldWizards.core.input.Tools
                 var delta = GetDeltaSnap(position);
                 foreach (var kvp in wwObjectToOrigCoordinates)
                 {
-                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
                     var coord = CoordinateHelper.UnityCoordToWWCoord(
-                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta);
                     kvp.Key.SetPosition(coord);
                 }
             }
@@ -271,10 +269,9 @@ namespace WorldWizards.core.input.Tools
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
-                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
                 var newPos = wwObject.transform.position;
                 newPos.y += height * CoordinateHelper.GetTileScale();
-                var coord = CoordinateHelper.UnityCoordToWWCoord(newPos, rememberRot);
+                var coord = CoordinateHelper.UnityCoordToWWCoord(newPos);
                 wwObject.SetPosition(coord);
             }
             CompleteEdit();
@@ -306,7 +303,7 @@ namespace WorldWizards.core.input.Tools
             {            
                 if (wwObject.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
                 {
-                    var afterCoord = CoordinateHelper.UnityCoordToWWCoord(wwObject.transform.position, 0);
+                    var afterCoord = CoordinateHelper.UnityCoordToWWCoord(wwObject.transform.position);
                     afterCoord.SnapToGrid();
                     var afterSnap = CoordinateHelper.WWCoordToUnityCoord(afterCoord);
                     deltaSnap = afterSnap - before[i];
@@ -317,9 +314,8 @@ namespace WorldWizards.core.input.Tools
             
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
-                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
-                    wwObject.transform.position + deltaSnap, rememberRot);
+                    wwObject.transform.position + deltaSnap);
                 wwObject.SetPosition(coord);
             }
             CompleteEdit();
@@ -368,13 +364,12 @@ namespace WorldWizards.core.input.Tools
             {
                 Debug.Log("OnGripUp");
                 justClicked = true;
+                selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
                 // Get the initial click position of the mouse. No need to convert to GUI space
                 // since we are using the lower left as anchor and pivot.
                 initialClickPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);
                 // The anchor is set to the same place.
                 selectionCanvasController.marqueeRectTransform.anchoredPosition = initialClickPosition;
-                selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
-
                 // Check if the player just wants to select a single unit opposed to 
                 // drawing a marquee and selecting a range of units
                 var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);

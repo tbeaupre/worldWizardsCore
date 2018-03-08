@@ -206,14 +206,15 @@ namespace WorldWizards.core.manager
                     // TODO handle the rotation
                     // TODO handle collision for existing doors
 
-                    var holderRot = tile.GetCoordinate().Rotation;                    
+                    var holderRot = tile.GetRotation();                    
 //                    var config = new WWDoorHolderConfiguration(tile);
                     var rotatedOffset = RotatePointAroundPivot(doorHolder.pivot,
                         Vector3.zero, 
                         new Vector3(0, holderRot, 0));
                     
-                    var coord = new Coordinate(tile.GetCoordinate().Index, rotatedOffset, holderRot);
+                    var coord = new Coordinate(tile.GetCoordinate().Index, rotatedOffset);
                     door.SetPosition(coord);
+                    door.SetRotation(holderRot);
                     sceneDictionary.Add(door);
                     return true;
                 }

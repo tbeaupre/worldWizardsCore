@@ -35,11 +35,12 @@ namespace WorldWizards.core.viveControllers
 
         private void CreateCube(Vector3 controllerPos)
         {
-            Coordinate cubePosition = CoordinateHelper.UnityCoordToWWCoord(controllerPos, 0);
+            Coordinate cubePosition = CoordinateHelper.UnityCoordToWWCoord(controllerPos);
             Debug.Log("Cube Position: " + cubePosition.Index.x + ", " + cubePosition.Index.y + ", " +
                       cubePosition.Index.z);
 
-            WWObjectData data = WWObjectFactory.CreateNew(cubePosition, "white");
+            var wwTransform = new WWTransform(cubePosition);
+            WWObjectData data = WWObjectFactory.CreateNew(wwTransform, "white");
             WWObject obj = WWObjectFactory.Instantiate(data);
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(obj);
         }

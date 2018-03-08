@@ -6,7 +6,7 @@ namespace WorldWizards.core.file.entity
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
-    /// JSON blobl structure for coordinates.
+    /// JSON blob structure for coordinates.
     /// </summary>
     [Serializable]
     public class CoordinateJSONBlob
@@ -17,7 +17,6 @@ namespace WorldWizards.core.file.entity
         public float offsetX;
         public float offsetY;
         public float offsetZ;
-        public int rotation;
 
         /// <summary>
         /// Constructor used by the JSON parser.
@@ -35,7 +34,6 @@ namespace WorldWizards.core.file.entity
             offsetX = c.GetOffset().x;
             offsetY = c.GetOffset().y;
             offsetZ = c.GetOffset().z;
-            rotation = c.Rotation;
         }
     }
 }

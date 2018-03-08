@@ -18,9 +18,10 @@ namespace WorldWizards.core.experimental
         {
             // create a coordinate to place the tile 
             var coordinate = new Coordinate(0, 0, 0);
+            var wwTransform  = new WWTransform(coordinate, 0);
             // create the data needed to instantiate this tile
             WWObjectData tileData =
-                WWObjectFactory.CreateNew(coordinate, string.Format("{0}_{1}", assetBundleName, assetName));
+                WWObjectFactory.CreateNew(wwTransform, string.Format("{0}_{1}", assetBundleName, assetName));
             // instantiate the tile in the world
             WWObject tile = WWObjectFactory.Instantiate(tileData);
             // add the newly created tile to the SceneGraph

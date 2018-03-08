@@ -66,19 +66,17 @@ namespace WorldWizards.core.input.Tools
                 Destroy(curObject.gameObject);
             }
 
-            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, curRotation);
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position);
+            var wwTransform = new WWTransform(coordinate, curRotation);
             if (ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys().Count > 0)
             {
-                WWObjectData objData = WWObjectFactory.CreateNew(coordinate,
+                WWObjectData objData = WWObjectFactory.CreateNew(wwTransform,
                     ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetPossibleObjectKeys()[curTileIndex]);
                 curObject = WWObjectFactory.Instantiate(objData);
             }
             
         }  
         
-
-        
-
         private void ReplaceObject(Vector3 position)
         {
             if (curObject != null)
@@ -87,7 +85,6 @@ namespace WorldWizards.core.input.Tools
             }
             CreateObject(position);
         }
-
 
         void MoveObject()
         {
@@ -106,7 +103,8 @@ namespace WorldWizards.core.input.Tools
             {
                 var tempRot = (int) curObject.transform.rotation.eulerAngles.y;
                 MoveObject();
-                curObject.SetPosition(CoordinateHelper.UnityCoordToWWCoord(curObject.transform.position, tempRot));
+                curObject.SetPosition(CoordinateHelper.UnityCoordToWWCoord(curObject.transform.position));
+                curObject.SetRotation(tempRot);
                 if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                 {
                     Destroy(curObject.gameObject); // If the object collided with another, destroy it.
@@ -114,7 +112,6 @@ namespace WorldWizards.core.input.Tools
                 curObject = null;
             }
         }
-
 
         // Trigger
         public override void OnTriggerUnclick() // Add the object to the SceneGraph.
@@ -151,7 +148,6 @@ namespace WorldWizards.core.input.Tools
                 }
             }
         }
-        
         
         // Touchpad Press
         public override void OnPadUnclick(Vector2 lastPadPos)

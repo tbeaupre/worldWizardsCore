@@ -29,13 +29,6 @@ namespace WorldWizards.core.entity.coordinate.utils
 //            return WWCoordToUnityCoord(coord);
 //        }
 
-        /// <see cref="UnityCoordToWWCoord(Vector3, int)"/>
-        public static Coordinate UnityCoordToWWCoord(Vector3 position)
-        {
-            return UnityCoordToWWCoord(position, 0);
-        }
-
-
 
         public static Vector3 GetOffset(Coordinate coordinate)
         {
@@ -51,7 +44,7 @@ namespace WorldWizards.core.entity.coordinate.utils
         /// <param name="position">The Unity position.</param>
         /// <param name="rotation">The desired rotation for the resulting coordinate.</param>
         /// <returns></returns>
-        public static Coordinate UnityCoordToWWCoord(Vector3 position, int rotation)
+        public static Coordinate UnityCoordToWWCoord(Vector3 position)
         {
             Vector3 scaled = position / GetTileScale();
             // the fraction is between [0,1] as it is the numbers after the decimal place of the scaled position
@@ -62,7 +55,7 @@ namespace WorldWizards.core.entity.coordinate.utils
             fraction *= 2f; // make range (-1, 1)
 
             var offset = new Vector3(fraction.x, fraction.y, fraction.z);
-            return new Coordinate(new IntVector3(scaled), offset, rotation);
+            return new Coordinate(new IntVector3(scaled), offset);
         }
 
         /// <summary>
