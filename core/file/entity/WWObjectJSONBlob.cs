@@ -14,7 +14,7 @@ namespace WorldWizards.core.file.entity
     public class WWObjectJSONBlob
     {
         public List<Guid> children;
-        public CoordinateJSONBlob coordinate;
+        public WWTransformJSONBlob wwTransform;
         public Guid id;
         public Guid parent;
         public string resourceTag;
@@ -35,7 +35,7 @@ namespace WorldWizards.core.file.entity
         public WWObjectJSONBlob(WWObjectData wwObjectData)
         {
             id = wwObjectData.id;
-            coordinate = new CoordinateJSONBlob(wwObjectData.coordinate);
+            wwTransform = new WWTransformJSONBlob(wwObjectData.wwTransform);
             resourceTag = wwObjectData.resourceTag;
             if (wwObjectData.parent != null)
             {

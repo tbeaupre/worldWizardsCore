@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using UnityEngine;
 using WorldWizards.core.controller.builder;
 using WorldWizards.core.entity.common;
@@ -76,9 +77,18 @@ namespace WorldWizards.core.entity.gameObject
             if (ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
             {
                 // we only want the index without the offset for Tiles
-                return new Coordinate(objectData.coordinate.Index, objectData.coordinate.Rotation);
+                return new Coordinate(objectData.wwTransform.coordinate.Index);
             }
-            return objectData.coordinate;
+            return objectData.wwTransform.coordinate;
+        }
+
+        /// <summary>
+        /// Gets the y rotation of this WWObject
+        /// </summary>
+        /// <returns>the y rotation</returns>
+        public int GetRotation()
+        {
+            return objectData.wwTransform.rotation;
         }
 
         /// <summary>
@@ -87,7 +97,7 @@ namespace WorldWizards.core.entity.gameObject
         /// <returns>The Wall collisions after applying rotation</returns>
         public WWWalls GetWallsWRotationApplied()
         {
-            return WWWallsHelper.GetRotatedWWWalls(ResourceMetadata, GetCoordinate().Rotation);
+            return WWWallsHelper.GetRotatedWWWalls(ResourceMetadata, GetRotation());
         }
 
         public WWObject GetOldestParent()
@@ -181,44 +191,41 @@ namespace WorldWizards.core.entity.gameObject
         public void SetRotation(int yRotation)
         {
             transform.rotation = Quaternion.Euler(0, yRotation, 0);
-            objectData.coordinate.Rotation = yRotation;
+            objectData.wwTransform.rotation = yRotation;
         }
 
         /// <summary>
         /// Set the position of this WWObject and update the coordinate.
         /// </summary>
         /// <param name="position">The position to set in Unity's coordinate space.</param>
-        /// <param name="snapToGrid">A flag for whether or not the position should have an offset from the grid or not.</param>
         public void SetPosition(Vector3 position)
         {
-            transform.position = position;// + GetPositionOffset();
-//
-//            if (ResourceMetadata.wwObjectMetadata.type == WWType.Prop)
-//            {
-//                transform.position -= transform.TransformPoint()
-//            }
-
-            objectData.coordinate = CoordinateHelper.UnityCoordToWWCoord(position, (int) transform.rotation.eulerAngles.y);
+            transform.position = position;
+            objectData.wwTransform.coordinate = CoordinateHelper.UnityCoordToWWCoord(position);
         }
 
         /// <summary>
         /// Set the position of this WWObject and update the coordinate.
         /// </summary>
         /// <param name="coordinate">The coordinate to set</param>
-        public virtual void SetPosition(Coordinate coordinate)
+        public void SetPosition(Coordinate coordinate)
         {
             if (ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
             {
                 coordinate.SnapToGrid();
             }
             SetPosition(CoordinateHelper.WWCoordToUnityCoord(coordinate));
-            SetRotation(coordinate.Rotation);
         }
-//
-//        /// <summary>
-//        /// Gets the offset for this WWObject.
-//        /// </summary>
-//        /// <returns>The offset for this WWObject.</returns>
-//        protected abstract Vector3 GetPositionOffset();
+        
+        /// <summary>
+        /// Set the WWTransform of this WWObject and the gameObject transform
+        /// </summary>
+        /// <param name="wwTransform">The wwTransform to set</param>
+        public void SetTransform(WWTransform wwTransform)
+        {
+            SetPosition(wwTransform.coordinate);
+            SetRotation(wwTransform.rotation);
+        }
+        
     }
 }

@@ -15,7 +15,8 @@ namespace WorldWizards.core.experimental
 
             for (var i = 0; i < 5; i++)
             {
-                WWObjectData objData = WWObjectFactory.CreateNew(new Coordinate(i, i, i), "ww_basic_assets_Tile_Grass");
+                WWObjectData objData = WWObjectFactory.CreateNew(new WWTransform(new Coordinate(i, i, i), 0),
+                    "ww_basic_assets_Tile_Grass");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(go);
             }
@@ -23,7 +24,8 @@ namespace WorldWizards.core.experimental
             for (var i = 0; i < 5; i++)
             {
                 WWObjectData objData =
-                    WWObjectFactory.CreateNew(new Coordinate(i, i + 1, i), "ww_basic_assets_Tile_Arch");
+                    WWObjectFactory.CreateNew(new WWTransform( new Coordinate(i, i + 1, i), 0),
+                        "ww_basic_assets_Tile_Arch");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(go);
             }
@@ -31,7 +33,8 @@ namespace WorldWizards.core.experimental
             for (var i = 0; i < 5; i++)
             {
                 WWObjectData objData =
-                    WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_Tile_FloorBrick");
+                    WWObjectFactory.CreateNew(new WWTransform(new Coordinate(i, i + 2, i), 0),
+                        "ww_basic_assets_Tile_FloorBrick");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(go);
             }
@@ -39,7 +42,8 @@ namespace WorldWizards.core.experimental
             for (var i = 0; i < 5; i++)
             {
                 WWObjectData objData =
-                    WWObjectFactory.CreateNew(new Coordinate(i, i + 2, i), "ww_basic_assets_blueCube");
+                    WWObjectFactory.CreateNew(new WWTransform(new Coordinate(i, i + 2, i), 0),
+                        "ww_basic_assets_blueCube");
                 WWObject go = WWObjectFactory.Instantiate(objData);
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(go);
             }

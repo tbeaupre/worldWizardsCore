@@ -10,7 +10,7 @@ namespace WorldWizards.core.input.Tools
     public class StandardTool : Tool
     {
         private const float RETICLE_OFFSET = 0.001f; // The reticle offset from the floor
-        private const float MOVE_OFFSET = 0.15f; // The distance the player moves per frame.
+        private const float MOVE_OFFSET = 5f; // The distance the player moves per second.
         
         // Prefab Instances
         private GameObject laser; // Stores reference to an instance of a laser
@@ -127,11 +127,11 @@ namespace WorldWizards.core.input.Tools
         {
             if (padPos.y > DEADZONE_SIZE)
             {
-                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.up * MOVE_OFFSET * Time.deltaTime;
             }
             if (padPos.y < -DEADZONE_SIZE)
             {
-                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET;
+                input.GetCameraRigTransform().position += Vector3.down * MOVE_OFFSET * Time.deltaTime;
             }         
         }
 
@@ -145,16 +145,16 @@ namespace WorldWizards.core.input.Tools
                 Vector3 strafeVector = padPos.x * input.GetControllerDirection();
                 strafeVector = Quaternion.AngleAxis(90, Vector3.up) * strafeVector;
                 strafeVector.y = 0;
-                strafeVector = strafeVector.normalized * MOVE_OFFSET;
+                strafeVector = strafeVector.normalized * MOVE_OFFSET * Time.deltaTime;
                 
-                input.GetCameraRigTransform().position += strafeVector;
+                input.GetCameraRigTransform().position += strafeVector ;
             }
             if (Math.Abs(padPos.y) > DEADZONE_SIZE / 2)
             {
                 // Move in the controller direction in the XZ plane.
                 Vector3 forwardMoveVector = padPos.y * input.GetControllerDirection();
                 forwardMoveVector.y = 0;
-                forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET;
+                forwardMoveVector = forwardMoveVector.normalized * MOVE_OFFSET * Time.deltaTime;
             
                 input.GetCameraRigTransform().position += forwardMoveVector;  
             }

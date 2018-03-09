@@ -16,34 +16,23 @@ namespace WorldWizards.core.entity.coordinate
         public IntVector3 Index { get; private set; }
         // The Offset is a 3D position within the Coordinate's Index space
         private Vector3 Offset;// all values between (-1,1) not inclusive
-        public int Rotation { get; set; } // y rotation
         
-        public Coordinate(IntVector3 index, Vector3 offset, int rotation)
+        public Coordinate(IntVector3 index, Vector3 offset)
         {
             Index = index;
             SetOffset(offset);
-            Rotation = rotation;
         }
 
         public Coordinate(CoordinateJSONBlob b) : this(
             new IntVector3(b.indexX, b.indexY, b.indexZ),
-            new Vector3(b.offsetX, b.offsetY, b.offsetZ), b.rotation)
+            new Vector3(b.offsetX, b.offsetY, b.offsetZ))
         {
         }
         /// <summary>
         /// Constructor that only takes in an Index, and defaults Offset to 0,0,0
         /// </summary>
         /// <param name="index"></param>
-        public Coordinate(IntVector3 index) : this(index, Vector3.zero, 0)
-        {
-        }
-
-        /// <summary>
-        /// Constructor that takes in an Index, and Rotation, but no Offset
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="rotation"></param>
-        public Coordinate(IntVector3 index, int rotation) : this(index, Vector3.zero, rotation)
+        public Coordinate(IntVector3 index) : this(index, Vector3.zero)
         {
         }
 
@@ -126,8 +115,8 @@ namespace WorldWizards.core.entity.coordinate
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("Index x : {0}, y : {1}, z : {2} Offset x : {3}, y : {4}, z : {5} Rotation : {6}",
-                Index.x, Index.y, Index.z, Offset.x, Offset.y, Offset.z, Rotation);
+            return string.Format("Index x : {0}, y : {1}, z : {2} Offset x : {3}, y : {4}, z : {5}",
+                Index.x, Index.y, Index.z, Offset.x, Offset.y, Offset.z);
         }
     }
 }

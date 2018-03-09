@@ -128,11 +128,11 @@ namespace WorldWizards.core.entity.level
                     if (obj.ResourceMetadata.wwObjectMetadata.type.Equals(WWType.Tile))
                     {
                         WWWalls walls =
-                            WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, obj.GetCoordinate().Rotation);
+                            WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, obj.GetRotation());
                         existingWalls = existingWalls | walls;
                     }
                 WWWalls newWalls =
-                    WWWallsHelper.GetRotatedWWWalls(wwObject.ResourceMetadata, wwObject.GetCoordinate().Rotation);
+                    WWWallsHelper.GetRotatedWWWalls(wwObject.ResourceMetadata, wwObject.GetRotation());
                 bool doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
                 return doesCollide;
             }

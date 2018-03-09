@@ -18,19 +18,19 @@ namespace WorldWizards.core.entity.gameObject.utils
     /// </summary>
     public static class WWObjectFactory
     {
-        public static WWObjectData CreateNew(Coordinate coordinate, string resourceTag)
+        public static WWObjectData CreateNew(WWTransform wwTransform, string resourceTag)
         {
-            return Create(Guid.NewGuid(), coordinate, resourceTag);
+            return Create(Guid.NewGuid(), wwTransform, resourceTag);
         }
 
-        public static WWObjectData Create(Guid id, Coordinate coordinate, string resourceTag)
+        public static WWObjectData Create(Guid id, WWTransform wwTransform, string resourceTag)
         {
-            return new WWObjectData(id, coordinate, null, new List<WWObjectData>(), resourceTag);
+            return new WWObjectData(id, wwTransform, null, new List<WWObjectData>(), resourceTag);
         }
 
         public static WWObject Instantiate(WWObjectData objectData)
         {
-            Vector3 spawnPos = CoordinateHelper.WWCoordToUnityCoord(objectData.coordinate);
+            Vector3 spawnPos = CoordinateHelper.WWCoordToUnityCoord(objectData.wwTransform.coordinate);
 
             // Load resource and check to see if it is valid.
             WWResource resource = WWResourceController.GetResource(objectData.resourceTag);
@@ -51,15 +51,14 @@ namespace WorldWizards.core.entity.gameObject.utils
                 }
                 // Create a GameObject at the correct location and rotation.
                 gameObject = Object.Instantiate(resource.GetPrefab(), spawnPos,
-                    Quaternion.Euler(0, objectData.coordinate.Rotation, 0));
+                    Quaternion.Euler(0, objectData.wwTransform.rotation, 0));
             }
 
             // Use ResourceMetaData to construct the object.
             WWObject wwObject = ConstructWWObject(gameObject, resourceMetadata);
             // Give the new WWObject the data used to create it.
             wwObject.Init(objectData, resourceMetadata);
-            wwObject.SetPosition(objectData.coordinate);
-
+            wwObject.SetTransform(objectData.wwTransform);
             return wwObject;
         }
 

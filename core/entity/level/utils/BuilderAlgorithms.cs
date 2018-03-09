@@ -66,8 +66,9 @@ namespace WorldWizards.core.entity.level.utils
 
         private static void PlaceWallObject(IntVector3 coordIndex, int rotation, string resourceTag)
         {
-            var coordinate = new Coordinate(coordIndex, rotation);
-            WWObjectData objData = WWObjectFactory.CreateNew(coordinate, resourceTag);
+            var coordinate = new Coordinate(coordIndex);
+            var wwTransform = new WWTransform(coordinate, rotation);
+            WWObjectData objData = WWObjectFactory.CreateNew(wwTransform, resourceTag);
             // TODO refactor to only instantiate object if it can fit by looking at ResourceMetaData
             // but, currently this is only called when a fit is possible
             WWObject go = WWObjectFactory.Instantiate(objData);
@@ -81,7 +82,7 @@ namespace WorldWizards.core.entity.level.utils
         public static List<int> GetPossibleRotations(Vector3 position, string resourceTag)
         {
             var result = new List<int>();
-            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position, 0);
+            Coordinate coordinate = CoordinateHelper.UnityCoordToWWCoord(position);
             WWWalls wallsToFit =  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().GetWallsAtCoordinate(coordinate);
 
             // check to see if any of the 4 possible rotations would fit given resource's walls            

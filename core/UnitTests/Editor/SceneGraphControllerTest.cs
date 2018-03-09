@@ -60,7 +60,8 @@ namespace WorldWizards.core.UnitTests.Editor
         {
             Assert.AreEqual(0,  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().SceneSize());
             var coordinate = new Coordinate(0, 0, 0);
-            WWObjectData wwObjectData = WWObjectFactory.CreateNew(coordinate, "white");
+            var wwTransform = new WWTransform(coordinate);
+            WWObjectData wwObjectData = WWObjectFactory.CreateNew(wwTransform, "white");
             WWObject wwObject = WWObjectFactory.Instantiate(wwObjectData);
             ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(wwObject);
             Assert.AreEqual(1,  ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().SceneSize());

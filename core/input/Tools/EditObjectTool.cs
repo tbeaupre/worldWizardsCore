@@ -1,26 +1,20 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
-using UnityEngine.UI;
 using WorldWizards.core.entity.common;
 using WorldWizards.core.entity.coordinate;
 using WorldWizards.core.entity.coordinate.utils;
 using WorldWizards.core.entity.gameObject;
-using WorldWizards.core.experimental;
 using WorldWizards.core.input.Tools.utils;
 using WorldWizards.core.input.VRControls;
 using WorldWizards.core.manager;
-using WorldWizards.SteamVR.Plugins;
 using WorldWizards.SteamVR.Scripts;
 
 namespace WorldWizards.core.input.Tools
 {
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
-    // TODO Refactor this entire tool, especially the selection part
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
-        
         // Raycast Information
         private Vector3 hitPoint;
         private Vector3 hitPointOffset;
@@ -28,14 +22,12 @@ namespace WorldWizards.core.input.Tools
         protected override void Awake()
         {
             base.Awake();
-            
             Debug.Log("Edit Object Tool");
-
             wwObjectToOrigCoordinates = new Dictionary<WWObject, Coordinate>();
             SelectionAwake();
         }
         
-        public void Update()
+        private void Update()
         {
             var lastHitPoint = hitPoint;
             hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
@@ -89,7 +81,6 @@ namespace WorldWizards.core.input.Tools
             }
         }
 
-
         private Vector3 GetDeltaSnap(Vector3 position)
         {
             Vector3 deltaSnap = Vector3.zero;
@@ -99,7 +90,7 @@ namespace WorldWizards.core.input.Tools
                 {
           
                     var coord = CoordinateHelper.UnityCoordToWWCoord(
-                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value), 0);
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value));
                     var original = CoordinateHelper.WWCoordToUnityCoord(coord);
                     coord.SnapToGrid();
                     var afterSnap = CoordinateHelper.WWCoordToUnityCoord(coord);
@@ -121,8 +112,7 @@ namespace WorldWizards.core.input.Tools
                     var origin = new Vector3(position.x + origOffset.x, y, position.z + origOffset.z);
                     var stuckPoint = ToolUtilities.RaycastGridThenCustom(origin, Vector3.down,
                         gridController.GetGridCollider(), WWType.Tile, 200f);                    
-                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
-                    var coord = CoordinateHelper.UnityCoordToWWCoord(stuckPoint, rememberRot);
+                    var coord = CoordinateHelper.UnityCoordToWWCoord(stuckPoint);
                     kvp.Key.SetPosition(coord);
                 }      
             }
@@ -131,22 +121,21 @@ namespace WorldWizards.core.input.Tools
                 var delta = GetDeltaSnap(position);
                 foreach (var kvp in wwObjectToOrigCoordinates)
                 {
-                    var rememberRot = (int) kvp.Key.transform.rotation.eulerAngles.y;
                     var coord = CoordinateHelper.UnityCoordToWWCoord(
-                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta, rememberRot);
+                        position + CoordinateHelper.WWCoordToUnityCoord(kvp.Value) + delta);
                     kvp.Key.SetPosition(coord);
                 }
             }
         }
 
-        private void ReverSelectedPositions()
+        private void RevertSelectedPositions()
         {
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 kvp.Key.SetPosition(kvp.Value);
                 if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(kvp.Key))
                 {
-                    Debug.LogError("ReverSelectedPositions : Failed to add selection back to Scene Graph");
+                    Debug.LogError("RevertSelectedPositions : Failed to add selection back to Scene Graph");
                 }
             }
         }
@@ -173,12 +162,11 @@ namespace WorldWizards.core.input.Tools
             }
             else
             {
-                ReverSelectedPositions();
+                RevertSelectedPositions();
             }
         }
 
         private bool onTriggerDown;
-        // Trigger
         public override void OnTriggerUnclick()
         {
             onTriggerDown = false;
@@ -195,7 +183,6 @@ namespace WorldWizards.core.input.Tools
                 kvp.Key.Deselect();
             }
             wwObjectToOrigCoordinates.Clear();
-            _highlightsFx.objectRenderers.Clear();
         }
 
 
@@ -279,10 +266,9 @@ namespace WorldWizards.core.input.Tools
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
                 ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Remove(wwObject.GetId());
-                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
                 var newPos = wwObject.transform.position;
                 newPos.y += height * CoordinateHelper.GetTileScale();
-                var coord = CoordinateHelper.UnityCoordToWWCoord(newPos, rememberRot);
+                var coord = CoordinateHelper.UnityCoordToWWCoord(newPos);
                 wwObject.SetPosition(coord);
             }
             CompleteEdit();
@@ -314,7 +300,7 @@ namespace WorldWizards.core.input.Tools
             {            
                 if (wwObject.ResourceMetadata.wwObjectMetadata.type == WWType.Tile)
                 {
-                    var afterCoord = CoordinateHelper.UnityCoordToWWCoord(wwObject.transform.position, 0);
+                    var afterCoord = CoordinateHelper.UnityCoordToWWCoord(wwObject.transform.position);
                     afterCoord.SnapToGrid();
                     var afterSnap = CoordinateHelper.WWCoordToUnityCoord(afterCoord);
                     deltaSnap = afterSnap - before[i];
@@ -325,152 +311,108 @@ namespace WorldWizards.core.input.Tools
             
             foreach (var wwObject in wwObjectToOrigCoordinates.Keys)
             {
-                var rememberRot = (int) wwObject.transform.rotation.eulerAngles.y;
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
-                    wwObject.transform.position + deltaSnap, rememberRot);
+                    wwObject.transform.position + deltaSnap);
                 wwObject.SetPosition(coord);
+                wwObject.SetRotation((int) wwObject.transform.localEulerAngles.y);
             }
             CompleteEdit();
             UpdateOffsets();
         }
-        
-        // Selection Code
+
+        #region SelectionCode
         // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
-        
-        private bool justClicked; // defaults to false
-        
-        private Texture marqueeGraphics;
-        private Rect backupRect;
-        private Vector2 marqueeOrigin;
-        private Rect marqueeRect;
-        private Vector2 marqueeSize;
-        private List<WWObject> SelectableUnits;
-        private List<Renderer> objectRenderers;
-
-
-        private HighlightsFX _highlightsFx;
+        private bool onGripDown; // defaults to false
+        private List<WWObject> selectableUnits;
+        private Vector2 initialDragPosition = Vector2.zero;
+        private SelectionCanvasController selectionCanvasController;
 
         void SelectionAwake()
         {
-            marqueeGraphics = new Texture2D(2, 2, TextureFormat.ARGB32, false);
-            _highlightsFx = FindObjectOfType<HighlightsFX>();
-            objectRenderers = new List<Renderer>();
-        }
-
-        private void OnGUI()
-        {
-            marqueeRect = new Rect(marqueeOrigin.x, marqueeOrigin.y, marqueeSize.x, marqueeSize.y);
-            GUI.color = new Color(0, 0, 0, .3f);
-            GUI.DrawTexture(marqueeRect, marqueeGraphics);
+            var go = Instantiate(Resources.Load("Prefabs/SelectionCanvasController")) as GameObject;
+            selectionCanvasController = go.GetComponent<SelectionCanvasController>();
         }
         
         public override void OnUngrip()
         {
-            Debug.Log("OnGripUp");
-            // reset state
-            justClicked = false;
-            marqueeRect.width = 0;
-            marqueeRect.height = 0;
-            backupRect.width = 0;
-            backupRect.height = 0;
-            marqueeSize = Vector2.zero;
+            // reset
+            Debug.Log("OnGripDown");
+            onGripDown = false;
+            initialDragPosition = Vector2.zero;
+            selectionCanvasController.marqueeRectTransform.anchoredPosition = Vector2.zero;
+            selectionCanvasController.marqueeRectTransform.sizeDelta = Vector2.zero;
         }
-        
-        public override void UpdateGrip()
+
+        private Vector3 GetPointerPosition()
         {
             Vector3 pointerPosAsScreenPos;
-
             if (UnityEngine.XR.XRDevice.isPresent)
             {
                 Vector3 pointerOffset =  input.GetControllerPoint() + (input.GetControllerDirection().normalized * 200f);
                 pointerPosAsScreenPos = Camera.main.WorldToScreenPoint(pointerOffset);
             }
-            else // desktop controlls
+            else // desktop controls
             {
                 pointerPosAsScreenPos = Input.mousePosition;
             }
+            return pointerPosAsScreenPos;
+        }
+
+        private void OnGripDown(Vector3 pointerPosAsScreenPos)
+        {
+            Debug.Log("OnGripDown");
+            onGripDown = true;
+            selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
+            initialDragPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);
+            selectionCanvasController.marqueeRectTransform.anchoredPosition = initialDragPosition;
+            var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);
             
-            if (!justClicked)
+            if (hitWWObject != null)
             {
-                Debug.Log("OnGripUp");
-                justClicked = true;
-                // treat this as OnPress
-
-                SelectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
-
-
-                float _invertedY = Screen.height - pointerPosAsScreenPos.y;
-                marqueeOrigin = new Vector2(pointerPosAsScreenPos.x, _invertedY);
-
-                //Check if the player just wants to select a single unit opposed to 
-                // drawing a marquee and selecting a range of units
-
-                var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);
-                
-                if (hitWWObject != null)
+                selectableUnits.Remove(hitWWObject);
+                if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
                 {
-                    SelectableUnits.Remove(hitWWObject);
-                    if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
-                    {
-                        wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
-                        hitWWObject.Select();
-                    }
+                    wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
+                    hitWWObject.Select();
                 }
-
-                //Ray ray = Camera.main.ScreenPointToRay(pointerPos);
-//                Ray ray = new Ray(input.GetControllerPoint(), input.GetControllerDirection());
-//                RaycastHit hit;
-//                if (Physics.Raycast(ray, out hit))
-//                {
-//                    var hitWWObject = hit.transform.gameObject.GetComponent<WWObject>();
-//                    if (hitWWObject != null)
-//                    {
-//                        SelectableUnits.Remove(hitWWObject);
-//                        if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
-//                        {
-//                            wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
-//                            hitWWObject.Select();
-//                        }
-//                    }
-//                }
             }
-            else
-            {
-                Debug.Log("OnTriggerDown");
-                float _invertedY = Screen.height - pointerPosAsScreenPos.y;
-                marqueeSize = new Vector2(pointerPosAsScreenPos.x - marqueeOrigin.x, (marqueeOrigin.y - _invertedY) * -1);
-                
-                //FIX FOR RECT.CONTAINS NOT ACCEPTING NEGATIVE VALUES
-                if (marqueeRect.width < 0)
-                {
-                    backupRect = new Rect(marqueeRect.x - Mathf.Abs(marqueeRect.width), marqueeRect.y,
-                        Mathf.Abs(marqueeRect.width), marqueeRect.height);
-                }
-                else if (marqueeRect.height < 0)
-                {
-                    backupRect = new Rect(marqueeRect.x, marqueeRect.y - Mathf.Abs(marqueeRect.height),
-                        marqueeRect.width, Mathf.Abs(marqueeRect.height));
-                }
-                if (marqueeRect.width < 0 && marqueeRect.height < 0)
-                {
-                    backupRect = new Rect(marqueeRect.x - Mathf.Abs(marqueeRect.width),
-                        marqueeRect.y - Mathf.Abs(marqueeRect.height), Mathf.Abs(marqueeRect.width),
-                        Mathf.Abs(marqueeRect.height));
-                }
+        }
 
-//                objectRenderers.Clear();
-                foreach (WWObject wwObject in SelectableUnits)
+        private void UpdateMarqueeBox(Vector3 pointerPosAsScreenPos)
+        {
+            Vector2 currentDragPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);         
+            Vector2 delta = currentDragPosition - initialDragPosition;
+            Vector2 startPoint = initialDragPosition;
+            
+            if (delta.x < 0)
+            {
+                startPoint.x = currentDragPosition.x;
+                delta.x = -delta.x;
+            }
+            if (delta.y < 0)
+            {
+                startPoint.y = currentDragPosition.y;
+                delta.y = -delta.y;
+            }
+            selectionCanvasController.marqueeRectTransform.anchoredPosition = startPoint;
+            selectionCanvasController.marqueeRectTransform.sizeDelta = delta;
+        }
+
+        private void UpdateSelection()
+        {
+            foreach (WWObject wwObject in selectableUnits)
+            {
+                if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
+                    || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
+                    wwObject.ResourceMetadata.wwObjectMetadata.type)
                 {
-                    if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
-                        || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
-                        wwObject.ResourceMetadata.wwObjectMetadata.type)
+                    Vector3 screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
+                    if (screenPos.z > 0) // ignore objects behind the camera
                     {
-                        //Convert the world position of the unit to a screen position and then to a GUI point
-                        Vector3 _screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
-                        if (_screenPos.z <= 0) continue; // skip because the object is behind the camera
-                        var _screenPoint = new Vector2(_screenPos.x, Screen.height - _screenPos.y);
-                        //Ensure that any units not within the marquee are currently unselected
-                        if (!marqueeRect.Contains(_screenPoint) || !backupRect.Contains(_screenPoint))
+                        var screenPoint = new Vector2(screenPos.x, screenPos.y);
+                        if (!RectTransformUtility.RectangleContainsScreenPoint(
+                            selectionCanvasController.marqueeRectTransform,
+                            screenPoint))
                         {
                             if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
                             {
@@ -478,26 +420,37 @@ namespace WorldWizards.core.input.Tools
                                 wwObjectToOrigCoordinates.Remove(wwObject);
                             }
                         }
-
-                        if (marqueeRect.Contains(_screenPoint) || backupRect.Contains(_screenPoint))
+                        else if (!wwObjectToOrigCoordinates.ContainsKey(wwObject))
                         {
                             wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
-//                            foreach (var r in wwObject.GetAllRenderers())
-//                            {
-//                                objectRenderers.Add(r);
-//                            }
                             wwObject.Select();
                         }
                     }
-
-                   /* _highlightsFx.objectRenderers.Clear();
-                    foreach (var r in objectRenderers)
-                    {
-                        _highlightsFx.objectRenderers.Add(r);
-                    }*/
                 }
+            }   
+        }
+
+        private void OnGrip(Vector3 pointerPosAsScreenPos)
+        {
+            Debug.Log("OnGrip");
+            UpdateMarqueeBox(pointerPosAsScreenPos);
+            UpdateSelection();
+        }
+
+        public override void UpdateGrip()
+        {
+            Vector3 pointerPosAsScreenPos = GetPointerPosition();
+            if (!onGripDown) // if onGripDown has not yet happened
+            {
+                OnGripDown(pointerPosAsScreenPos);
+            }
+            else
+            {
+               OnGrip(pointerPosAsScreenPos);
             }
         }
+        #endregion
+
         
         /// <summary>
         ///     Handle menu button click.
@@ -532,8 +485,8 @@ namespace WorldWizards.core.input.Tools
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 kvp.Key.Deselect();
-            }
-            _highlightsFx.objectRenderers.Clear();
+            }            
+            Destroy(selectionCanvasController.gameObject);
         }
     }
 }
