@@ -128,7 +128,7 @@ namespace WorldWizards.core.entity.level
                     if (obj.ResourceMetadata.wwObjectMetadata.type.Equals(WWType.Tile))
                     {
                         WWWalls walls =
-                            WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, wwObject.GetRotation());
+                            WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, obj.GetRotation());
                         existingWalls = existingWalls | walls;
                     }
                 WWWalls newWalls =

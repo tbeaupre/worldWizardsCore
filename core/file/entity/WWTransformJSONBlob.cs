@@ -25,7 +25,7 @@ namespace WorldWizards.core.file.entity
         public WWTransformJSONBlob(WWTransform wwTransform)
         {
             coordinateJSONBlob = new CoordinateJSONBlob(wwTransform.coordinate);
-            this.rotation = wwTransform.rotation;
+            rotation = wwTransform.rotation;
         }
     }
 }

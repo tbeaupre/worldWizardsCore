@@ -101,10 +101,10 @@ namespace WorldWizards.core.input.Tools
         {
             if (curObject != null)
             {
-                var tempRot = (int) curObject.transform.rotation.eulerAngles.y;
+//                var tempRot = curObject.GetRotation();
                 MoveObject();
                 curObject.SetPosition(CoordinateHelper.UnityCoordToWWCoord(curObject.transform.position));
-                curObject.SetRotation(tempRot);
+//                curObject.SetRotation(tempRot);
                 if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(curObject))
                 {
                     Destroy(curObject.gameObject); // If the object collided with another, destroy it.

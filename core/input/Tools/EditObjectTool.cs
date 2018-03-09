@@ -130,14 +130,14 @@ namespace WorldWizards.core.input.Tools
             }
         }
 
-        private void ReverSelectedPositions()
+        private void RevertSelectedPositions()
         {
             foreach (var kvp in wwObjectToOrigCoordinates)
             {
                 kvp.Key.SetPosition(kvp.Value);
                 if (!ManagerRegistry.Instance.GetAnInstance<SceneGraphManager>().Add(kvp.Key))
                 {
-                    Debug.LogError("ReverSelectedPositions : Failed to add selection back to Scene Graph");
+                    Debug.LogError("RevertSelectedPositions : Failed to add selection back to Scene Graph");
                 }
             }
         }
@@ -164,7 +164,7 @@ namespace WorldWizards.core.input.Tools
             }
             else
             {
-                ReverSelectedPositions();
+                RevertSelectedPositions();
             }
         }
 
@@ -317,6 +317,7 @@ namespace WorldWizards.core.input.Tools
                 var coord = CoordinateHelper.UnityCoordToWWCoord(
                     wwObject.transform.position + deltaSnap);
                 wwObject.SetPosition(coord);
+                wwObject.SetRotation((int) wwObject.transform.localEulerAngles.y);
             }
             CompleteEdit();
             UpdateOffsets();
