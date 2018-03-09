@@ -15,7 +15,6 @@ namespace WorldWizards.core.input.Tools
     public class EditObjectTool : Tool
     {
         private Dictionary<WWObject, Coordinate> wwObjectToOrigCoordinates; // set when objects are picked up.
-        
         // Raycast Information
         private Vector3 hitPoint;
         private Vector3 hitPointOffset;
@@ -28,7 +27,7 @@ namespace WorldWizards.core.input.Tools
             SelectionAwake();
         }
         
-        public void Update()
+        private void Update()
         {
             var lastHitPoint = hitPoint;
             hitPoint = ToolUtilities.RaycastGridOnly(input.GetControllerPoint(),
@@ -81,7 +80,6 @@ namespace WorldWizards.core.input.Tools
                 }
             }
         }
-
 
         private Vector3 GetDeltaSnap(Vector3 position)
         {
@@ -169,7 +167,6 @@ namespace WorldWizards.core.input.Tools
         }
 
         private bool onTriggerDown;
-        // Trigger
         public override void OnTriggerUnclick()
         {
             onTriggerDown = false;
@@ -322,33 +319,31 @@ namespace WorldWizards.core.input.Tools
             CompleteEdit();
             UpdateOffsets();
         }
-        
-        // Selection Code
+
+        #region SelectionCode
         // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
-        
-        private bool justClicked; // defaults to false
+        private bool onGripDown; // defaults to false
         private List<WWObject> selectableUnits;
-        // This variable will store the location of wherever we first click before dragging.
-        private Vector2 initialClickPosition = Vector2.zero;
-        public SelectionCanvasController selectionCanvasController;
+        private Vector2 initialDragPosition = Vector2.zero;
+        private SelectionCanvasController selectionCanvasController;
 
         void SelectionAwake()
         {
             var go = Instantiate(Resources.Load("Prefabs/SelectionCanvasController")) as GameObject;
             selectionCanvasController = go.GetComponent<SelectionCanvasController>();
         }
-         
+        
         public override void OnUngrip()
         {
-            Debug.Log("OnGripUp");
-            justClicked = false;
             // reset
-            initialClickPosition = Vector2.zero;
+            Debug.Log("OnGripDown");
+            onGripDown = false;
+            initialDragPosition = Vector2.zero;
             selectionCanvasController.marqueeRectTransform.anchoredPosition = Vector2.zero;
             selectionCanvasController.marqueeRectTransform.sizeDelta = Vector2.zero;
         }
-        
-        public override void UpdateGrip()
+
+        private Vector3 GetPointerPosition()
         {
             Vector3 pointerPosAsScreenPos;
             if (UnityEngine.XR.XRDevice.isPresent)
@@ -360,87 +355,101 @@ namespace WorldWizards.core.input.Tools
             {
                 pointerPosAsScreenPos = Input.mousePosition;
             }
-            // treat this as OnPress
-            if (!justClicked) 
-            {
-                Debug.Log("OnGripUp");
-                justClicked = true;
-                selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
-                // Get the initial click position of the mouse. No need to convert to GUI space
-                // since we are using the lower left as anchor and pivot.
-                initialClickPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);
-                // The anchor is set to the same place.
-                selectionCanvasController.marqueeRectTransform.anchoredPosition = initialClickPosition;
-                // Check if the player just wants to select a single unit opposed to 
-                // drawing a marquee and selecting a range of units
-                var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);
-                if (hitWWObject != null)
-                {
-                    selectableUnits.Remove(hitWWObject);
-                    if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
-                    {
-                        wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
-                        hitWWObject.Select();
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("OnTriggerDown");
-                Vector2 currentMousePosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);         
-                Vector2 difference = currentMousePosition - initialClickPosition;
-                 
-                // Copy the initial click position to a new variable. Using the original variable will cause
-                // the anchor to move around to wherever the current mouse position is,
-                // which isn't desirable.
-                Vector2 startPoint = initialClickPosition;
-                 
-                // The following code accounts for dragging in various directions.
-                if (difference.x < 0)
-                {
-                    startPoint.x = currentMousePosition.x;
-                    difference.x = -difference.x;
-                }
-                if (difference.y < 0)
-                {
-                    startPoint.y = currentMousePosition.y;
-                    difference.y = -difference.y;
-                }
-                 
-                // Set the anchor, width and height every frame.
-                selectionCanvasController.marqueeRectTransform.anchoredPosition = startPoint;
-                selectionCanvasController.marqueeRectTransform.sizeDelta = difference;
+            return pointerPosAsScreenPos;
+        }
 
-                foreach (WWObject wwObject in selectableUnits)
+        private void OnGripDown(Vector3 pointerPosAsScreenPos)
+        {
+            Debug.Log("OnGripDown");
+            onGripDown = true;
+            selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
+            initialDragPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);
+            selectionCanvasController.marqueeRectTransform.anchoredPosition = initialDragPosition;
+            var hitWWObject = ToolUtilities.RaycastNoGrid(input.GetControllerPoint(), input.GetControllerDirection(), 200f);
+            
+            if (hitWWObject != null)
+            {
+                selectableUnits.Remove(hitWWObject);
+                if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
                 {
-                    if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
-                        || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
-                        wwObject.ResourceMetadata.wwObjectMetadata.type)
-                    {
-                        Vector3 screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
-                        if (screenPos.z > 0) // ignore objects behind the camera
-                        {
-                            var screenPoint = new Vector2(screenPos.x, screenPos.y);
-                            if (!RectTransformUtility.RectangleContainsScreenPoint(
-                                selectionCanvasController.marqueeRectTransform,
-                                screenPoint))
-                            {
-                                if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
-                                {
-                                    wwObject.Deselect();
-                                    wwObjectToOrigCoordinates.Remove(wwObject);
-                                }
-                            }
-                            else if (!wwObjectToOrigCoordinates.ContainsKey(wwObject))
-                            {
-                                wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
-                                wwObject.Select();
-                            }
-                        }
-                    }
+                    wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
+                    hitWWObject.Select();
                 }
             }
         }
+
+        private void UpdateMarqueeBox(Vector3 pointerPosAsScreenPos)
+        {
+            Vector2 currentDragPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);         
+            Vector2 delta = currentDragPosition - initialDragPosition;
+            Vector2 startPoint = initialDragPosition;
+            
+            if (delta.x < 0)
+            {
+                startPoint.x = currentDragPosition.x;
+                delta.x = -delta.x;
+            }
+            if (delta.y < 0)
+            {
+                startPoint.y = currentDragPosition.y;
+                delta.y = -delta.y;
+            }
+            selectionCanvasController.marqueeRectTransform.anchoredPosition = startPoint;
+            selectionCanvasController.marqueeRectTransform.sizeDelta = delta;
+        }
+
+        private void UpdateSelection()
+        {
+            foreach (WWObject wwObject in selectableUnits)
+            {
+                if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
+                    || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
+                    wwObject.ResourceMetadata.wwObjectMetadata.type)
+                {
+                    Vector3 screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
+                    if (screenPos.z > 0) // ignore objects behind the camera
+                    {
+                        var screenPoint = new Vector2(screenPos.x, screenPos.y);
+                        if (!RectTransformUtility.RectangleContainsScreenPoint(
+                            selectionCanvasController.marqueeRectTransform,
+                            screenPoint))
+                        {
+                            if (wwObjectToOrigCoordinates.ContainsKey(wwObject))
+                            {
+                                wwObject.Deselect();
+                                wwObjectToOrigCoordinates.Remove(wwObject);
+                            }
+                        }
+                        else if (!wwObjectToOrigCoordinates.ContainsKey(wwObject))
+                        {
+                            wwObjectToOrigCoordinates.Add(wwObject, wwObject.GetCoordinate());
+                            wwObject.Select();
+                        }
+                    }
+                }
+            }   
+        }
+
+        private void OnGrip(Vector3 pointerPosAsScreenPos)
+        {
+            Debug.Log("OnGrip");
+            UpdateMarqueeBox(pointerPosAsScreenPos);
+            UpdateSelection();
+        }
+
+        public override void UpdateGrip()
+        {
+            Vector3 pointerPosAsScreenPos = GetPointerPosition();
+            if (!onGripDown) // if onGripDown has not yet happened
+            {
+                OnGripDown(pointerPosAsScreenPos);
+            }
+            else
+            {
+               OnGrip(pointerPosAsScreenPos);
+            }
+        }
+        #endregion
 
         
         /// <summary>
