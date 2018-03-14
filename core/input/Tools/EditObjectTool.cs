@@ -406,7 +406,7 @@ namespace WorldWizards.core.input.Tools
                     || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
                     wwObject.ResourceMetadata.wwObjectMetadata.type)
                 {
-                    Vector3 screenPos = Camera.main.WorldToScreenPoint(wwObject.tileFader.GetMeshCenter());
+                    Vector3 screenPos = Camera.main.WorldToScreenPoint(wwObject.MaterialSwitcher.GetMeshCenter());
                     if (screenPos.z > 0) // ignore objects behind the camera
                     {
                         var screenPoint = new Vector2(screenPos.x, screenPos.y);

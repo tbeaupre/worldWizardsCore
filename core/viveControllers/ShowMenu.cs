@@ -60,14 +60,14 @@ namespace WorldWizards.core.viveControllers
         {
             isMenuActive = true;
             menu.SetActive(true);
-            Debug.Log("On show, menu active: " + menu.activeInHierarchy);
+            Debug.Log("SwitchOn show, menu active: " + menu.activeInHierarchy);
         }
 
         private void OnOK()
         {
             isMenuActive = false;
             menu.SetActive(false);
-            Debug.Log("On hide, menu active: " + menu.activeInHierarchy);
+            Debug.Log("SwitchOn hide, menu active: " + menu.activeInHierarchy);
         }
     }
 }

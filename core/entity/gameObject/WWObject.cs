@@ -24,19 +24,19 @@ namespace WorldWizards.core.entity.gameObject
         /// <summary>
         /// Component that can fade the materials of the WWObject
         /// </summary>
-        public TileFader tileFader { get; private set; }
+        public MaterialSwitcher MaterialSwitcher { get; private set; }
 
         /// <summary>
         /// Visually show that the WWObject is selected.
         /// </summary>
         public void Select()
         {
-            tileFader.On();
+            MaterialSwitcher.SwitchOn();
         }
 
         public List<Renderer> GetAllRenderers()
         {
-            return tileFader.GetAllRenderers();
+            return MaterialSwitcher.GetAllRenderers();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace WorldWizards.core.entity.gameObject
         /// </summary>
         public void Deselect()
         {
-            tileFader.Off();
+            MaterialSwitcher.SwitchOff();
         }
 
         /// <summary>
@@ -56,7 +56,8 @@ namespace WorldWizards.core.entity.gameObject
         {
             this.objectData = objectData;
             this.ResourceMetadata = resourceMetadata;
-            tileFader = new TileFader(gameObject);
+            var switchMaterial = Resources.Load("Materials/TileFadeMat") as Material;
+            MaterialSwitcher = new MaterialSwitcher(gameObject, switchMaterial);
         }
 
         /// <summary>

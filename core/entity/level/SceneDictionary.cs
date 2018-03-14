@@ -14,10 +14,17 @@ namespace WorldWizards.core.entity.level
     /// A data structure that efficiently maintains the World Wizard Objects for a Scene.
     /// WWObjects are indexed by both Guid and Coordinate Index, allowing for constant time lookups
     /// for either method of index.
+    /// 
+    /// Trade off some space for fast look up. Maintain in parallel
+    /// a map from Coordinate Index to a list of all Guids at that Coordinate Index.
+    /// Then maintain a map from Guid to the WWObject. This allows querying WWObjects by
+    /// coordinate index as well as the Guid in constant time.
     /// </summary>
     public class SceneDictionary
     {
+        // a map from Coordinate Index to a list of Guids that are at that index.
         private readonly Dictionary<IntVector3, List<Guid>> coordinates;
+        // a map from Guid to the actual WWObject itself.
         private readonly Dictionary<Guid, WWObject> objects;
 
         /// <summary>
@@ -32,7 +39,7 @@ namespace WorldWizards.core.entity.level
         /// <summary>
         /// Get all WWObjects stored in the data structure.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>all the objects stored in the data structure.</returns>
         public List<WWObject> GetAllObjects()
         {
             return new List<WWObject>(objects.Values);
@@ -47,10 +54,10 @@ namespace WorldWizards.core.entity.level
         public List<WWObject> GetObjectsAbove(int height)
         {
             var result = new List<WWObject>();
-            foreach (KeyValuePair<IntVector3, List<Guid>> kvp in coordinates)
-                if (kvp.Key.y > height)
+            foreach (var indexToGuidList in coordinates)
+                if (indexToGuidList.Key.y > height)
                 {
-                    foreach (Guid g in coordinates[kvp.Key])
+                    foreach (Guid g in coordinates[indexToGuidList.Key])
                         result.Add(objects[g]);
                 }
             return result;
@@ -74,7 +81,6 @@ namespace WorldWizards.core.entity.level
             return result;
         }
 
-
         /// <summary>
         /// Get all WWObjects in the scene and create a list of Serializable JSON Blobs.
         /// </summary>
@@ -83,9 +89,9 @@ namespace WorldWizards.core.entity.level
         {
             var objectstoSave = new List<WWObjectJSONBlob>();
             Debug.Log(GetCount());
-            foreach (KeyValuePair<Guid, WWObject> entry in objects)
+            foreach (KeyValuePair<Guid, WWObject> guidToObject in objects)
             {
-                var blob = new WWObjectJSONBlob(entry.Value.objectData);
+                var blob = new WWObjectJSONBlob(guidToObject.Value.objectData);
                 objectstoSave.Add(blob);
             }
             return objectstoSave;
@@ -113,32 +119,38 @@ namespace WorldWizards.core.entity.level
         /// <summary>
         /// Consumes a WWObject and determines whether this object can fit at its current coordinate,
         /// taking into consideration rotation, or if it collides with other WWObjects being maintained
-        /// by this data structure. This is private method and it safe to assume that the  WWObject being tested
-        /// for collision has not yet been added to this data structure.
+        /// by this data structure. This is private method and it safe to assume that the WWObject being tested
+        /// for collision has not yet been added to this data structure. Note: it would be easy to do a Guid
+        /// comparison before checking collision if the use case ever arises in the future.
         /// </summary>
         /// <param name="wwObject">The object to test for collision.</param>
         /// <returns>True if the WWObject can fit without colliding given its current coordinate.</returns>
         private bool Collides(WWObject wwObject)
         {
-            if (coordinates.ContainsKey(wwObject.GetCoordinate().Index))
+            if (coordinates.ContainsKey(wwObject.GetCoordinate().Index)) // any objects at coordinate?
             {
                 List<WWObject> objectsAtCoord = GetObjects(wwObject.GetCoordinate());
-                WWWalls existingWalls = 0;
-                foreach (WWObject obj in objectsAtCoord)
-                    if (obj.ResourceMetadata.wwObjectMetadata.type.Equals(WWType.Tile))
-                    {
-                        WWWalls walls =
-                            WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, obj.GetRotation());
-                        existingWalls = existingWalls | walls;
-                    }
-                WWWalls newWalls =
-                    WWWallsHelper.GetRotatedWWWalls(wwObject.ResourceMetadata, wwObject.GetRotation());
-                bool doesCollide = Convert.ToBoolean(newWalls & existingWalls); // should be 0 or False if no collision
+                WWWalls totalWalls = 0; // this is a bit mask which will keep the running total of wall collisions
+                foreach (WWObject obj in objectsAtCoord) // only need to do collision checking at the coordinate index
+                if (obj.ResourceMetadata.wwObjectMetadata.type.Equals(WWType.Tile)) // ignore non Tile types
+                {
+                    // get the walls of the WWObject after applying its rotation transformation
+                    WWWalls walls = WWWallsHelper.GetRotatedWWWalls(obj.ResourceMetadata, obj.GetRotation());
+                    totalWalls = totalWalls | walls; // OR the walls with the running sum stored in totalWalls
+                }
+                // now get the walls for the object that is being collision checked for
+                WWWalls newWalls = WWWallsHelper.GetRotatedWWWalls(wwObject.ResourceMetadata, wwObject.GetRotation());
+                bool doesCollide = Convert.ToBoolean(newWalls & totalWalls); // 0 or False if no collision
                 return doesCollide;
             }
-            return false;
+            return false; // if there are no objects at the index, obviously there are no collisions
         }
         
+        /// <summary>
+        /// Consumes a list of WWObjects and determines if any of them collide with existing objects.
+        /// </summary>
+        /// <param name="wwObjects"> The objects to check for fitting in with existing objects.</param>
+        /// <returns>True if there are no collisions detected. False otherwise.</returns>
         public bool DoesNotCollide(List<WWObject> wwObjects)
         {
             foreach (var wwObject in wwObjects)
@@ -155,7 +167,7 @@ namespace WorldWizards.core.entity.level
         /// Attempt to Add a WWObject to the data structure.
         /// </summary>
         /// <param name="wwObject">The object to Add.</param>
-        /// <returns>True if the object can be Added to the data strucutre.</returns>
+        /// <returns>True if the object can be Added to the data structure.</returns>
         public bool Add(WWObject wwObject)
         {
             Coordinate coord = wwObject.GetCoordinate();
@@ -168,18 +180,17 @@ namespace WorldWizards.core.entity.level
             }
             if (coordinates.ContainsKey(coord.Index))
             {
-                coordinates[coord.Index].Add(guid);
+                coordinates[coord.Index].Add(guid); // append the existing list of Guids for this index
             }
-            else
+            else // create new entry in the map
             {
                 var guidList = new List<Guid>();
                 guidList.Add(guid);
                 coordinates.Add(coord.Index, guidList);
             }
             objects.Add(wwObject.GetId(), wwObject);
-            return true;
+            return true; // sucessfully added the object to the data structure
         }
-
 
         /// <summary>
         /// Get the Guids of all WWObjects managed by the data structure.
@@ -202,19 +213,18 @@ namespace WorldWizards.core.entity.level
             if (removedObject)
             {
                 objects.Remove(id);
-                // now we have to remove the the id from the coordinate to List<Guid> Dictionary
-
+                // have to also remove the the id from the coordinate to List<Guid> Dictionary
                 foreach (KeyValuePair<IntVector3, List<Guid>> kvp in coordinates)
-                    if (kvp.Value.Contains(id))
-                    {
-                        kvp.Value.Remove(id);
-                    }
+                if (kvp.Value.Contains(id))
+                {
+                    kvp.Value.Remove(id);
+                }
             }
             return removedObject;
         }
 
         /// <summary>
-        /// Get a WWObject.
+        /// Get a WWObject by Guid.
         /// </summary>
         /// <param name="id">The Guid of the WWObject to get.</param>
         /// <returns>The WWObject of the provided Guid.</returns>
@@ -250,28 +260,24 @@ namespace WorldWizards.core.entity.level
             var result = new List<WWObject>();
             if (coordinates.ContainsKey(index))
             {
-                List<Guid> guids = coordinates[index];
-                foreach (Guid guid in guids)
+                var guids = coordinates[index];
+                foreach (var guid in guids)
+                {
                     result.Add(objects[guid]);
+                }
             }
             return result;
         }
 
-        public List<WWObject> GetPossibleTiles()
-        {
-            // not implemented yet
-            return null;
-        }
-
-        public List<WWObject> RankObjectsToPlace()
-        {
-            // not implemented yet
-            return null;
-        }
-
+        /// <summary>
+        /// Get all the colliders maintained by the data structure, filtered by a WWType.
+        /// Useful for custom raycasting against a list of WWObjects filtered by type.
+        /// </summary>
+        /// <param name="wwType">the type to filter by</param>
+        /// <returns>Colliders filtered by WWType</returns>
         public List<Collider> GetColliders(WWType wwType)
         {
-            List<Collider> result = new List<Collider>();
+            var result = new List<Collider>();
             foreach (var wwObject in objects.Values)
             {
                 if (wwObject.ResourceMetadata.wwObjectMetadata.type == wwType)
@@ -286,9 +292,14 @@ namespace WorldWizards.core.entity.level
             return result;
         }
         
+        /// <summary>
+        /// Get all the colliders maintained by the data structure.
+        /// Useful for custom raycasting against a list of WWObjects.
+        /// </summary>
+        /// <returns>All colliders of all the WWObjects being maintained</returns>
         public List<Collider> GetAllColliders()
         {
-            List<Collider> result = new List<Collider>();
+            var result = new List<Collider>();
             foreach (var wwObject in objects.Values)
             {
                 var colliders = wwObject.GetComponentsInChildren<Collider>();
@@ -299,7 +310,5 @@ namespace WorldWizards.core.entity.level
             }
             return result;
         }
-
-
     }
 }

@@ -70,11 +70,11 @@ namespace WorldWizards.core.manager
         {
             List<WWObject> objects = sceneDictionary.GetObjectsAbove(height);
             foreach (WWObject obj in objects)
-                obj.tileFader.Off();
+                obj.MaterialSwitcher.SwitchOff();
 
             List<WWObject> objectsAtAndBelow = sceneDictionary.GetObjectsAtAndBelow(height);
             foreach (WWObject obj in objectsAtAndBelow)
-                obj.tileFader.On();
+                obj.MaterialSwitcher.SwitchOn();
         }
 
         /// <see cref="SceneGraphManager.ChangeScale"/>
