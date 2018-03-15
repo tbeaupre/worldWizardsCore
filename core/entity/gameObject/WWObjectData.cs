@@ -8,52 +8,14 @@ namespace WorldWizards.core.entity.gameObject
     // @author - Brian Keeley-DeBonis bjkeeleydebonis@wpi.edu
     /// <summary>
     /// The WWObjectData class holds all the properties that describes the current state of a WWObject.
+    /// Currently these properties are: id, transform, parent, list of children, and the associated resource tag.
     /// </summary>
     public class WWObjectData
     {
         /// <summary>
-        /// Constructs a new WWObjectData instance with the provided data.
-        /// </summary>
-        /// <param name="id">The unique id.</param>
-        /// <param name="coordinate">The coordinate.</param>
-        /// <param name="parent">The parent WWObjectData. Can be null</param>
-        /// <param name="children">The list of children this WWObjectData is a parent of.</param>
-        /// <param name="resourceTag">The resource tag</param>
-        public WWObjectData(Guid id, WWTransform wwTransform,
-            WWObjectData parent, List<WWObjectData> children, string resourceTag)
-        {
-            this.id = id;
-            this.wwTransform = wwTransform;
-            //this.coordinate = coordinate;
-            this.parent = parent;
-            this.children = children;
-            this.resourceTag = resourceTag;
-        }
-
-        /// <summary>
-        /// Constructs a new WWObject data from a JSON bloblm, presumably from file.
-        /// </summary>
-        /// <param name="b"> the JSON blob</param>
-        public WWObjectData(WWObjectJSONBlob b)
-        {
-            id = b.id;
-            wwTransform = new WWTransform(b.wwTransform);
-            resourceTag = b.resourceTag;
-
-            // Note parent and children relationships are re-linked in the SceneGraphController during the Load
-            parent = null;
-            children = new List<WWObjectData>();
-        }
-
-        /// <summary>
         /// The unique identifier for this WWObjectData
         /// </summary>
         public Guid id { get; private set; }
-
-        /// <summary>
-        /// The coordinate of this WWObjectData
-        /// </summary>
-        //        public Coordinate coordinate { get; set; }
 
         /// <summary>
         /// The transform for this WWObjectData
@@ -74,7 +36,39 @@ namespace WorldWizards.core.entity.gameObject
         /// The resourceTag associated with this WWObject. Neccassary for getting the resource from an Asset Bundle.
         /// </summary>
         public string resourceTag { get; private set; }
+        
+        /// <summary>
+        /// Constructs a new WWObjectData instance with the provided data.
+        /// </summary>
+        /// <param name="id">The unique id.</param>
+        /// <param name="wwTransform">The WWTransform.</param>
+        /// <param name="parent">The parent WWObjectData. Can be null</param>
+        /// <param name="children">The list of children this WWObjectData is a parent of.</param>
+        /// <param name="resourceTag">The resource tag</param>
+        public WWObjectData(Guid id, WWTransform wwTransform,
+            WWObjectData parent, List<WWObjectData> children, string resourceTag)
+        {
+            this.id = id;
+            this.wwTransform = wwTransform;
+            this.parent = parent;
+            this.children = children;
+            this.resourceTag = resourceTag;
+        }
 
+        /// <summary>
+        /// Constructs a new WWObject data from a JSON blobl, presumably from a file.
+        /// </summary>
+        /// <param name="b"> the JSON blob</param>
+        public WWObjectData(WWObjectJSONBlob b)
+        {
+            id = b.id;
+            wwTransform = new WWTransform(b.wwTransform);
+            resourceTag = b.resourceTag;
+            // Note parent and children relationships are re-linked in the SceneGraphController
+            // during the Load Operation
+            parent = null;
+            children = new List<WWObjectData>();
+        }
 
         /// <summary>
         /// Add this list of children to this object's chidlren.
@@ -92,11 +86,14 @@ namespace WorldWizards.core.entity.gameObject
         public List<WWObjectData> GetAllDescendents()
         {
             var descendents = new List<WWObjectData>();
-            foreach (WWObjectData child in children)
+            foreach (var child in children)
             {
                 descendents.Add(child);
                 List<WWObjectData> childsDescendents = child.GetAllDescendents();
-                foreach (WWObjectData childsDescendent in childsDescendents) descendents.Add(childsDescendent);
+                foreach (var childsDescendent in childsDescendents)
+                {
+                    descendents.Add(childsDescendent);
+                }
             }
             return descendents;
         }
