@@ -361,6 +361,7 @@ namespace WorldWizards.core.input.Tools
         private void OnGripDown(Vector3 pointerPosAsScreenPos)
         {
             Debug.Log("OnGripDown");
+            DeselectAll();
             onGripDown = true;
             selectableUnits = new List<WWObject>(FindObjectsOfType<WWObject>());
             initialDragPosition = new Vector2(pointerPosAsScreenPos.x, pointerPosAsScreenPos.y);
@@ -372,8 +373,13 @@ namespace WorldWizards.core.input.Tools
                 selectableUnits.Remove(hitWWObject);
                 if (!wwObjectToOrigCoordinates.ContainsKey(hitWWObject))
                 {
-                    wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
-                    hitWWObject.Select();
+                    if (!ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetDoFilter()
+                        || ManagerRegistry.Instance.GetAnInstance<WWObjectGunManager>().GetFilterType() ==
+                        hitWWObject.ResourceMetadata.wwObjectMetadata.type)
+                    {
+                        wwObjectToOrigCoordinates.Add(hitWWObject, hitWWObject.GetCoordinate());
+                        hitWWObject.Select();
+                    }
                 }
             }
         }
