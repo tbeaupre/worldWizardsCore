@@ -1,0 +1,86 @@
+ManifestFileVersion: 0
+CRC: 3667412754
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: cb0cd439337574eb233a2b2ce088bab7
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 992ca409101070d8d0fb4b34f017c4a7
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 41464b2ab71ba6e48af91a62e85a0722, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+Assets:
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Roof_Slanted_Wall.prefab
+- Assets/TileSetCleanedup/Tiles/Roofs/Roof_Slanted_D.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/PointedArchHolder.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Wall_L.prefab
+- Assets/TileSetCleanedup/Tiles/HalfTimbre/MedWall_HalfTimbre_B.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/PointedArchHolder.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Roof_Thatched_Wall.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/SquareDoorHolder.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/WoodFloor.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/MedWall.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/BrickFloor.prefab
+- Assets/TileSetCleanedup/Props/Chest.prefab
+- Assets/TileSetCleanedup/Tiles/HalfTimbre/MedWall_HalfTimbre_J.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/PointedArchFrame.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Roof_Slanted_Wall_Reversed.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/RoundArchFrame.prefab
+- Assets/TileSetCleanedup/Props/OrnateFurniture_A.prefab
+- Assets/TileSetCleanedup/Tiles/HalfTimbre/MedWall_HalfTimbre_A.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/GreyBrickFloor.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/RoundArchHolder.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/WoodFloor2.prefab
+- Assets/TileSetCleanedup/Props/Stool.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Roof_Slanted_Wall.prefab
+- Assets/TileSetCleanedup/Tiles/Roofs/Roof_Slanted_A.prefab
+- Assets/TileSetCleanedup/Tiles/Roofs/Roof_Slanted_B.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/ConcreteFloor.prefab
+- Assets/TileSetCleanedup/Props/Wall_Picture.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Steps_B.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Steps_B.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/PointedArchFrame.prefab
+- Assets/TileSetCleanedup/Tiles/Point light.prefab
+- Assets/TileSetCleanedup/Props/Rug_A.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/Roof_Thatched_Wall_Reversed.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Wall_L.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Roof_Thatched_Wall.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/RoundArchFrame.prefab
+- Assets/TileSetCleanedup/Tiles/Roofs/Roof_Thatched.prefab
+- Assets/TileSetCleanedup/Props/Grainbag.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Roof_Slanted_Wall_Reversed.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/SquareDoorHolder.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/RoundArchHolder.prefab
+- Assets/TileSetCleanedup/Tiles/StepsWood.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/Roof_Thatched_Wall_Reversed.prefab
+- Assets/TileSetCleanedup/Props/Table_A.prefab
+- Assets/TileSetCleanedup/Props/OrnateChair.prefab
+- Assets/TileSetCleanedup/Props/Cart.prefab
+- Assets/TileSetCleanedup/Tiles/Floors/LightBrickFloor.prefab
+- Assets/TileSetCleanedup/Tiles/Wall_A_2/SquareDoorFrame.prefab
+- Assets/TileSetCleanedup/Tiles/MedWall_C/SquareDoorFrame.prefab
+Dependencies: []

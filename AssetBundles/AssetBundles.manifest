@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 355253596
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: ww_basic_assets
+      Dependencies: {}
+    Info_1:
+      Name: arteria
+      Dependencies: {}
