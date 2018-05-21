@@ -16,11 +16,12 @@ namespace WorldWizards.core.manager
     {
         private bool doFilter;
         private WWType filterType = WWType.None;
-        private string assetBundleTag = "ww_basic_assets";
+        private static string assetBundleTag = "ww_basic_assets";
+//        private static string assetBundleTag = "arteria";
         
         // The list of objects for the object gun
         // Default is all the objects in ww_basic_assets
-        private List<string> possibleObjects = WWResourceController.GetResourceKeysByAssetBundle("ww_basic_assets");
+        private List<string> possibleObjects = WWResourceController.GetResourceKeysByAssetBundle(assetBundleTag);
 
         /// <summary>
         ///     Gets whether the object gun should be filtered
@@ -82,7 +83,7 @@ namespace WorldWizards.core.manager
                 possibleObjects = WWResourceController.GetResourceKeysByAssetBundle(assetBundleTag);
             }
 
-            this.assetBundleTag = assetBundleTag;
+            WWObjectGunManager.assetBundleTag = assetBundleTag;
             
             Debug.Log("doFilter: " + doFilter + ", filterType: " + filterType + ", currentAssetBundle: " + assetBundleTag);
         }
